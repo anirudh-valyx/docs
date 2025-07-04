@@ -1,3 +1,46 @@
 ---
 title: "Rate Cards"
 ---
+
+Rate cards define how fee components are priced. A rate card can be defined for a paricular fee component with particular set of attributes. Rate cards can be defined in multiple possible variations - 
+
+#### Fixed Price
+
+Fixed rate is charged irrepective of the usage. For example - if a fixed price rate card is defined witha price of INR 500, then INR 500 is added to the invoice irrespective of usages for fee component.
+
+| Fee Component Usage | Price |
+| :------------------ | :---- |
+| 0                   | 500   |
+| 42                  | 500   |
+| 89                  | 500   |
+
+#### Rate Per Unit
+
+Each usage of the fee component is priced at same price. For ex - if a rate card is define as per unit rate of INR 10, then the price would be calculated as (total_usage \* 10)
+
+| Fee Component Usage | Price |
+| ------------------- | ----- |
+| 42                  | 420   |
+| 89                  | 890   |
+
+#### Graduated Pricing
+
+This pricing is used when different usage amounts are divided into different tiers. Think of cases when you want the per unit price to go down as users use more of your product (a discount of sorts). In that case, one can defined tiers as below
+
+| Tier Start | Tier Limit | Price |
+| ---------- | ---------- | ----- |
+| 0          | 50         | 10    |
+| 50         | 100        | 9     |
+| 100        | ∞          | 8     |
+
+A given usage for a billing period will be divided into separate tiers and pricing for each tier would be calculated separately. Refer the table below - 
+
+| Fee Component Usage | Price                                                                                                            |
+| :------------------ | :--------------------------------------------------------------------------------------------------------------- |
+| 40                  | **400** (10 per unit for first 40 =\> 10x40)                                                                     |
+| 60                  | **590** (10 per unit for first 50 and 9 per unit after that =\> 10x50_\+ _9x10)                                  |
+| 120                 | **1110** (10 per unit for first 50, 9 per unit for next 50 and 8 per unit after that =\> 10x50_\+ _9x50 \+ 8x20) |
+
+#### Volume Based Pricing
+
+Instead of 
