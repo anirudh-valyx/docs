@@ -53,6 +53,17 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Billing",
+            "pages": [
+              "documentation/billing"
+            ]
+          }
+        ]
       }
     ],
     "global": {
