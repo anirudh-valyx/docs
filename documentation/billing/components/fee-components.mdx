@@ -12,3 +12,28 @@ For example, if you're a logistics company, you might define "Courier Charges", 
 - HSN code (if applicable) etc.
 
 The usage for a fee component is based on **Usage Drivers** — which define how consumption is measured (e.g., number of deliveries, weight, distance).
+
+### **Fee Component Tags**
+
+The same fee component may sometimes have different prices. While a common reason is customer-specific pricing, other factors can also influence this variation.
+
+For example, AWS charges different rates for the same service depending on the region. Similarly, an e-commerce SaaS platform might price the same service differently for different brands of the same customer.
+
+We treat this as different variations of same fee components. This can be achived using tags which are essentially key value pair(s) which can be attached to fee components.
+
+For example, for AWS use it would look like - 
+
+| Region         |
+| -------------- |
+| us-east-1      |
+| ap-south-1     |
+| ap-southeast-1 |
+
+Multiple tags can also be applied to a fee component. In that case all combinations would be considered.
+
+| Brand   | Location   |
+| ------- | ---------- |
+| Brand-1 | Location-1 |
+| Brand-1 | Location-2 |
+| Brand-2 | Location-1 |
+| Brand-2 | Location-2 |
