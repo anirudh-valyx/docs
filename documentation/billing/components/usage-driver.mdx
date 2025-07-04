@@ -2,16 +2,47 @@
 title: "Usage Driver"
 ---
 
-A **Usage Driver** defines how usage is measured in the system.  It determines the quantity based on which a **Fee Component** is billed.
+A **Usage Driver** defines how usage is measured in the system.  It determines the quantity based on which a **Fee Component** is billed. For example - 
 
-For example, Imagine you're offering a cloud storage service.
+<Tabs>
+  <Tab title="Cloud SaaS">
+    Let's say you're offering a cloud storage service.
 
-- **Fee Component**: `Storage Charges`  This is the invoice line item representing the cost of storing data.
-- **Usage Driver**: `Storage Used` This tracks how much storage space a customer consumes — typically measured in gigabytes (GB) per month.
+    - **Fee Component**: `Storage Charges`  This is the invoice line item representing the cost of storing data.
+    - **Usage Driver**: `Storage Used` This tracks how much storage space a customer consumes — typically measured in gigabytes (GB) per month.
 
-While the system internally measures usage using the usage driver `(Storage Used)`, this raw metric isn’t shown directly on the invoice. Instead, the invoice displays the fee component `(Storage Charges)` along with the billed amount. The usage driver to fee component mapping allows you to:
+    While the system internally measures usage using the usage driver `(Storage Used)`, this raw metric isn’t shown directly on the invoice. Instead, the invoice displays the fee component `(Storage Charges)` along with the billed amount. The usage driver to fee component mapping allows you to:
 
-- Track usage in technical units (e.g. GB, API calls)
-- Translate it into meaningful, customer-facing charges
+    - Track usage in technical units (e.g. GB, API calls)
+    - Translate it into meaningful, customer-facing charges
 
-> This separation makes your billing more flexible, allowing you to change how you measure usage without changing how it’s presented to your customer.
+    > This separation makes your billing more flexible, allowing you to change how you measure usage without changing how it’s presented to your customer.
+
+    ---
+
+    ---
+
+    ---
+
+    ---
+  </Tab>
+  <Tab title="Logistics">
+    Let's say you're running a logistics company.
+
+    - **Fee Component**: `Courier Fees`  This is the line item shown on the invoice, representing the delivery charges billed to the customer.
+    - **Usage Driver**: `Parcel Weight`    This tracks the weight of each parcel being shipped, typically measured in kilograms (kg).
+
+    Although the system measures usage using the **Usage Driver** (`Parcel Weight`), this technical detail isn’t shown on the customer invoice.  What the customer sees is the **Fee Component** (`Courier Fees`) and the amount charged.
+
+    The **Usage Driver to Fee Component mapping** enables you to:
+
+    - Track operational metrics (e.g. weight, distance, volume)
+    - Convert them into clear, business-facing charges on the invoice
+  </Tab>
+</Tabs>
+
+### Usage Driver To Fee Component Mapping
+
+One usage driver can be associated with multiple fee components (and vice-versa). For example - If you are sending a parcel with a particular weight, you might want to add both logistic fees and tracking fees basis that.\
+\
+While generally, usage driver and fee component quantities are same, Valyx allows you to define custom multipliers (any decimal value) as well. For ex - 1 unit of weight might imple 100 units of logistics fees incurred.
