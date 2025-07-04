@@ -1,29 +1,12 @@
 ---
-title: "Billing Components"
-description: "Definition for all basic components that are used in Valyx's billing system"
+title: "Usage Driver"
 ---
-
-## Fee Component
-
-A Fee Component represents a specific service or item that you charge your customers for.\
-It appears as one or more line items in your customer’s invoice.
-
-For example, if you're a logistics company, you might define "Courier Charges", "Tracking Charges" as fee components. If you are a SaaS company, "API charges" might be one of the fee components that you might use. Each fee component includes details like:
-
-- Name
-- Description
-- HSN code (if applicable) etc.
-
-The usage for a fee component is based on **Usage Drivers** — which define how consumption is measured (e.g., number of deliveries, weight, distance).
-
-## Usage Driver
 
 A **Usage Driver** defines how usage is measured in the system.  It determines the quantity based on which a **Fee Component** is billed.
 
 For example, Imagine you're offering a cloud storage service.
 
 - **Fee Component**: `Storage Charges`  This is the invoice line item representing the cost of storing data.
-
 - **Usage Driver**: `Storage Used` This tracks how much storage space a customer consumes — typically measured in gigabytes (GB) per month.
 
 While the system internally measures usage using the usage driver `(Storage Used)`, this raw metric isn’t shown directly on the invoice. Instead, the invoice displays the fee component `(Storage Charges)` along with the billed amount. The usage driver to fee component mapping allows you to:
