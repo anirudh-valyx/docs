@@ -60,3 +60,20 @@ A given usage for a billing period is matched against the appropriate tier, and 
 | 40                  | **400** (entire 40 units at 10 per unit ⇒ 10 × 40) |
 | 60                  | **540** (entire 60 units at 9 per unit ⇒ 9 × 60)   |
 | 120                 | **960** (entire 120 units at 8 per unit ⇒ 8 × 120) |
+
+#### Min Max Pricing
+
+This pricing is used when the charge is the **minimum or maximum** of two amounts — typically between a **flat fee** and a fee calculated as a **function of the total usage** (either a fixed amount per unit or a percentage of total value).
+
+It's useful when you want to ensure a **minimum revenue floor** or cap the charge at a certain **maximum value**, regardless of high usage. For example - 
+
+| Usage | Flat Fee | % of Usage × Rate | Applied Pricing Logic | Final Price |
+| :---- | :------- | :---------------- | :-------------------- | :---------- |
+| 30    | 300      | 30 × 8 = 240      | **Max** of (300, 240) | **300**     |
+| 60    | 300      | 60 × 8 = 480      | **Max** of (300, 480) | **480**     |
+| 100   | 600      | 100 × 7 = 700     | **Min** of (600, 700) | **600**     |
+
+**Types of min-max logic:**
+
+- **Minimum of (flat fee, % of usage)** → useful for **discount caps**
+- **Maximum of (flat fee, % of usage)** → useful for **minimum commitment pricing**
