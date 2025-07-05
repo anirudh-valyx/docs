@@ -1,0 +1,79 @@
+---
+title: "Rate Card"
+---
+
+Rate cards define how fee components are priced. A rate card can be defined for a paricular fee component with particular set of attributes. Rate cards can be defined in multiple possible variations -
+
+#### Fixed Price
+
+Fixed rate is charged irrepective of the usage. For example - if a fixed price rate card is defined witha price of INR 500, then INR 500 is added to the invoice irrespective of usages for fee component.
+
+| Fee Component Usage | Price |
+| :------------------ | :---- |
+| 0                   | 500   |
+| 42                  | 500   |
+| 89                  | 500   |
+
+#### Rate Per Unit
+
+Each usage of the fee component is priced at same price. For ex - if a rate card is define as per unit rate of INR 10, then the price would be calculated as (total_usage \* 10)
+
+| Fee Component Usage | Price |
+| ------------------- | ----- |
+| 42                  | 420   |
+| 89                  | 890   |
+
+#### Graduated Pricing
+
+This pricing is used when different usage amounts are divided into different tiers. Think of cases when you want the per unit price to go down as users use more of your product (a discount of sorts). In that case, one can defined tiers as below
+
+| Tier Start | Tier Limit | Price |
+| ---------- | ---------- | ----- |
+| 0          | 50         | 10    |
+| 50         | 100        | 9     |
+| 100        | ∞          | 8     |
+
+A given usage for a billing period will be divided into separate tiers and pricing for each tier would be calculated separately. Refer the table below -
+
+| Fee Component Usage | Price                                                                                                              |
+| :------------------ | :----------------------------------------------------------------------------------------------------------------- |
+| 40                  | **400** (10 per unit for first 40 =\> 10x40)                                                                       |
+| 60                  | **590** (10 per unit for first 50 and 9 per unit after that =\> 10x50\_\+ \_9x10)                                  |
+| 120                 | **1110** (10 per unit for first 50, 9 per unit for next 50 and 8 per unit after that =\> 10x50\_\+ \_9x50 \+ 8x20) |
+
+#### Volume Based Pricing
+
+This pricing is used when the total usage amount falls into a single tier, and **the entire usage is priced at the rate of that tier**. Think of cases when you want to give a better per unit price only if the customer crosses a certain threshold — and the entire usage benefits from that lower price.
+
+For example:
+
+| Tier Start | Tier Limit | Price |
+| :--------- | :--------- | :---- |
+| 0          | 50         | 10    |
+| 50         | 100        | 9     |
+| 100        | ∞          | 8     |
+
+A given usage for a billing period is matched against the appropriate tier, and **the entire usage is priced at that tier’s rate**. Refer to the table below:
+
+| Fee Component Usage | Price                                              |
+| :------------------ | :------------------------------------------------- |
+| 40                  | **400** (entire 40 units at 10 per unit ⇒ 10 × 40) |
+| 60                  | **540** (entire 60 units at 9 per unit ⇒ 9 × 60)   |
+| 120                 | **960** (entire 120 units at 8 per unit ⇒ 8 × 120) |
+
+#### Min Max Pricing
+
+This pricing is used when the charge is the **minimum or maximum** of two amounts — typically between a **flat fee** and a fee calculated as a **function of the total usage** (either a fixed amount per unit or a percentage of total value).
+
+It's useful when you want to ensure a **minimum revenue floor** or cap the charge at a certain **maximum value**, regardless of high usage. For example -
+
+| Usage | Flat Fee | % of Usage × Rate | Applied Pricing Logic | Final Price |
+| :---- | :------- | :---------------- | :-------------------- | :---------- |
+| 30    | 300      | 30 × 8 = 240      | **Max** of (300, 240) | **300**     |
+| 60    | 300      | 60 × 8 = 480      | **Max** of (300, 480) | **480**     |
+| 100   | 600      | 100 × 7 = 700     | **Min** of (600, 700) | **600**     |
+
+**Types of min-max logic:**
+
+- **Minimum of (flat fee, % of usage)** → useful for **discount caps**
+- **Maximum of (flat fee, % of usage)** → useful for **minimum commitment pricing**
