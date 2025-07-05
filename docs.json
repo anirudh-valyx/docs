@@ -58,9 +58,12 @@
         "tab": "Documentation",
         "groups": [
           {
-            "group": "Billing",
+            "group": "Billing Components",
             "pages": [
-              "documentation/billing"
+              "documentation/billing/components/contract",
+              "documentation/billing/components/fee-component",
+              "documentation/billing/components/usage-driver",
+              "documentation/billing/components/rate-card"
             ]
           }
         ]
