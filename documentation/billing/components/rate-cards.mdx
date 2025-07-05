@@ -2,7 +2,7 @@
 title: "Rate Cards"
 ---
 
-Rate cards define how fee components are priced. A rate card can be defined for a paricular fee component with particular set of attributes. Rate cards can be defined in multiple possible variations - 
+Rate cards define how fee components are priced. A rate card can be defined for a paricular fee component with particular set of attributes. Rate cards can be defined in multiple possible variations -
 
 #### Fixed Price
 
@@ -33,14 +33,30 @@ This pricing is used when different usage amounts are divided into different tie
 | 50         | 100        | 9     |
 | 100        | ∞          | 8     |
 
-A given usage for a billing period will be divided into separate tiers and pricing for each tier would be calculated separately. Refer the table below - 
+A given usage for a billing period will be divided into separate tiers and pricing for each tier would be calculated separately. Refer the table below -
 
-| Fee Component Usage | Price                                                                                                            |
-| :------------------ | :--------------------------------------------------------------------------------------------------------------- |
-| 40                  | **400** (10 per unit for first 40 =\> 10x40)                                                                     |
-| 60                  | **590** (10 per unit for first 50 and 9 per unit after that =\> 10x50_\+ _9x10)                                  |
-| 120                 | **1110** (10 per unit for first 50, 9 per unit for next 50 and 8 per unit after that =\> 10x50_\+ _9x50 \+ 8x20) |
+| Fee Component Usage | Price                                                                                                              |
+| :------------------ | :----------------------------------------------------------------------------------------------------------------- |
+| 40                  | **400** (10 per unit for first 40 =\> 10x40)                                                                       |
+| 60                  | **590** (10 per unit for first 50 and 9 per unit after that =\> 10x50\_\+ \_9x10)                                  |
+| 120                 | **1110** (10 per unit for first 50, 9 per unit for next 50 and 8 per unit after that =\> 10x50\_\+ \_9x50 \+ 8x20) |
 
 #### Volume Based Pricing
 
-Instead of 
+This pricing is used when the total usage amount falls into a single tier, and **the entire usage is priced at the rate of that tier**. Think of cases when you want to give a better per unit price only if the customer crosses a certain threshold — and the entire usage benefits from that lower price.
+
+For example:
+
+| Tier Start | Tier Limit | Price |
+| :--------- | :--------- | :---- |
+| 0          | 50         | 10    |
+| 50         | 100        | 9     |
+| 100        | ∞          | 8     |
+
+A given usage for a billing period is matched against the appropriate tier, and **the entire usage is priced at that tier’s rate**. Refer to the table below:
+
+| Fee Component Usage | Price                                              |
+| :------------------ | :------------------------------------------------- |
+| 40                  | **400** (entire 40 units at 10 per unit ⇒ 10 × 40) |
+| 60                  | **540** (entire 60 units at 9 per unit ⇒ 9 × 60)   |
+| 120                 | **960** (entire 120 units at 8 per unit ⇒ 8 × 120) |
