@@ -46,30 +46,74 @@ curl -X 'POST' \
 }'
 ```
 
-## Request
+## Authorization
 
 <AccordionGroup>
-  <Accordion title="Authorization" icon="sparkles" iconType="regular">
-    ``` filename
+  <Accordion title="Authorization" description="API key is passed as a Bearer token in the header" icon="key">
+    Include your API key in the request header using the **Bearer** scheme.
+
+    ```http
     Authorization: Bearer <your_api_key>
     ```
 
-    Include your API key as a Bearer \<token\> in the Authorization header of your request.
-  </Accordion>
-  <Accordion title="Body" description="The request body should contain a JSON payload describing a single usage event." icon="sparkles">
-    | Field              | Type     | Required | Description                                                                    | Example                                    |
-    | ------------------ | -------- | -------- | ------------------------------------------------------------------------------ | ------------------------------------------ |
-    | `buyerId`          | `string` | ✅        | Unique identifier for the buyer (e.g. customer or account)                     | `"BUY12345"`                               |
-    | `contractId`       | `string` | ❌        | Contract under which usage is billed. If not provided, resolved automatically. | `"CON45678"`                               |
-    | `count`            | `float`  | ✅        | Number of times the usage occurred                                             | `1`                                        |
-    | `eventId`          | `string` | ❌        | Event type identifier (e.g., API call, job, etc.)                              | `"EVT_API_REQUEST"`                        |
-    | `eventTimestamp`   | `int64`  | ❌        | Unix timestamp of when the usage occurred                                      | `1721502930`                               |
-    | `quantity`         | `float`  | ✅        | Quantity of usage (e.g., GBs used, requests, hours)                            | `250.5`                                    |
-    | `tags`             | `object` | ✅        | Custom key-value pairs to add dimensions (region, tier, etc.)                  | `{ "region": "us-east-1", "tier": "pro" }` |
-    | `usageDriverId`    | `string` | ✅        | What is being measured — e.g., messages sent, compute time                     | `"UDR00123"`                               |
-    | `usageReferenceId` | `string` | ✅        | A unique ID to prevent duplicate submissions                                   | `"REF7890"`                                |
+    This is required for authenticating the request and identifying the calling company.
   </Accordion>
 </AccordionGroup>
+
+---
+
+## Body
+
+<AccordionGroup>
+  <Accordion title="buyerId" description="Unique identifier for the buyer" icon="tag">
+    `buyerId` `string` `required`\
+    Example: `BUY12345`
+  </Accordion>
+  <Accordion title="contractId" description="Contract ID under which usage is recorded" icon="file-signature">
+    `contractId` `string` `optional`\
+    If not provided, it will be resolved using `buyerId` and `X-Company-ID`.\
+    Example: `CON45678`
+  </Accordion>
+  <Accordion title="count" description="Number of discrete usage events" icon="hashtag">
+    `count` `float` `required`\
+    Example: `1`
+  </Accordion>
+  <Accordion title="eventId" description="Globally unique event ID" icon="fingerprint">
+    `eventId` `string` `optional`\
+    Ensures idempotency. If the same ID is reused, the latest event will overwrite previous ones.\
+    Example: `EVT_API_REQUEST`
+  </Accordion>
+  <Accordion title="eventTimestamp" description="Unix timestamp for when the event occurred" icon="clock">
+    `eventTimestamp` `int64` `optional`\
+    Example: `1721502930`
+  </Accordion>
+  <Accordion title="quantity" description="Amount of resource consumed" icon="bar-chart">
+    `quantity` `float` `required`\
+    Example: `250.5`
+  </Accordion>
+  <Accordion title="tags" description="Custom key-value tags to drive pricing logic" icon="labels">
+    `tags` `object` `required`\
+    Example:
+
+    ```json
+    {
+      "region": "us-east-1",
+      "tier": "pro",
+      "feature": "api"
+    }
+    ```
+  </Accordion>
+  <Accordion title="usageDriverId" description="Defines what resource is being measured" icon="ruler">
+    `usageDriverId` `string` `required`\
+    Example: `UDR00123`
+  </Accordion>
+  <Accordion title="usageReferenceId" description="Used to group related usage events for aggregation" icon="link">
+    `usageReferenceId` `string` `required`\
+    Example: `REF7890`
+  </Accordion>
+</AccordionGroup>
+
+---
 
 ## Response
 
