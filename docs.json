@@ -21,6 +21,12 @@
               "documentation/billing/components/usage-driver",
               "documentation/billing/components/rate-card"
             ]
+          },
+          {
+            "group": "Usage API",
+            "pages": [
+              "documentation/billing/apis/add-usage"
+            ]
           }
         ]
       }
