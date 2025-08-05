@@ -90,7 +90,7 @@ curl -X POST \
     Ensures idempotency. If the same ID is reused, the latest event will overwrite previous ones.\
     Example: `EVT_API_REQUEST`
   </Accordion>
-  <Accordion title="eventTimestamp" description="Unix timestamp for when the event occurred" icon="clock">
+  <Accordion title="eventTimestamp" description="Unix timestamp (millis) for when the event occurred" icon="clock">
     `eventTimestamp` `int64` `optional`\
     Example: `1721502930`
   </Accordion>
@@ -116,7 +116,7 @@ curl -X POST \
       The amount of the resource that was consumed.\
       Example: `10`
     - `count` `integer` `required`\
-      The number of times the usage driver was triggered or used.\
+      The number of times the usage driver was triggered/used.\
       Example: `3`
   </Accordion>
   <Accordion title="usageReferenceId" description="Used to group related usage events for aggregation" icon="link">
@@ -132,21 +132,10 @@ curl -X POST \
 <Tabs>
   <Tab title="201">
     ```
-    {
-      "buyerId": "BUY12345",
-      "contractId": "CON67890",
-      "count": 1,
-      "eventId": "API_CALL_001",
-      "eventTimestamp": 1721502930,
-      "quantity": 150.75,
-      "tags": {
-        "region": "us-east-1",
-        "feature": "upload",
-        "tier": "enterprise"
-      },
-      "usageDriverId": "UDR_CPU_HOURS",
-      "usageReferenceId": "REF20250721-001"
-    }
+  {
+      "status": "success",
+      "message": "Usage data recorded successfully.",
+  }
     
     ```
   </Tab>
@@ -162,7 +151,7 @@ curl -X POST \
     ```json
     {
       "error": "Invalid request body",
-      "details": "json: cannot unmarshal string into Go struct field CreateUsageEvent.quantity of type float64"
+      "details": "json: cannot unmarshal string into struct field CreateUsageEvent.quantity of type float64"
     }
     
     ```
