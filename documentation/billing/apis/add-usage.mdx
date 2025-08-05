@@ -1,4 +1,4 @@
----
+ ---
 title: "Add Usage"
 description: "Public API for ingesting Usage events for billing and metering."
 sidebarTitle: "Usage API"
@@ -152,6 +152,52 @@ curl -X POST \
     {
       "error": "Invalid request body",
       "details": "json: cannot unmarshal string into struct field CreateUsageEvent.quantity of type float64"
+    }
+    
+    ```
+  </Tab>
+  <Tab title="422">
+    ```json
+    {
+      "error": "Unprocessable Entity",
+      "details": "could not fetch contractID: contract not found  for company_1234 and customer_9876"
+    }
+    
+    ```
+  </Tab>
+    <Tab title="422">
+    ```json
+    {
+      "error": "Unprocessable Entity",
+      "details": "contract ID validation failed: failed to fetch contract details: "
+    }
+    
+    ```
+  </Tab>
+  <Tab title="422">
+    ```json
+    {
+      "error": "Unprocessable Entity",
+      "details": "event timestamp 17834059734 is outside contract period [01-01-2025 to 31-01-2025]"
+    }
+    
+    ```
+  </Tab>
+    <Tab title="422">
+    ```json
+    {
+      "error": "Unprocessable Entity",
+      "details": "usage driver validation failed: failed to fetch usage driver status"
+    }
+    
+    ```
+  </Tab>
+  failed to query billing approvals:
+   <Tab title="422">
+    ```json
+    {
+      "error": "Unprocessable Entity",
+      "details": "  failed to query billing approvals"
     }
     
     ```
