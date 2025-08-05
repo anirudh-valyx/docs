@@ -1,6 +1,6 @@
- ---
-title: "Add Usage"
-description: "Public API for ingesting Usage events for billing and metering."
+---
+title: "Usage API"
+description: "Public API to ingest usage events for billing and metering."
 sidebarTitle: "Usage API"
 ---
 
@@ -15,7 +15,7 @@ This API allows clients to report usage events to the billing system for process
 **POST** `https://www.data.valyx.com/usage`
 
 ```
-GET /usage HTTP/1.1
+POST /usage HTTP/1.1
 Host: data.valyx.com
 Authorization: Bearer sk_live_1234567890abcdef
 Content-Type: application/json
@@ -132,10 +132,10 @@ curl -X POST \
 <Tabs>
   <Tab title="201">
     ```
-  {
+    {
       "status": "success",
       "message": "Usage data recorded successfully.",
-  }
+    }
     
     ```
   </Tab>
@@ -165,7 +165,7 @@ curl -X POST \
     
     ```
   </Tab>
-    <Tab title="422">
+  <Tab title="422">
     ```json
     {
       "error": "Unprocessable Entity",
@@ -183,7 +183,7 @@ curl -X POST \
     
     ```
   </Tab>
-    <Tab title="422">
+  <Tab title="422">
     ```json
     {
       "error": "Unprocessable Entity",
@@ -192,8 +192,7 @@ curl -X POST \
     
     ```
   </Tab>
-  failed to query billing approvals:
-   <Tab title="422">
+  <Tab title="422">
     ```json
     {
       "error": "Unprocessable Entity",
