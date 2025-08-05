@@ -43,12 +43,12 @@ curl -X POST \
     },
     "metrics": [
       {
-        "id": "string",
+        "usage_driver_id": "string",
         "quantity": int,
         "count": int
       },
       {
-        "id": "string",
+        "usage_driver_id": "string",
         "quantity": int,
         "count": int
       }
@@ -109,7 +109,7 @@ curl -X POST \
   <Accordion title="metrics" description="Defines a list of usage drivers along with how much and how many times each was consumed" icon="ruler">
     Each item in the `usageDrivers` array represents a specific usage driver and includes:
 
-    - `id` `string` `required`\
+    - `usage_driver_id` `string` `required`\
       Unique identifier of the usage driver.\
       Example: `UDR00123`
     - `quantity` `integer` `required`\
