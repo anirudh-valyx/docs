@@ -12,7 +12,7 @@ This API allows clients to report usage events to the billing system for process
 
 ## 📥 Endpoint
 
-**GET** `https://www.data.valyx.com/usage`
+**POST** `https://www.data.valyx.com/usage`
 
 ```
 GET /usage HTTP/1.1
@@ -26,25 +26,35 @@ Content-Type: application/json
 ### 📤  `curl` Request
 
 ```bash
-curl -X 'POST' \
+curl -X POST \
   'http://localhost:8181/usage' \
   -H 'accept: application/json' \
   -H 'Authorization: Bearer <your_api_key>' \
   -H 'Content-Type: application/json' \
   -d '{
-  "buyerId": "string",
-  "contractId": "string",
-  "count": 0,
-  "eventId": "string",
-  "quantity": 0,
-  "tags": {
-    "additionalProp1": "string",
-    "additionalProp2": "string",
-    "additionalProp3": "string"
-  },
-  "usageDriverId": "string",
-  "usageReferenceId": "string"
-}'
+    "buyerId": "string",
+    "contractId": "string",
+    "eventId": "string",
+	"eventTimeStamp": int
+    "tags": {
+      "additionalProp1": "string",
+      "additionalProp2": "string",
+      "additionalProp3": "string"
+    },
+    "metrics": [
+      {
+        "id": "string",
+        "quantity": int,
+        "count": int
+      },
+      {
+        "id": "string",
+        "quantity": int,
+        "count": int
+      }
+    ],
+    "usageReferenceId": "string"
+  }'
 ```
 
 ## Authorization
@@ -75,10 +85,6 @@ curl -X 'POST' \
     If not provided, it will be resolved using `buyerId` and `X-Company-ID`.\
     Example: `CON45678`
   </Accordion>
-  <Accordion title="count" description="Number of discrete usage events" icon="hashtag">
-    `count` `float` `required`\
-    Example: `1`
-  </Accordion>
   <Accordion title="eventId" description="Globally unique event ID" icon="fingerprint">
     `eventId` `string` `optional`\
     Ensures idempotency. If the same ID is reused, the latest event will overwrite previous ones.\
@@ -87,10 +93,6 @@ curl -X 'POST' \
   <Accordion title="eventTimestamp" description="Unix timestamp for when the event occurred" icon="clock">
     `eventTimestamp` `int64` `optional`\
     Example: `1721502930`
-  </Accordion>
-  <Accordion title="quantity" description="Amount of resource consumed" icon="bar-chart">
-    `quantity` `float` `required`\
-    Example: `250.5`
   </Accordion>
   <Accordion title="tags" description="Custom key-value tags to drive pricing logic" icon="labels">
     `tags` `object` `required`\
@@ -104,9 +106,18 @@ curl -X 'POST' \
     }
     ```
   </Accordion>
-  <Accordion title="usageDriverId" description="Defines what resource is being measured" icon="ruler">
-    `usageDriverId` `string` `required`\
-    Example: `UDR00123`
+  <Accordion title="metrics" description="Defines a list of usage drivers along with how much and how many times each was consumed" icon="ruler">
+    Each item in the `usageDrivers` array represents a specific usage driver and includes:
+
+    - `id` `string` `required`\
+      Unique identifier of the usage driver.\
+      Example: `UDR00123`
+    - `quantity` `integer` `required`\
+      The amount of the resource that was consumed.\
+      Example: `10`
+    - `count` `integer` `required`\
+      The number of times the usage driver was triggered or used.\
+      Example: `3`
   </Accordion>
   <Accordion title="usageReferenceId" description="Used to group related usage events for aggregation" icon="link">
     `usageReferenceId` `string` `required`\
