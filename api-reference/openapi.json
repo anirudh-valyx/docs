@@ -1,185 +1,5049 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "OpenAPI Valyx Documentation",
-    "description": "Features provided by Valyx in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://app.valyx.com"
-    }
-  ],
-  "paths": {
-    "/billing/contract": {
-      "post": {
-        "description": "Creates a new billing contract",
-        "parameters": [
-          {
-            "name": "X-Fields",
-            "in": "header",
-            "description": "An optional fields mask",
-            "schema": {
-              "type": "string"
+    "openapi": "3.0.0",
+    "paths": {
+        "/billing/billingReport/email/preview/{billing_report_id}": {
+            "parameters": [
+                {
+                    "name": "billing_report_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BillingReportEmailPreviewResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get_billing_report_email_preview",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
             }
-          }
-        ],
-        "requestBody": {
-          "description": "Contract creation payload",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateContractAPIRequestModel"
-              }
-            }
-          }
         },
+        "/billing/billingReport/email/send": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BillingReportResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_billing_report_email_send",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BillingReportSendEmailRequestModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/billingReport/fetch/{billing_report_id}": {
+            "parameters": [
+                {
+                    "name": "billing_report_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BillingReportResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get_fetch_billing_report",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/billingReport/filter": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_fetch_billing_report_filter",
+                "parameters": [
+                    {
+                        "name": "billId",
+                        "in": "query",
+                        "description": "Bill ID associated with the billing report",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "contractNumber",
+                        "in": "query",
+                        "description": "Contract number associated with the billing report",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customerId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "billAmountStart",
+                        "in": "query",
+                        "description": "Min limit filter for the total bill amount",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "billAmountEnd",
+                        "in": "query",
+                        "description": "Max limit filter for the total bill amount",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "X-Valyx-Signature",
+                        "in": "header",
+                        "required": true,
+                        "description": "Auth key for fetching ledger entries",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/billingReport/generate/{contract_id}": {
+            "parameters": [
+                {
+                    "name": "contract_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BillingReport"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_generate_billing_report",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BillingReportGenerationRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/billingReport/unbilled/{contract_id}": {
+            "parameters": [
+                {
+                    "name": "contract_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BillingReport"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get_get_unbilled_amount",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/billingReport/verdictUpdate": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BulkVerdictUpdateResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_billing_report_verdict_update",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BulkVerdictUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_create_contract",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateContractAPIRequestModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract/cancel/{contract_id}": {
+            "parameters": [
+                {
+                    "name": "contract_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "post_cancel_contract",
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract/feeComponent": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_add_contract_fee_component",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/FeeComponentToContractRequestModel"
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract/feeComponent/delete": {
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "delete_delete_contract_fee_component",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/FeeComponentToContractRequestModel"
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract/feeComponent/includeUsage": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_add_contract_fee_component_include_usage",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FeeComponentIncludeUsageRequestModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract/feeComponent/ratecard": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_fetch_contract_rate_card_relations",
+                "parameters": [
+                    {
+                        "name": "contractId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "feeComponentId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "X-Valyx-Signature",
+                        "in": "header",
+                        "required": true,
+                        "description": "Auth key for fetching ledger entries",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract/feeComponent/ratecard/{contract_id}": {
+            "parameters": [
+                {
+                    "name": "contract_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_contract_rate_card_relations",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContractRateCardBulkUpsertionRequestModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract/feeComponent/{contract_id}": {
+            "parameters": [
+                {
+                    "name": "contract_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_fetch_contract_fee_components",
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract/fetch/{contract_id}": {
+            "parameters": [
+                {
+                    "name": "contract_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get_fetch_contract",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract/filter": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_fetch_filtered_contracts",
+                "parameters": [
+                    {
+                        "name": "customerId",
+                        "in": "query",
+                        "description": "Customer ID of the customer",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "contractNumber",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "contractDurationValue",
+                        "in": "query",
+                        "description": "Value of the contract duration (if contract duration is 3 years, value will be 3)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "contractDurationUnit",
+                        "in": "query",
+                        "description": "Unit of the contract duration (if contract duration is 3 years, unit will be YEAR)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "billingFrequencyValue",
+                        "in": "query",
+                        "description": "Value of the billing frequency (if billing frequency is 2 months, value will be 2)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "billingFrequencyUnit",
+                        "in": "query",
+                        "description": "Unit of the billing frequency (if billing frequency is 2 months, unit will be MONTH)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nextBillingDateStart",
+                        "in": "query",
+                        "description": "Start date of the next billing date filter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nextBillingDateEnd",
+                        "in": "query",
+                        "description": "End date of the next billing date filter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ACTIVE",
+                                "DRAFT",
+                                "CANCELLED",
+                                "EXPIRED"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "X-Valyx-Signature",
+                        "in": "header",
+                        "required": true,
+                        "description": "Auth key for fetching ledger entries",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/contract/update/{contract_id}": {
+            "parameters": [
+                {
+                    "name": "contract_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateContractAPIRequestModelResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_update_contract",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateContractAPIRequestModel_Request"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/feeComponent": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FeeComponentResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_create_fee_component",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateFeeComponentAPIRequestModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/feeComponent/delete/{fee_component_id}": {
+            "parameters": [
+                {
+                    "name": "fee_component_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FeeComponentResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_delete_fee_component",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/feeComponent/driver": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FeeComponent"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_bulk_upsert_fee_component_driver_relation",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertBulkFeeComponentUsageDriverRelationshipQueryModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/feeComponent/driver/fetch/{fee_component_id}": {
+            "parameters": [
+                {
+                    "name": "fee_component_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/FeeComponentUsageDriverRelationship"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get_fetch_fee_component_driver_relations",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/feeComponent/filter": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_filter_fee_component",
+                "parameters": [
+                    {
+                        "name": "updatedDateFrom",
+                        "in": "query",
+                        "description": "Starting date for Fee Component Update",
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "updatedDateTo",
+                        "in": "query",
+                        "description": "Ending date for Fee Component Update",
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "sku",
+                        "in": "query",
+                        "description": "Fee Component SKU",
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of the fee component",
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "hsnCode",
+                        "in": "query",
+                        "description": "HSN or SAC Code",
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "lastModifiedBy",
+                        "in": "query",
+                        "description": "Last modified by",
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "X-Valyx-Signature",
+                        "in": "header",
+                        "required": true,
+                        "description": "Auth key for fetching ledger entries",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/feeComponent/update/{fee_component_id}": {
+            "parameters": [
+                {
+                    "name": "fee_component_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FeeComponentResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_update_fee_component",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateFeeComponentAPIRequestModel_Request"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/feeComponent/{fee_component_id}": {
+            "parameters": [
+                {
+                    "name": "fee_component_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FeeComponentResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get_fetch_fee_component",
+                "parameters": [
+                    {
+                        "name": "X-Valyx-Signature",
+                        "in": "header",
+                        "required": true,
+                        "description": "Auth key for fetching ledger entries",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/ratecard": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateCardResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_create_rate_card",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRateCardRequestModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/ratecard/delete/{ratecard_id}": {
+            "parameters": [
+                {
+                    "name": "ratecard_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarkRateCardDefaultRequestModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "delete_delete_rate_card",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/ratecard/feeComponent/fetch/{fee_component_id}": {
+            "parameters": [
+                {
+                    "name": "fee_component_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FetchRateCardsResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get_fetch_all_rate_card",
+                "parameters": [
+                    {
+                        "name": "contractId",
+                        "in": "query",
+                        "description": "If passed will return all the ratecards available for a contract",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "showEmptyCombinations",
+                        "in": "query",
+                        "description": "If false will return only the combinations of tags that have at least one ratecard",
+                        "schema": {
+                            "type": "string",
+                            "default": "false"
+                        }
+                    },
+                    {
+                        "name": "X-Valyx-Signature",
+                        "in": "header",
+                        "required": true,
+                        "description": "Auth key for fetching ledger entries",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/ratecard/markDefault": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateCardResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_mark_default_rate_card",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MarkRateCardDefaultRequestModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/ratecard/test": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TestRateCardResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_test_rate_card",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TestRateCardRequestModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/ratecard/update/{ratecard_id}": {
+            "parameters": [
+                {
+                    "name": "ratecard_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateCardResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_update_rate_card",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRateCardRequestModel_Request"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/ratecard/{rate_card_id}": {
+            "parameters": [
+                {
+                    "name": "rate_card_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateCard"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get_fetch_rate_card",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usage": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsageResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_add_usage",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUsageAPIRequestModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usage/delete/{event_id}": {
+            "parameters": [
+                {
+                    "name": "event_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsageResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "delete_delete_usage",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usage/fetch/{event_id}": {
+            "parameters": [
+                {
+                    "name": "event_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsageResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get_fetch_usage",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usage/filter": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_fetch_usage_filters",
+                "parameters": [
+                    {
+                        "name": "transactionDateFrom",
+                        "in": "query",
+                        "required": true,
+                        "description": "From date of filter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "transactionDateTo",
+                        "in": "query",
+                        "required": true,
+                        "description": "To date of filter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customerId",
+                        "in": "query",
+                        "description": "Customer ID of the customer",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "contractNumber",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "contractId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usageReferenceId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "feeComponentName",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "feeComponentId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "groupId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "groupUsageId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "X-Valyx-Signature",
+                        "in": "header",
+                        "required": true,
+                        "description": "Auth key for fetching ledger entries",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usage/grouped/feeComponent/filter": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_fetch_grouped_usage_fc_wise_filters",
+                "parameters": [
+                    {
+                        "name": "transactionDateFrom",
+                        "in": "query",
+                        "required": true,
+                        "description": "From date of filter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "transactionDateTo",
+                        "in": "query",
+                        "required": true,
+                        "description": "To date of filter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customerId",
+                        "in": "query",
+                        "description": "Customer ID of the customer",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "contractNumber",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "contractId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usageReferenceId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "feeComponentName",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "feeComponentId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "groupId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "groupUsageId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "X-Valyx-Signature",
+                        "in": "header",
+                        "required": true,
+                        "description": "Auth key for fetching ledger entries",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usage/grouped/filter": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "operationId": "get_fetch_grouped_usage_filters",
+                "parameters": [
+                    {
+                        "name": "transactionDateFrom",
+                        "in": "query",
+                        "required": true,
+                        "description": "From date of filter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "transactionDateTo",
+                        "in": "query",
+                        "required": true,
+                        "description": "To date of filter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customerId",
+                        "in": "query",
+                        "description": "Customer ID of the customer",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "contractNumber",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "contractId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "usageReferenceId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "feeComponentName",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "feeComponentId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "groupId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "groupUsageId",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "X-Valyx-Signature",
+                        "in": "header",
+                        "required": true,
+                        "description": "Auth key for fetching ledger entries",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usage/update/{usage_id}": {
+            "parameters": [
+                {
+                    "name": "usage_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsageResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_update_usage",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUsageRequestModel_Request"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usageDriver": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsageDriverResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_add_usage_driver",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUsageDriverQueryModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usageDriver/delete/{usage_driver_id}": {
+            "parameters": [
+                {
+                    "name": "usage_driver_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsageDriverResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "delete_delete_usage_driver",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usageDriver/filter": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get_filter_usage_driver",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of the usage driver",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Description of the usage driver",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "unit",
+                        "in": "query",
+                        "description": "Unit of the usage driver",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "X-Valyx-Signature",
+                        "in": "header",
+                        "required": true,
+                        "description": "Auth key for fetching ledger entries",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "tags": [
+                    "billing"
+                ]
+            }
+        },
+        "/billing/usageDriver/update/{usage_driver_id}": {
+            "parameters": [
+                {
+                    "name": "usage_driver_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsageDriverResponseModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "post_update_usage_driver",
+                "parameters": [
+                    {
+                        "name": "X-Fields",
+                        "in": "header",
+                        "description": "An optional fields mask",
+                        "schema": {
+                            "type": "string",
+                            "format": "mask"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUsageDriverQueryModel_Request"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "billing"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "API",
+        "version": "1.0"
+    },
+    "tags": [
+        {
+            "name": "billing",
+            "description": "External Billing APIs"
+        }
+    ],
+    "servers": [
+        {
+            "url": "/"
+        }
+    ],
+    "components": {
         "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ContractResponseModel"
-                }
-              }
+            "ParseError": {
+                "description": "When a mask can't be parsed"
+            },
+            "MaskError": {
+                "description": "When any error occurs on mask"
             }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
         },
-        "tags": ["billing"]
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "CreateContractAPIRequestModel": {
-        "type": "object",
-        "required": [
-          "company_id",
-          "created_by",
-          "customer_id",
-          "start_date",
-          "end_date",
-          "billing_cycle"
-        ],
-        "properties": {
-          "company_id": {
-            "type": "string",
-            "description": "The unique identifier of the company associated with this contract",
-            "example": "company_12345"
-          },
-          "created_by": {
-            "type": "string",
-            "description": "The user ID of the person who created the contract",
-            "example": "user_98765"
-          },
-          "customer_id": {
-            "type": "string",
-            "description": "The unique identifier of the customer for whom this contract is created",
-            "example": "cust_45678"
-          },
-          "contract_id": {
-            "type": "string",
-            "description": "A unique identifier for the contract. If not provided, it will be auto-generated",
-            "example": "contract_001"
-          },
-          "start_date": {
-            "type": "string",
-            "format": "date",
-            "description": "The contract start date in YYYY-MM-DD format",
-            "example": "2025-01-01"
-          },
-          "end_date": {
-            "type": "string",
-            "format": "date",
-            "description": "The contract end date in YYYY-MM-DD format",
-            "example": "2026-01-01"
-          },
-          "billing_cycle": {
-            "type": "string",
-            "enum": ["monthly", "quarterly", "yearly"],
-            "description": "The billing cycle for this contract",
-            "example": "monthly"
-          },
-          "usage_cycle": {
-            "type": "string",
-            "enum": ["monthly", "quarterly", "yearly"],
-            "description": "The usage cycle for metered billing",
-            "example": "monthly"
-          },
-          "currency": {
-            "type": "string",
-            "description": "Currency code for billing amounts (ISO 4217 format)",
-            "example": "USD"
-          },
-          "terms": {
-            "type": "string",
-            "description": "Optional text describing the contractual terms",
-            "example": "Net 30 payment terms apply."
-          },
-          "metadata": {
-            "type": "object",
-            "additionalProperties": true,
-            "description": "Optional metadata for storing extra key-value information",
-            "example": {
-              "region": "US-East",
-              "plan": "Enterprise"
+        "requestBodies": {
+            "FeeComponentToContractRequestModel": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/FeeComponentToContractRequestModel"
+                        }
+                    }
+                },
+                "required": true
             }
-          }
-        }
-      },
-      "ContractResponseModel": {
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "string",
-            "nullable": true
-          },
-          "message": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              }
+        },
+        "schemas": {
+            "CreateUsageDriverQueryModel": {
+                "required": [
+                    "description",
+                    "name",
+                    "unit"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "description"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "unit"
+                    },
+                    "productId": {
+                        "type": "string",
+                        "description": "productId"
+                    }
+                },
+                "type": "object"
+            },
+            "UsageDriverResponseModel": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UsageDriverResponseData"
+                    }
+                },
+                "type": "object"
+            },
+            "UsageDriverResponseData": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUsageDriverQueryModel_Request": {
+                "properties": {
+                    "updates": {
+                        "$ref": "#/components/schemas/UpdateUsageDriverQueryModel_FieldsUpdateModel"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUsageDriverQueryModel_FieldsUpdateModel": {
+                "properties": {
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "Fields to update"
+                        }
+                    },
+                    "values": {
+                        "$ref": "#/components/schemas/UpdateUsageDriverQueryModel"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUsageDriverQueryModel": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "description"
+                    },
+                    "productId": {
+                        "type": "string",
+                        "description": "productId"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "unit"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedResponse": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/PaginatedResponseData"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedResponseData": {
+                "required": [
+                    "hasNext",
+                    "hasPrev",
+                    "pageNumber",
+                    "pageSize",
+                    "totalDocs",
+                    "totalPages"
+                ],
+                "properties": {
+                    "totalDocs": {
+                        "type": "integer",
+                        "description": "totalDocs"
+                    },
+                    "docs": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "hasNext": {
+                        "type": "boolean",
+                        "description": "hasNext"
+                    },
+                    "hasPrev": {
+                        "type": "boolean",
+                        "description": "hasPrev"
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "description": "pageNumber"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "description": "pageSize"
+                    },
+                    "totalPages": {
+                        "type": "integer",
+                        "description": "totalPages"
+                    },
+                    "prevPageNumber": {
+                        "type": "integer",
+                        "description": "prevPageNumber"
+                    },
+                    "nextPageNumber": {
+                        "type": "integer",
+                        "description": "nextPageNumber"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateFeeComponentAPIRequestModel": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "name"
+                    },
+                    "taxRate": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CreateFeeComponentAPIRequestModeltaxRate"
+                        }
+                    },
+                    "hsnOrSacCode": {
+                        "type": "string",
+                        "description": "hsnOrSacCode"
+                    },
+                    "sku": {
+                        "type": "string",
+                        "description": "sku"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "unit"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "description"
+                    },
+                    "driverUpsertRequest": {
+                        "$ref": "#/components/schemas/CreateFeeComponentAPIRequestModeldriverUpsertRequest"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateFeeComponentAPIRequestModeltaxRate": {
+                "required": [
+                    "name",
+                    "value"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "name"
+                    },
+                    "value": {
+                        "type": "number",
+                        "description": "value"
+                    },
+                    "isActive": {
+                        "type": "boolean",
+                        "description": "isActive",
+                        "default": true
+                    },
+                    "taxCategory": {
+                        "type": "string",
+                        "example": "GST",
+                        "enum": [
+                            "GST",
+                            "CESS",
+                            "SERVICE",
+                            "TDS",
+                            "OTHER"
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "CreateFeeComponentAPIRequestModeldriverUpsertRequest": {
+                "properties": {
+                    "upsertRequests": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CreateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "CreateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests": {
+                "required": [
+                    "usageDriverId",
+                    "weight"
+                ],
+                "properties": {
+                    "usageDriverId": {
+                        "type": "string",
+                        "description": "usageDriverId"
+                    },
+                    "weight": {
+                        "type": "number",
+                        "description": "weight"
+                    }
+                },
+                "type": "object"
+            },
+            "FeeComponentResponseModel": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/FeeComponentResponseModelData"
+                    }
+                },
+                "type": "object"
+            },
+            "FeeComponentResponseModelData": {
+                "properties": {
+                    "feeComponent": {
+                        "$ref": "#/components/schemas/FeeComponentResponseModelDatafeeComponent"
+                    },
+                    "usageDrivers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FeeComponentResponseModelDatausageDrivers"
+                        }
+                    },
+                    "productName": {
+                        "type": "string",
+                        "description": "productName"
+                    }
+                },
+                "type": "object"
+            },
+            "FeeComponentResponseModelDatafeeComponent": {
+                "properties": {
+                    "id": {
+                        "type": "object"
+                    },
+                    "sku": {
+                        "type": "object"
+                    },
+                    "productId": {
+                        "type": "object"
+                    },
+                    "name": {
+                        "type": "object"
+                    },
+                    "description": {
+                        "type": "object"
+                    },
+                    "hsnOrSacCode": {
+                        "type": "object"
+                    },
+                    "taxRate": {
+                        "type": "object"
+                    },
+                    "status": {
+                        "type": "object"
+                    },
+                    "unit": {
+                        "type": "object"
+                    },
+                    "companyId": {
+                        "type": "object"
+                    },
+                    "createdBy": {
+                        "type": "object"
+                    },
+                    "updatedBy": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "FeeComponentResponseModelDatausageDrivers": {
+                "properties": {
+                    "driverId": {
+                        "type": "string",
+                        "description": "driverId"
+                    },
+                    "driverName": {
+                        "type": "string",
+                        "description": "driverName"
+                    },
+                    "weight": {
+                        "type": "number",
+                        "description": "weight"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "unit"
+                    },
+                    "productId": {
+                        "type": "string",
+                        "description": "productId"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateFeeComponentAPIRequestModel_Request": {
+                "properties": {
+                    "updates": {
+                        "$ref": "#/components/schemas/UpdateFeeComponentAPIRequestModel_FieldsUpdateModel"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateFeeComponentAPIRequestModel_FieldsUpdateModel": {
+                "properties": {
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "Fields to update"
+                        }
+                    },
+                    "values": {
+                        "$ref": "#/components/schemas/UpdateFeeComponentAPIRequestModel"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateFeeComponentAPIRequestModel": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "name"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "unit"
+                    },
+                    "sku": {
+                        "type": "string",
+                        "description": "sku"
+                    },
+                    "hsnOrSacCode": {
+                        "type": "string",
+                        "description": "hsnOrSacCode"
+                    },
+                    "taxRate": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpdateFeeComponentAPIRequestModeltaxRate"
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "description"
+                    },
+                    "driverUpsertRequest": {
+                        "$ref": "#/components/schemas/UpdateFeeComponentAPIRequestModeldriverUpsertRequest"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateFeeComponentAPIRequestModeltaxRate": {
+                "required": [
+                    "name",
+                    "value"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "name"
+                    },
+                    "value": {
+                        "type": "number",
+                        "description": "value"
+                    },
+                    "isActive": {
+                        "type": "boolean",
+                        "description": "isActive",
+                        "default": true
+                    },
+                    "taxCategory": {
+                        "type": "string",
+                        "example": "GST",
+                        "enum": [
+                            "GST",
+                            "CESS",
+                            "SERVICE",
+                            "TDS",
+                            "OTHER"
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateFeeComponentAPIRequestModeldriverUpsertRequest": {
+                "properties": {
+                    "upsertRequests": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpdateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests": {
+                "required": [
+                    "usageDriverId",
+                    "weight"
+                ],
+                "properties": {
+                    "usageDriverId": {
+                        "type": "string",
+                        "description": "usageDriverId"
+                    },
+                    "weight": {
+                        "type": "number",
+                        "description": "weight"
+                    }
+                },
+                "type": "object"
+            },
+            "UpsertBulkFeeComponentUsageDriverRelationshipQueryModel": {
+                "properties": {
+                    "upsertRequests": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpsertBulkFeeComponentUsageDriverRelationshipQueryModelupsertRequests"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UpsertBulkFeeComponentUsageDriverRelationshipQueryModelupsertRequests": {
+                "required": [
+                    "usageDriverId",
+                    "weight"
+                ],
+                "properties": {
+                    "usageDriverId": {
+                        "type": "string",
+                        "description": "usageDriverId"
+                    },
+                    "weight": {
+                        "type": "number",
+                        "description": "weight"
+                    }
+                },
+                "type": "object"
+            },
+            "FeeComponent": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/FeeComponentData"
+                    }
+                },
+                "type": "object"
+            },
+            "FeeComponentData": {
+                "properties": {
+                    "id": {
+                        "type": "object"
+                    },
+                    "sku": {
+                        "type": "object"
+                    },
+                    "productId": {
+                        "type": "object"
+                    },
+                    "name": {
+                        "type": "object"
+                    },
+                    "description": {
+                        "type": "object"
+                    },
+                    "hsnOrSacCode": {
+                        "type": "object"
+                    },
+                    "taxRate": {
+                        "type": "object"
+                    },
+                    "status": {
+                        "type": "object"
+                    },
+                    "unit": {
+                        "type": "object"
+                    },
+                    "companyId": {
+                        "type": "object"
+                    },
+                    "createdBy": {
+                        "type": "object"
+                    },
+                    "updatedBy": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "FeeComponentUsageDriverRelationship": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/FeeComponentUsageDriverRelationshipData"
+                    }
+                },
+                "type": "object"
+            },
+            "FeeComponentUsageDriverRelationshipData": {
+                "properties": {
+                    "id": {
+                        "type": "object"
+                    },
+                    "companyId": {
+                        "type": "object"
+                    },
+                    "feeComponentId": {
+                        "type": "object"
+                    },
+                    "usageDriverId": {
+                        "type": "object"
+                    },
+                    "weight": {
+                        "type": "object"
+                    },
+                    "createdBy": {
+                        "type": "object"
+                    },
+                    "status": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateRateCardRequestModel": {
+                "required": [
+                    "feeComponentId",
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "name"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/CreateRateCardRequestModeldescription"
+                    },
+                    "feeComponentId": {
+                        "type": "string",
+                        "description": "feeComponentId"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "afn",
+                        "enum": [
+                            "afn",
+                            "eur",
+                            "all",
+                            "dzd",
+                            "usd",
+                            "aoa",
+                            "xcd",
+                            "ars",
+                            "amd",
+                            "awg",
+                            "aud",
+                            "azn",
+                            "bsd",
+                            "bhd",
+                            "bdt",
+                            "bbd",
+                            "byn",
+                            "bzd",
+                            "xof",
+                            "bmd",
+                            "inr",
+                            "btn",
+                            "bob",
+                            "bov",
+                            "bam",
+                            "bwp",
+                            "nok",
+                            "brl",
+                            "bnd",
+                            "bgn",
+                            "bif",
+                            "cve",
+                            "khr",
+                            "xaf",
+                            "cad",
+                            "kyd",
+                            "clp",
+                            "clf",
+                            "cny",
+                            "cop",
+                            "cou",
+                            "kmf",
+                            "cdf",
+                            "nzd",
+                            "crc",
+                            "hrk",
+                            "cup",
+                            "cuc",
+                            "ang",
+                            "czk",
+                            "dkk",
+                            "djf",
+                            "dop",
+                            "egp",
+                            "svc",
+                            "ern",
+                            "szl",
+                            "etb",
+                            "fkp",
+                            "fjd",
+                            "xpf",
+                            "gmd",
+                            "gel",
+                            "ghs",
+                            "gip",
+                            "gtq",
+                            "gbp",
+                            "gnf",
+                            "gyd",
+                            "htg",
+                            "hnl",
+                            "hkd",
+                            "huf",
+                            "isk",
+                            "idr",
+                            "xdr",
+                            "irr",
+                            "iqd",
+                            "ils",
+                            "jmd",
+                            "jpy",
+                            "jod",
+                            "kzt",
+                            "kes",
+                            "kpw",
+                            "krw",
+                            "kwd",
+                            "kgs",
+                            "lak",
+                            "lbp",
+                            "lsl",
+                            "zar",
+                            "lrd",
+                            "lyd",
+                            "chf",
+                            "mop",
+                            "mkd",
+                            "mga",
+                            "mwk",
+                            "myr",
+                            "mvr",
+                            "mru",
+                            "mur",
+                            "xua",
+                            "mxn",
+                            "mxv",
+                            "mdl",
+                            "mnt",
+                            "mad",
+                            "mzn",
+                            "mmk",
+                            "nad",
+                            "npr",
+                            "nio",
+                            "ngn",
+                            "omr",
+                            "pkr",
+                            "pab",
+                            "pgk",
+                            "pyg",
+                            "pen",
+                            "php",
+                            "pln",
+                            "qar",
+                            "ron",
+                            "rub",
+                            "rwf",
+                            "shp",
+                            "wst",
+                            "stn",
+                            "sar",
+                            "rsd",
+                            "scr",
+                            "sll",
+                            "sle",
+                            "sgd",
+                            "xsu",
+                            "sbd",
+                            "sos",
+                            "ssp",
+                            "lkr",
+                            "sdg",
+                            "srd",
+                            "sek",
+                            "che",
+                            "chw",
+                            "syp",
+                            "twd",
+                            "tjs",
+                            "tzs",
+                            "thb",
+                            "top",
+                            "ttd",
+                            "tnd",
+                            "try",
+                            "tmt",
+                            "ugx",
+                            "uah",
+                            "aed",
+                            "usn",
+                            "uyu",
+                            "uyi",
+                            "uyw",
+                            "uzs",
+                            "vuv",
+                            "ves",
+                            "ved",
+                            "vnd",
+                            "yer",
+                            "zmw",
+                            "zwl",
+                            "xba",
+                            "xbb",
+                            "xbc",
+                            "xbd",
+                            "xts",
+                            "xxx",
+                            "xau",
+                            "xpd",
+                            "xpt",
+                            "xag"
+                        ]
+                    },
+                    "tags": {
+                        "type": "object"
+                    },
+                    "ratecardDescription": {
+                        "type": "string",
+                        "description": "ratecardDescription"
+                    },
+                    "contractId": {
+                        "type": "string",
+                        "description": "contractId"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateRateCardRequestModeldescription": {
+                "properties": {
+                    "billingScheme": {
+                        "type": "string",
+                        "example": "PER_UNIT",
+                        "enum": [
+                            "PER_UNIT",
+                            "VOLUME",
+                            "GRADUATED",
+                            "FIXED_RATE",
+                            "MINMAX"
+                        ]
+                    },
+                    "tiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CreateRateCardRequestModeldescriptiontiers"
+                        }
+                    },
+                    "isProrated": {
+                        "type": "boolean",
+                        "description": "isProrated",
+                        "default": false
+                    }
+                },
+                "type": "object"
+            },
+            "CreateRateCardRequestModeldescriptiontiers": {
+                "required": [
+                    "name",
+                    "upTo"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "name"
+                    },
+                    "upTo": {
+                        "type": "number",
+                        "description": "upTo"
+                    },
+                    "unitPrice": {
+                        "type": "number",
+                        "description": "unitPrice",
+                        "default": 0
+                    },
+                    "flatPrice": {
+                        "type": "number",
+                        "description": "flatPrice",
+                        "default": 0
+                    },
+                    "isPercentage": {
+                        "type": "boolean",
+                        "description": "isPercentage",
+                        "default": false
+                    },
+                    "repeatTier": {
+                        "type": "boolean",
+                        "description": "repeatTier",
+                        "default": false
+                    }
+                },
+                "type": "object"
+            },
+            "RateCardResponseModel": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/RateCardResponseData"
+                    }
+                },
+                "type": "object"
+            },
+            "RateCardResponseData": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateRateCardRequestModel_Request": {
+                "properties": {
+                    "updates": {
+                        "$ref": "#/components/schemas/UpdateRateCardRequestModel_FieldsUpdateModel"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateRateCardRequestModel_FieldsUpdateModel": {
+                "properties": {
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "Fields to update"
+                        }
+                    },
+                    "values": {
+                        "$ref": "#/components/schemas/UpdateRateCardRequestModel"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateRateCardRequestModel": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "name"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/UpdateRateCardRequestModeldescription"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "afn",
+                        "enum": [
+                            "afn",
+                            "eur",
+                            "all",
+                            "dzd",
+                            "usd",
+                            "aoa",
+                            "xcd",
+                            "ars",
+                            "amd",
+                            "awg",
+                            "aud",
+                            "azn",
+                            "bsd",
+                            "bhd",
+                            "bdt",
+                            "bbd",
+                            "byn",
+                            "bzd",
+                            "xof",
+                            "bmd",
+                            "inr",
+                            "btn",
+                            "bob",
+                            "bov",
+                            "bam",
+                            "bwp",
+                            "nok",
+                            "brl",
+                            "bnd",
+                            "bgn",
+                            "bif",
+                            "cve",
+                            "khr",
+                            "xaf",
+                            "cad",
+                            "kyd",
+                            "clp",
+                            "clf",
+                            "cny",
+                            "cop",
+                            "cou",
+                            "kmf",
+                            "cdf",
+                            "nzd",
+                            "crc",
+                            "hrk",
+                            "cup",
+                            "cuc",
+                            "ang",
+                            "czk",
+                            "dkk",
+                            "djf",
+                            "dop",
+                            "egp",
+                            "svc",
+                            "ern",
+                            "szl",
+                            "etb",
+                            "fkp",
+                            "fjd",
+                            "xpf",
+                            "gmd",
+                            "gel",
+                            "ghs",
+                            "gip",
+                            "gtq",
+                            "gbp",
+                            "gnf",
+                            "gyd",
+                            "htg",
+                            "hnl",
+                            "hkd",
+                            "huf",
+                            "isk",
+                            "idr",
+                            "xdr",
+                            "irr",
+                            "iqd",
+                            "ils",
+                            "jmd",
+                            "jpy",
+                            "jod",
+                            "kzt",
+                            "kes",
+                            "kpw",
+                            "krw",
+                            "kwd",
+                            "kgs",
+                            "lak",
+                            "lbp",
+                            "lsl",
+                            "zar",
+                            "lrd",
+                            "lyd",
+                            "chf",
+                            "mop",
+                            "mkd",
+                            "mga",
+                            "mwk",
+                            "myr",
+                            "mvr",
+                            "mru",
+                            "mur",
+                            "xua",
+                            "mxn",
+                            "mxv",
+                            "mdl",
+                            "mnt",
+                            "mad",
+                            "mzn",
+                            "mmk",
+                            "nad",
+                            "npr",
+                            "nio",
+                            "ngn",
+                            "omr",
+                            "pkr",
+                            "pab",
+                            "pgk",
+                            "pyg",
+                            "pen",
+                            "php",
+                            "pln",
+                            "qar",
+                            "ron",
+                            "rub",
+                            "rwf",
+                            "shp",
+                            "wst",
+                            "stn",
+                            "sar",
+                            "rsd",
+                            "scr",
+                            "sll",
+                            "sle",
+                            "sgd",
+                            "xsu",
+                            "sbd",
+                            "sos",
+                            "ssp",
+                            "lkr",
+                            "sdg",
+                            "srd",
+                            "sek",
+                            "che",
+                            "chw",
+                            "syp",
+                            "twd",
+                            "tjs",
+                            "tzs",
+                            "thb",
+                            "top",
+                            "ttd",
+                            "tnd",
+                            "try",
+                            "tmt",
+                            "ugx",
+                            "uah",
+                            "aed",
+                            "usn",
+                            "uyu",
+                            "uyi",
+                            "uyw",
+                            "uzs",
+                            "vuv",
+                            "ves",
+                            "ved",
+                            "vnd",
+                            "yer",
+                            "zmw",
+                            "zwl",
+                            "xba",
+                            "xbb",
+                            "xbc",
+                            "xbd",
+                            "xts",
+                            "xxx",
+                            "xau",
+                            "xpd",
+                            "xpt",
+                            "xag"
+                        ]
+                    },
+                    "ratecardDescription": {
+                        "type": "string",
+                        "description": "ratecardDescription"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateRateCardRequestModeldescription": {
+                "properties": {
+                    "billingScheme": {
+                        "type": "string",
+                        "example": "PER_UNIT",
+                        "enum": [
+                            "PER_UNIT",
+                            "VOLUME",
+                            "GRADUATED",
+                            "FIXED_RATE",
+                            "MINMAX"
+                        ]
+                    },
+                    "tiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpdateRateCardRequestModeldescriptiontiers"
+                        }
+                    },
+                    "isProrated": {
+                        "type": "boolean",
+                        "description": "isProrated",
+                        "default": false
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateRateCardRequestModeldescriptiontiers": {
+                "required": [
+                    "name",
+                    "upTo"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "name"
+                    },
+                    "upTo": {
+                        "type": "number",
+                        "description": "upTo"
+                    },
+                    "unitPrice": {
+                        "type": "number",
+                        "description": "unitPrice",
+                        "default": 0
+                    },
+                    "flatPrice": {
+                        "type": "number",
+                        "description": "flatPrice",
+                        "default": 0
+                    },
+                    "isPercentage": {
+                        "type": "boolean",
+                        "description": "isPercentage",
+                        "default": false
+                    },
+                    "repeatTier": {
+                        "type": "boolean",
+                        "description": "repeatTier",
+                        "default": false
+                    }
+                },
+                "type": "object"
+            },
+            "RateCard": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/RateCardData"
+                    }
+                },
+                "type": "object"
+            },
+            "RateCardData": {
+                "properties": {
+                    "id": {
+                        "type": "object"
+                    },
+                    "name": {
+                        "type": "object"
+                    },
+                    "ratecardDescription": {
+                        "type": "object"
+                    },
+                    "feeComponentId": {
+                        "type": "object"
+                    },
+                    "description": {
+                        "type": "object"
+                    },
+                    "ratecardDetail": {
+                        "type": "object"
+                    },
+                    "tags": {
+                        "type": "object"
+                    },
+                    "companyId": {
+                        "type": "object"
+                    },
+                    "contractId": {
+                        "type": "object"
+                    },
+                    "currency": {
+                        "type": "object"
+                    },
+                    "createdBy": {
+                        "type": "object"
+                    },
+                    "isDefault": {
+                        "type": "object"
+                    },
+                    "status": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "FetchRateCardsResponseModel": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/FetchRateCardsResponseModelData"
+                    }
+                },
+                "type": "object"
+            },
+            "FetchRateCardsResponseModelData": {
+                "properties": {
+                    "tags": {
+                        "type": "object"
+                    },
+                    "ratecards": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FetchRateCardsResponseModelDataratecards"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "FetchRateCardsResponseModelDataratecards": {
+                "properties": {
+                    "id": {
+                        "type": "object"
+                    },
+                    "name": {
+                        "type": "object"
+                    },
+                    "ratecardDescription": {
+                        "type": "object"
+                    },
+                    "feeComponentId": {
+                        "type": "object"
+                    },
+                    "description": {
+                        "type": "object"
+                    },
+                    "ratecardDetail": {
+                        "type": "object"
+                    },
+                    "tags": {
+                        "type": "object"
+                    },
+                    "companyId": {
+                        "type": "object"
+                    },
+                    "contractId": {
+                        "type": "object"
+                    },
+                    "currency": {
+                        "type": "object"
+                    },
+                    "createdBy": {
+                        "type": "object"
+                    },
+                    "isDefault": {
+                        "type": "object"
+                    },
+                    "status": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "MarkRateCardDefaultRequestModel": {
+                "required": [
+                    "feeComponentId",
+                    "ratecardId"
+                ],
+                "properties": {
+                    "feeComponentId": {
+                        "type": "string",
+                        "description": "feeComponentId"
+                    },
+                    "ratecardId": {
+                        "type": "string",
+                        "description": "ratecardId"
+                    }
+                },
+                "type": "object"
+            },
+            "TestRateCardRequestModel": {
+                "required": [
+                    "feeComponentId",
+                    "totalUsage"
+                ],
+                "properties": {
+                    "tags": {
+                        "type": "object"
+                    },
+                    "feeComponentId": {
+                        "type": "string",
+                        "description": "feeComponentId"
+                    },
+                    "totalUsage": {
+                        "type": "number",
+                        "description": "totalUsage"
+                    },
+                    "contractId": {
+                        "type": "string",
+                        "description": "contractId"
+                    }
+                },
+                "type": "object"
+            },
+            "TestRateCardResponseModel": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/TestRateCardResponseModelData"
+                    }
+                },
+                "type": "object"
+            },
+            "TestRateCardResponseModelData": {
+                "required": [
+                    "totalPrice"
+                ],
+                "properties": {
+                    "ratecard": {
+                        "$ref": "#/components/schemas/TestRateCardResponseModelDataratecard"
+                    },
+                    "totalPrice": {
+                        "type": "number",
+                        "description": "totalPrice"
+                    }
+                },
+                "type": "object"
+            },
+            "TestRateCardResponseModelDataratecard": {
+                "properties": {
+                    "id": {
+                        "type": "object"
+                    },
+                    "name": {
+                        "type": "object"
+                    },
+                    "ratecardDescription": {
+                        "type": "object"
+                    },
+                    "feeComponentId": {
+                        "type": "object"
+                    },
+                    "description": {
+                        "type": "object"
+                    },
+                    "ratecardDetail": {
+                        "type": "object"
+                    },
+                    "tags": {
+                        "type": "object"
+                    },
+                    "companyId": {
+                        "type": "object"
+                    },
+                    "contractId": {
+                        "type": "object"
+                    },
+                    "currency": {
+                        "type": "object"
+                    },
+                    "createdBy": {
+                        "type": "object"
+                    },
+                    "isDefault": {
+                        "type": "object"
+                    },
+                    "status": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModel": {
+                "required": [
+                    "contractNumber",
+                    "contractTitle",
+                    "customerId",
+                    "isPreusage"
+                ],
+                "properties": {
+                    "customerId": {
+                        "type": "string",
+                        "description": "customerId"
+                    },
+                    "contractNumber": {
+                        "type": "string",
+                        "description": "contractNumber"
+                    },
+                    "contractTitle": {
+                        "type": "string",
+                        "description": "contractTitle"
+                    },
+                    "contractPeriod": {
+                        "$ref": "#/components/schemas/CreateContractAPIRequestModelcontractPeriod"
+                    },
+                    "billingFrequency": {
+                        "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingFrequency"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "startDate"
+                    },
+                    "virtualStartDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "virtualStartDate"
+                    },
+                    "creditTermId": {
+                        "type": "string",
+                        "description": "creditTermId"
+                    },
+                    "poNumber": {
+                        "type": "string",
+                        "description": "poNumber"
+                    },
+                    "noteInvoice": {
+                        "type": "string",
+                        "description": "noteInvoice"
+                    },
+                    "terms": {
+                        "type": "string",
+                        "description": "terms"
+                    },
+                    "noteContract": {
+                        "type": "string",
+                        "description": "noteContract"
+                    },
+                    "billingDiscounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingDiscounts"
+                        }
+                    },
+                    "isPreusage": {
+                        "type": "boolean",
+                        "description": "isPreusage",
+                        "default": false
+                    },
+                    "billingTime": {
+                        "type": "string",
+                        "example": "BEGINNING_OF_PERIOD",
+                        "enum": [
+                            "BEGINNING_OF_PERIOD",
+                            "SUBSCRIPTION_DATE"
+                        ]
+                    },
+                    "billingReportLimit": {
+                        "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingReportLimit"
+                    },
+                    "contractLimit": {
+                        "$ref": "#/components/schemas/CreateContractAPIRequestModelcontractLimit"
+                    },
+                    "advanceConfig": {
+                        "$ref": "#/components/schemas/CreateContractAPIRequestModeladvanceConfig"
+                    },
+                    "autoRenew": {
+                        "type": "boolean",
+                        "description": "autoRenew",
+                        "default": false
+                    },
+                    "renewalPeriod": {
+                        "$ref": "#/components/schemas/CreateContractAPIRequestModelrenewalPeriod"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModelcontractPeriod": {
+                "required": [
+                    "value"
+                ],
+                "properties": {
+                    "unit": {
+                        "type": "string",
+                        "example": "DAY",
+                        "enum": [
+                            "DAY",
+                            "WEEK",
+                            "MONTH",
+                            "YEAR"
+                        ]
+                    },
+                    "value": {
+                        "type": "integer",
+                        "description": "value"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModelbillingFrequency": {
+                "required": [
+                    "value"
+                ],
+                "properties": {
+                    "unit": {
+                        "type": "string",
+                        "example": "DAY",
+                        "enum": [
+                            "DAY",
+                            "WEEK",
+                            "MONTH",
+                            "YEAR"
+                        ]
+                    },
+                    "value": {
+                        "type": "integer",
+                        "description": "value"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModelbillingDiscounts": {
+                "required": [
+                    "amount",
+                    "isPostTax",
+                    "isStackable",
+                    "isUsageBased",
+                    "percentage",
+                    "priority"
+                ],
+                "properties": {
+                    "amount": {
+                        "type": "number",
+                        "description": "amount",
+                        "default": 0
+                    },
+                    "percentage": {
+                        "type": "number",
+                        "description": "percentage",
+                        "default": 0
+                    },
+                    "isPostTax": {
+                        "type": "boolean",
+                        "description": "isPostTax",
+                        "default": false
+                    },
+                    "isUsageBased": {
+                        "type": "boolean",
+                        "description": "isUsageBased",
+                        "default": false
+                    },
+                    "tiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingDiscountstiers"
+                        }
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "description": "priority",
+                        "default": 1
+                    },
+                    "isStackable": {
+                        "type": "boolean",
+                        "description": "isStackable",
+                        "default": false
+                    },
+                    "duration": {
+                        "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingDiscountsduration"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModelbillingDiscountstiers": {
+                "required": [
+                    "amount",
+                    "isPostTax",
+                    "percentage",
+                    "upTo"
+                ],
+                "properties": {
+                    "amount": {
+                        "type": "number",
+                        "description": "amount",
+                        "default": 0
+                    },
+                    "percentage": {
+                        "type": "number",
+                        "description": "percentage",
+                        "default": 0
+                    },
+                    "isPostTax": {
+                        "type": "boolean",
+                        "description": "isPostTax",
+                        "default": false
+                    },
+                    "upTo": {
+                        "type": "number",
+                        "description": "upTo",
+                        "default": "Infinity"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModelbillingDiscountsduration": {
+                "required": [
+                    "endIndex",
+                    "startIndex"
+                ],
+                "properties": {
+                    "startIndex": {
+                        "type": "integer",
+                        "description": "startIndex"
+                    },
+                    "endIndex": {
+                        "type": "integer",
+                        "description": "endIndex"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModelbillingReportLimit": {
+                "required": [
+                    "isUsageBased"
+                ],
+                "properties": {
+                    "tiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingReportLimittiers"
+                        }
+                    },
+                    "isUsageBased": {
+                        "type": "boolean",
+                        "description": "isUsageBased",
+                        "default": false
+                    },
+                    "minValue": {
+                        "type": "number",
+                        "description": "minValue"
+                    },
+                    "maxValue": {
+                        "type": "number",
+                        "description": "maxValue"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModelbillingReportLimittiers": {
+                "required": [
+                    "upTo"
+                ],
+                "properties": {
+                    "minValue": {
+                        "type": "number",
+                        "description": "minValue"
+                    },
+                    "maxValue": {
+                        "type": "number",
+                        "description": "maxValue"
+                    },
+                    "upTo": {
+                        "type": "number",
+                        "description": "upTo",
+                        "default": "Infinity"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModelcontractLimit": {
+                "required": [
+                    "isUsageBased"
+                ],
+                "properties": {
+                    "tiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CreateContractAPIRequestModelcontractLimittiers"
+                        }
+                    },
+                    "isUsageBased": {
+                        "type": "boolean",
+                        "description": "isUsageBased",
+                        "default": false
+                    },
+                    "minValue": {
+                        "type": "number",
+                        "description": "minValue"
+                    },
+                    "maxValue": {
+                        "type": "number",
+                        "description": "maxValue"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModelcontractLimittiers": {
+                "required": [
+                    "upTo"
+                ],
+                "properties": {
+                    "minValue": {
+                        "type": "number",
+                        "description": "minValue"
+                    },
+                    "maxValue": {
+                        "type": "number",
+                        "description": "maxValue"
+                    },
+                    "upTo": {
+                        "type": "number",
+                        "description": "upTo",
+                        "default": "Infinity"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModeladvanceConfig": {
+                "properties": {
+                    "trueUpEnabled": {
+                        "type": "boolean",
+                        "description": "trueUpEnabled",
+                        "default": false
+                    },
+                    "trueDownEnabled": {
+                        "type": "boolean",
+                        "description": "trueDownEnabled",
+                        "default": false
+                    },
+                    "actualUsageOverride": {
+                        "type": "boolean",
+                        "description": "actualUsageOverride",
+                        "default": false
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "description": "fileName"
+                    },
+                    "attachmentId": {
+                        "type": "string",
+                        "description": "attachmentId"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateContractAPIRequestModelrenewalPeriod": {
+                "required": [
+                    "value"
+                ],
+                "properties": {
+                    "unit": {
+                        "type": "string",
+                        "example": "DAY",
+                        "enum": [
+                            "DAY",
+                            "WEEK",
+                            "MONTH",
+                            "YEAR"
+                        ]
+                    },
+                    "value": {
+                        "type": "integer",
+                        "description": "value"
+                    }
+                },
+                "type": "object"
+            },
+            "ContractResponseModel": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/ContractResponseData"
+                    }
+                },
+                "type": "object"
+            },
+            "ContractResponseData": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModel_Request": {
+                "properties": {
+                    "updates": {
+                        "$ref": "#/components/schemas/UpdateContractAPIRequestModel_FieldsUpdateModel"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModel_FieldsUpdateModel": {
+                "properties": {
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "Fields to update"
+                        }
+                    },
+                    "values": {
+                        "$ref": "#/components/schemas/UpdateContractAPIRequestModel"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModel": {
+                "properties": {
+                    "customerId": {
+                        "type": "string",
+                        "description": "customerId"
+                    },
+                    "contractNumber": {
+                        "type": "string",
+                        "description": "contractNumber"
+                    },
+                    "contractTitle": {
+                        "type": "string",
+                        "description": "contractTitle"
+                    },
+                    "contractPeriod": {
+                        "$ref": "#/components/schemas/UpdateContractAPIRequestModelcontractPeriod"
+                    },
+                    "renewalPeriod": {
+                        "$ref": "#/components/schemas/UpdateContractAPIRequestModelrenewalPeriod"
+                    },
+                    "billingFrequency": {
+                        "$ref": "#/components/schemas/UpdateContractAPIRequestModelbillingFrequency"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "startDate"
+                    },
+                    "virtualStartDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "virtualStartDate"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "endDate"
+                    },
+                    "nextBillingDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "nextBillingDate"
+                    },
+                    "creditTermId": {
+                        "type": "string",
+                        "description": "creditTermId"
+                    },
+                    "poNumber": {
+                        "type": "string",
+                        "description": "poNumber"
+                    },
+                    "noteInvoice": {
+                        "type": "string",
+                        "description": "noteInvoice"
+                    },
+                    "terms": {
+                        "type": "string",
+                        "description": "terms"
+                    },
+                    "noteContract": {
+                        "type": "string",
+                        "description": "noteContract"
+                    },
+                    "billingDiscounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpdateContractAPIRequestModelbillingDiscounts"
+                        }
+                    },
+                    "isPreusage": {
+                        "type": "boolean",
+                        "description": "isPreusage"
+                    },
+                    "billingTime": {
+                        "type": "string",
+                        "example": "BEGINNING_OF_PERIOD",
+                        "enum": [
+                            "BEGINNING_OF_PERIOD",
+                            "SUBSCRIPTION_DATE"
+                        ]
+                    },
+                    "billingReportLimit": {
+                        "$ref": "#/components/schemas/UpdateContractAPIRequestModelbillingReportLimit"
+                    },
+                    "contractLimit": {
+                        "$ref": "#/components/schemas/UpdateContractAPIRequestModelcontractLimit"
+                    },
+                    "autoRenew": {
+                        "type": "boolean",
+                        "description": "autoRenew"
+                    },
+                    "advanceConfig": {
+                        "$ref": "#/components/schemas/UpdateContractAPIRequestModeladvanceConfig"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelcontractPeriod": {
+                "required": [
+                    "value"
+                ],
+                "properties": {
+                    "unit": {
+                        "type": "string",
+                        "example": "DAY",
+                        "enum": [
+                            "DAY",
+                            "WEEK",
+                            "MONTH",
+                            "YEAR"
+                        ]
+                    },
+                    "value": {
+                        "type": "integer",
+                        "description": "value"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelrenewalPeriod": {
+                "required": [
+                    "value"
+                ],
+                "properties": {
+                    "unit": {
+                        "type": "string",
+                        "example": "DAY",
+                        "enum": [
+                            "DAY",
+                            "WEEK",
+                            "MONTH",
+                            "YEAR"
+                        ]
+                    },
+                    "value": {
+                        "type": "integer",
+                        "description": "value"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelbillingFrequency": {
+                "required": [
+                    "value"
+                ],
+                "properties": {
+                    "unit": {
+                        "type": "string",
+                        "example": "DAY",
+                        "enum": [
+                            "DAY",
+                            "WEEK",
+                            "MONTH",
+                            "YEAR"
+                        ]
+                    },
+                    "value": {
+                        "type": "integer",
+                        "description": "value"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelbillingDiscounts": {
+                "required": [
+                    "amount",
+                    "isPostTax",
+                    "isStackable",
+                    "isUsageBased",
+                    "percentage",
+                    "priority"
+                ],
+                "properties": {
+                    "amount": {
+                        "type": "number",
+                        "description": "amount",
+                        "default": 0
+                    },
+                    "percentage": {
+                        "type": "number",
+                        "description": "percentage",
+                        "default": 0
+                    },
+                    "isPostTax": {
+                        "type": "boolean",
+                        "description": "isPostTax",
+                        "default": false
+                    },
+                    "isUsageBased": {
+                        "type": "boolean",
+                        "description": "isUsageBased",
+                        "default": false
+                    },
+                    "tiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpdateContractAPIRequestModelbillingDiscountstiers"
+                        }
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "description": "priority",
+                        "default": 1
+                    },
+                    "isStackable": {
+                        "type": "boolean",
+                        "description": "isStackable",
+                        "default": false
+                    },
+                    "duration": {
+                        "$ref": "#/components/schemas/UpdateContractAPIRequestModelbillingDiscountsduration"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelbillingDiscountstiers": {
+                "required": [
+                    "amount",
+                    "isPostTax",
+                    "percentage",
+                    "upTo"
+                ],
+                "properties": {
+                    "amount": {
+                        "type": "number",
+                        "description": "amount",
+                        "default": 0
+                    },
+                    "percentage": {
+                        "type": "number",
+                        "description": "percentage",
+                        "default": 0
+                    },
+                    "isPostTax": {
+                        "type": "boolean",
+                        "description": "isPostTax",
+                        "default": false
+                    },
+                    "upTo": {
+                        "type": "number",
+                        "description": "upTo",
+                        "default": "Infinity"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelbillingDiscountsduration": {
+                "required": [
+                    "endIndex",
+                    "startIndex"
+                ],
+                "properties": {
+                    "startIndex": {
+                        "type": "integer",
+                        "description": "startIndex"
+                    },
+                    "endIndex": {
+                        "type": "integer",
+                        "description": "endIndex"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelbillingReportLimit": {
+                "required": [
+                    "isUsageBased"
+                ],
+                "properties": {
+                    "tiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpdateContractAPIRequestModelbillingReportLimittiers"
+                        }
+                    },
+                    "isUsageBased": {
+                        "type": "boolean",
+                        "description": "isUsageBased",
+                        "default": false
+                    },
+                    "minValue": {
+                        "type": "number",
+                        "description": "minValue"
+                    },
+                    "maxValue": {
+                        "type": "number",
+                        "description": "maxValue"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelbillingReportLimittiers": {
+                "required": [
+                    "upTo"
+                ],
+                "properties": {
+                    "minValue": {
+                        "type": "number",
+                        "description": "minValue"
+                    },
+                    "maxValue": {
+                        "type": "number",
+                        "description": "maxValue"
+                    },
+                    "upTo": {
+                        "type": "number",
+                        "description": "upTo",
+                        "default": "Infinity"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelcontractLimit": {
+                "required": [
+                    "isUsageBased"
+                ],
+                "properties": {
+                    "tiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpdateContractAPIRequestModelcontractLimittiers"
+                        }
+                    },
+                    "isUsageBased": {
+                        "type": "boolean",
+                        "description": "isUsageBased",
+                        "default": false
+                    },
+                    "minValue": {
+                        "type": "number",
+                        "description": "minValue"
+                    },
+                    "maxValue": {
+                        "type": "number",
+                        "description": "maxValue"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelcontractLimittiers": {
+                "required": [
+                    "upTo"
+                ],
+                "properties": {
+                    "minValue": {
+                        "type": "number",
+                        "description": "minValue"
+                    },
+                    "maxValue": {
+                        "type": "number",
+                        "description": "maxValue"
+                    },
+                    "upTo": {
+                        "type": "number",
+                        "description": "upTo",
+                        "default": "Infinity"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModeladvanceConfig": {
+                "properties": {
+                    "trueUpEnabled": {
+                        "type": "boolean",
+                        "description": "trueUpEnabled",
+                        "default": false
+                    },
+                    "trueDownEnabled": {
+                        "type": "boolean",
+                        "description": "trueDownEnabled",
+                        "default": false
+                    },
+                    "actualUsageOverride": {
+                        "type": "boolean",
+                        "description": "actualUsageOverride",
+                        "default": false
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "description": "fileName"
+                    },
+                    "attachmentId": {
+                        "type": "string",
+                        "description": "attachmentId"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelResponseModel": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UpdateContractAPIRequestModelResponseData"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateContractAPIRequestModelResponseData": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ContractRateCardBulkUpsertionRequestModel": {
+                "properties": {
+                    "ratecardRelations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContractRateCardBulkUpsertionRequestModelratecardRelations"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ContractRateCardBulkUpsertionRequestModelratecardRelations": {
+                "required": [
+                    "feeComponentId"
+                ],
+                "properties": {
+                    "feeComponentId": {
+                        "type": "string",
+                        "description": "feeComponentId"
+                    },
+                    "ratecardId": {
+                        "type": "string",
+                        "description": "ratecardId"
+                    }
+                },
+                "type": "object"
+            },
+            "FeeComponentToContractRequestModel": {
+                "required": [
+                    "contractId",
+                    "feeComponentId"
+                ],
+                "properties": {
+                    "feeComponentId": {
+                        "type": "string",
+                        "description": "feeComponentId"
+                    },
+                    "contractId": {
+                        "type": "string",
+                        "description": "contractId"
+                    }
+                },
+                "type": "object"
+            },
+            "FeeComponentIncludeUsageRequestModel": {
+                "required": [
+                    "contractId"
+                ],
+                "properties": {
+                    "feeComponentIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "feeComponentIds"
+                        }
+                    },
+                    "contractId": {
+                        "type": "string",
+                        "description": "contractId"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateUsageAPIRequestModel": {
+                "required": [
+                    "transactionDate"
+                ],
+                "properties": {
+                    "transactionDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "transactionDate"
+                    },
+                    "quantities": {
+                        "type": "object"
+                    },
+                    "productName": {
+                        "type": "string",
+                        "description": "productName"
+                    },
+                    "productId": {
+                        "type": "string",
+                        "description": "productId"
+                    },
+                    "eventId": {
+                        "type": "string",
+                        "description": "eventId"
+                    },
+                    "contractId": {
+                        "type": "string",
+                        "description": "contractId"
+                    },
+                    "buyerId": {
+                        "type": "string",
+                        "description": "buyerId"
+                    },
+                    "usageReferenceId": {
+                        "type": "string",
+                        "description": "usageReferenceId"
+                    },
+                    "tags": {
+                        "type": "object"
+                    },
+                    "metaData": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "UsageResponseModel": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UsageResponseData"
+                    }
+                },
+                "type": "object"
+            },
+            "UsageResponseData": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUsageRequestModel_Request": {
+                "properties": {
+                    "updates": {
+                        "$ref": "#/components/schemas/UpdateUsageRequestModel_FieldsUpdateModel"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUsageRequestModel_FieldsUpdateModel": {
+                "properties": {
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "Fields to update"
+                        }
+                    },
+                    "values": {
+                        "$ref": "#/components/schemas/UpdateUsageRequestModel"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUsageRequestModel": {
+                "properties": {
+                    "quantity": {
+                        "type": "number",
+                        "description": "quantity"
+                    },
+                    "transactionDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "transactionDate"
+                    },
+                    "tags": {
+                        "type": "object"
+                    },
+                    "metaData": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "BillingReportResponseModel": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/BillingReportResponseData"
+                    }
+                },
+                "type": "object"
+            },
+            "BillingReportResponseData": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "BillingReportGenerationRequest": {
+                "required": [
+                    "billingDate"
+                ],
+                "properties": {
+                    "contractIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "contractIds"
+                        }
+                    },
+                    "billingDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "billingDate"
+                    }
+                },
+                "type": "object"
+            },
+            "BillingReport": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/BillingReportData"
+                    }
+                },
+                "type": "object"
+            },
+            "BillingReportData": {
+                "properties": {
+                    "id": {
+                        "type": "object"
+                    },
+                    "billId": {
+                        "type": "object"
+                    },
+                    "usageEstimateIterationId": {
+                        "type": "object"
+                    },
+                    "total": {
+                        "type": "object"
+                    },
+                    "isPreusage": {
+                        "type": "object"
+                    },
+                    "advanceConfig": {
+                        "type": "object"
+                    },
+                    "subTotal": {
+                        "type": "object"
+                    },
+                    "tax": {
+                        "type": "object"
+                    },
+                    "contractId": {
+                        "type": "object"
+                    },
+                    "contractNumber": {
+                        "type": "object"
+                    },
+                    "contractTitle": {
+                        "type": "object"
+                    },
+                    "lineItems": {
+                        "type": "object"
+                    },
+                    "billingDiscounts": {
+                        "type": "object"
+                    },
+                    "totalDiscount": {
+                        "type": "object"
+                    },
+                    "billingPeriod": {
+                        "type": "object"
+                    },
+                    "approvedBy": {
+                        "type": "object"
+                    },
+                    "rejectedBy": {
+                        "type": "object"
+                    },
+                    "status": {
+                        "type": "object"
+                    },
+                    "comment": {
+                        "type": "object"
+                    },
+                    "invoiceId": {
+                        "type": "object"
+                    },
+                    "invoiceNumber": {
+                        "type": "object"
+                    },
+                    "customerId": {
+                        "type": "object"
+                    },
+                    "buyerId": {
+                        "type": "object"
+                    },
+                    "customerName": {
+                        "type": "object"
+                    },
+                    "companyName": {
+                        "type": "object"
+                    },
+                    "companyId": {
+                        "type": "object"
+                    },
+                    "logoUrl": {
+                        "type": "object"
+                    },
+                    "createdBy": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "BulkVerdictUpdate": {
+                "properties": {
+                    "verdict": {
+                        "type": "string",
+                        "example": "DRAFT",
+                        "enum": [
+                            "DRAFT",
+                            "APPROVED",
+                            "REJECTED"
+                        ]
+                    },
+                    "billingReportIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "billingReportIds"
+                        }
+                    },
+                    "billIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "billIds"
+                        }
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "comment"
+                    }
+                },
+                "type": "object"
+            },
+            "BulkVerdictUpdateResponseModel": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/BulkVerdictUpdateResponseModelData"
+                    }
+                },
+                "type": "object"
+            },
+            "BulkVerdictUpdateResponseModelData": {
+                "required": [
+                    "failedCount",
+                    "successCount"
+                ],
+                "properties": {
+                    "failedCount": {
+                        "type": "integer",
+                        "description": "failedCount",
+                        "default": 0
+                    },
+                    "successCount": {
+                        "type": "integer",
+                        "description": "successCount",
+                        "default": 0
+                    }
+                },
+                "type": "object"
+            },
+            "BillingReportEmailPreviewResponse": {
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/BillingReportEmailPreviewResponseData"
+                    }
+                },
+                "type": "object"
+            },
+            "BillingReportEmailPreviewResponseData": {
+                "required": [
+                    "htmlContent"
+                ],
+                "properties": {
+                    "htmlContent": {
+                        "type": "string",
+                        "description": "htmlContent"
+                    }
+                },
+                "type": "object"
+            },
+            "BillingReportSendEmailRequestModel": {
+                "required": [
+                    "fromEmail",
+                    "subject"
+                ],
+                "properties": {
+                    "billingReportIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "billingReportIds"
+                        }
+                    },
+                    "subject": {
+                        "type": "string",
+                        "description": "subject"
+                    },
+                    "fromEmail": {
+                        "type": "string",
+                        "description": "fromEmail"
+                    },
+                    "emailRecipient": {
+                        "$ref": "#/components/schemas/BillingReportSendEmailRequestModelemailRecipient"
+                    }
+                },
+                "type": "object"
+            },
+            "BillingReportSendEmailRequestModelemailRecipient": {
+                "properties": {
+                    "to": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "to"
+                        }
+                    },
+                    "cc": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "cc"
+                        }
+                    },
+                    "bcc": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "bcc"
+                        }
+                    },
+                    "replyTo": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "replyTo"
+                        }
+                    }
+                },
+                "type": "object"
             }
-          }
         }
-      },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "securitySchemes": {
-      "valyxSignatureAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-Valyx-Signature"
-      }
     }
-  }
 }

@@ -31,7 +31,12 @@
           {
             "group": "Billing API",
             "pages": [
-              "api-reference/endpoint/create-contract"
+              "api-reference/endpoint/create-contract",
+              "api-reference/endpoint/ratecard",
+              "api-reference/endpoint/fee-comp",
+              "api-reference/endpoint/contract-fee-comp",
+              "api-reference/endpoint/usage-driver",
+              "api-reference/endpoint/usage-driver-filter"
             ]
           }
         ]
