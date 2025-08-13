@@ -27,6 +27,12 @@
             "pages": [
               "documentation/billing/apis/add-usage"
             ]
+          },
+          {
+            "group": "Billing API",
+            "pages": [
+              "api-reference/endpoint/create-contract"
+            ]
           }
         ]
       }

@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "OpenAPI Valyx Documentation",
+    "description": "Features provided by Valyx in the OpenAPI specification",
     "license": {
       "name": "MIT"
     },
@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "http://app.valyx.com"
     }
   ],
   "security": [
@@ -19,187 +19,159 @@
     }
   ],
   "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
+    "/billing/contract": {
+      "post": {
+        "description": "Creates a new billing contract",
         "parameters": [
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
+            "name": "X-Fields",
+            "in": "header",
+            "description": "An optional fields mask",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
         "requestBody": {
-          "description": "Plant to add to the store",
+          "description": "Contract creation payload",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
-        "requestBody": {
-          "description": "Plant added to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/CreateContractAPIRequestModel"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractResponseModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        }
+        },
+        "tags": ["billing"]
       }
     }
   },
   "components": {
     "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
+      "CreateContractAPIRequestModel": {
         "type": "object",
+        "required": [
+          "company_id",
+          "created_by",
+          "customer_id",
+          "start_date",
+          "end_date",
+          "billing_cycle"
+        ],
         "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
+          "company_id": {
+            "type": "string",
+            "description": "The unique identifier of the company associated with this contract",
+            "example": "company_12345"
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+          "created_by": {
+            "type": "string",
+            "description": "The user ID of the person who created the contract",
+            "example": "user_98765"
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "The unique identifier of the customer for whom this contract is created",
+            "example": "cust_45678"
+          },
+          "contract_id": {
+            "type": "string",
+            "description": "A unique identifier for the contract. If not provided, it will be auto-generated",
+            "example": "contract_001"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "description": "The contract start date in YYYY-MM-DD format",
+            "example": "2025-01-01"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "description": "The contract end date in YYYY-MM-DD format",
+            "example": "2026-01-01"
+          },
+          "billing_cycle": {
+            "type": "string",
+            "enum": ["monthly", "quarterly", "yearly"],
+            "description": "The billing cycle for this contract",
+            "example": "monthly"
+          },
+          "usage_cycle": {
+            "type": "string",
+            "enum": ["monthly", "quarterly", "yearly"],
+            "description": "The usage cycle for metered billing",
+            "example": "monthly"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code for billing amounts (ISO 4217 format)",
+            "example": "USD"
+          },
+          "terms": {
+            "type": "string",
+            "description": "Optional text describing the contractual terms",
+            "example": "Net 30 payment terms apply."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Optional metadata for storing extra key-value information",
+            "example": {
+              "region": "US-East",
+              "plan": "Enterprise"
+            }
           }
         }
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
+      "ContractResponseModel": {
         "type": "object",
         "properties": {
           "error": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
           },
           "message": {
             "type": "string"
@@ -208,9 +180,10 @@
       }
     },
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      "valyxSignatureAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Valyx-Signature"
       }
     }
   }
