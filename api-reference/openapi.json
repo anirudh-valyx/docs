@@ -13,11 +13,6 @@
       "url": "http://app.valyx.com"
     }
   ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "paths": {
     "/billing/contract": {
       "post": {
