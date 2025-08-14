@@ -1,5 +1,23 @@
 {
     "openapi": "3.0.0",
+    "info": {
+      "title": "OpenAPI Valyx API",
+      "description": "To demonstrate features in the Valyx",
+      "license": {
+        "name": "MIT"
+      },
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "https://api.valyx.com"
+      }
+    ],
+    "security": [
+      {
+        "bearerAuth": ["demo-api"]
+      }
+    ],
     "paths": {
         "/billing/billingReport/email/preview/{billing_report_id}": {
             "parameters": [
@@ -2266,19 +2284,10 @@
             }
         }
     },
-    "info": {
-        "title": "API",
-        "version": "1.0"
-    },
     "tags": [
         {
             "name": "billing",
             "description": "External Billing APIs"
-        }
-    ],
-    "servers": [
-        {
-            "url": "/"
         }
     ],
     "components": {
