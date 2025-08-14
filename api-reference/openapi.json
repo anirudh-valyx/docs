@@ -355,17 +355,6 @@
           }
         },
         "operationId": "post_create_contract",
-        "parameters": [
-          {
-            "name": "X-Fields",
-            "in": "header",
-            "description": "An optional fields mask",
-            "schema": {
-              "type": "string",
-              "format": "mask"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -415,17 +404,6 @@
           }
         },
         "operationId": "post_add_contract_fee_component",
-        "parameters": [
-          {
-            "name": "X-Fields",
-            "in": "header",
-            "description": "An optional fields mask",
-            "schema": {
-              "type": "string",
-              "format": "mask"
-            }
-          }
-        ],
         "requestBody": {
           "$ref": "#/components/requestBodies/FeeComponentToContractRequestModel"
         },
@@ -447,17 +425,6 @@
           }
         },
         "operationId": "delete_delete_contract_fee_component",
-        "parameters": [
-          {
-            "name": "X-Fields",
-            "in": "header",
-            "description": "An optional fields mask",
-            "schema": {
-              "type": "string",
-              "format": "mask"
-            }
-          }
-        ],
         "requestBody": {
           "$ref": "#/components/requestBodies/FeeComponentToContractRequestModel"
         },
@@ -822,17 +789,6 @@
           }
         },
         "operationId": "post_create_fee_component",
-        "parameters": [
-          {
-            "name": "X-Fields",
-            "in": "header",
-            "description": "An optional fields mask",
-            "schema": {
-              "type": "string",
-              "format": "mask"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1188,17 +1144,6 @@
           }
         },
         "operationId": "post_create_rate_card",
-        "parameters": [
-          {
-            "name": "X-Fields",
-            "in": "header",
-            "description": "An optional fields mask",
-            "schema": {
-              "type": "string",
-              "format": "mask"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1991,17 +1936,6 @@
           }
         },
         "operationId": "post_add_usage_driver",
-        "parameters": [
-          {
-            "name": "X-Fields",
-            "in": "header",
-            "description": "An optional fields mask",
-            "schema": {
-              "type": "string",
-              "format": "mask"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2108,24 +2042,6 @@
             "required": true,
             "schema": {
               "type": "integer"
-            }
-          },
-          {
-            "name": "X-Valyx-Signature",
-            "in": "header",
-            "required": true,
-            "description": "Auth key for fetching ledger entries",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "X-Fields",
-            "in": "header",
-            "description": "An optional fields mask",
-            "schema": {
-              "type": "string",
-              "format": "mask"
             }
           }
         ],
