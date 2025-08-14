@@ -1,0 +1,38 @@
+---
+title: API Authentication
+description: How to authenticate yourself to use the Valyx API.
+---
+
+# Authentication
+
+All Valyx API requests require authentication using a signature-based header.  
+If the signature is missing or invalid, the API will respond with an **HTTP 401 Unauthorized** error.
+
+## Header Required
+
+| Header Name         | Required | Description |
+| ------------------- | -------- | ----------- |
+| `X-Valyx-Signature` | Yes      | The HMAC signature used to verify the authenticity of the request. |
+
+---
+
+## How It Works
+
+The `X-Valyx-Signature` is generated using your **Valyx API Secret**.  
+When you send a request:
+
+1. Concatenate specific request components (method, path, timestamp, and body) into a string.
+2. Sign the string using **HMAC-SHA256** with your API Secret.
+3. Encode the result as a hexadecimal string.
+4. Add it to the request headers as `X-Valyx-Signature`.
+
+---
+
+## Example Request
+
+```bash
+curl -X GET "https://api.valyx.com/billing/usageDriver/filter" \
+  -H "Content-Type: application/json" \
+  -H "X-Valyx-Signature: 7d6a9b8c3f1a4e..." 
+```
+
