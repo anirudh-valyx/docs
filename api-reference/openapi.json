@@ -4290,7 +4290,7 @@
                   "example": "usage_driver_001"
                 },
                 "quantity": {
-                  "type": "float",
+                  "type": "number",
                   "format": "float",
                   "description": "The measured quantity for this usage driver",
                   "example": 42.5
