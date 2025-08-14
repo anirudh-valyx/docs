@@ -24,9 +24,7 @@
           },
           {
             "group": "Usage API",
-            "pages": [
-              "documentation/billing/apis/add-usage"
-            ]
+            "pages": ["documentation/billing/apis/add-usage"]
           },
           {
             "group": "Billing API",
@@ -44,6 +42,28 @@
     ],
     "global": {
       "anchors": []
+    }
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "python",
+        "javascript",
+        "typescript",
+        "go",
+        "java",
+        "php",
+        "ruby",
+        "swift",
+        "kotlin",
+        "csharp",
+        "dart"
+      ],
+      "defaults": "required"
     }
   },
   "logo": {
