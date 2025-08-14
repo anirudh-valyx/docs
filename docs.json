@@ -23,8 +23,12 @@
             ]
           },
           {
+            "group": "Authentication",
+            "pages":["documentation/authentication"]
+          },
+          {
             "group": "Usage API",
-            "pages": ["documentation/billing/apis/add-usage"]
+            "pages": ["documentation/billing/apis/usage"]
           },
           {
             "group": "Billing API",
