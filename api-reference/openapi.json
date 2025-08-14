@@ -2127,23 +2127,23 @@
     },
     "schemas": {
       "CreateUsageDriverQueryModel": {
-        "required": ["description", "name", "unit"],
+        "required": ["name", "description", "unit"],
         "properties": {
           "name": {
             "type": "string",
-            "description": "name"
+            "description": "A unique name identifying the usage driver."
           },
           "description": {
             "type": "string",
-            "description": "description"
+            "description": "Detailed explanation of what this usage driver measures or tracks."
           },
           "unit": {
             "type": "string",
-            "description": "unit"
+            "description": "The unit of measurement for this usage driver (e.g., count, GB, minutes)."
           },
           "productId": {
             "type": "string",
-            "description": "productId"
+            "description": "Optional: ID of the product this usage driver is associated with, if any."
           }
         },
         "type": "object"
@@ -2151,10 +2151,12 @@
       "UsageDriverResponseModel": {
         "properties": {
           "error": {
-            "type": "string"
+            "type": "string",
+            "description": "Error message, if any. Null if the request was successful."
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "Human-readable message describing the result of the operation."
           },
           "data": {
             "$ref": "#/components/schemas/UsageDriverResponseData"
@@ -2165,7 +2167,8 @@
       "UsageDriverResponseData": {
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "Unique identifier of the added/created object."
           }
         },
         "type": "object"
@@ -2215,20 +2218,23 @@
         "type": "object"
       },
       "PaginatedResponse": {
+        "type": "object",
         "properties": {
           "error": {
-            "type": "string"
+            "type": "string",
+            "description": "Error message, if any occurred while fetching the paginated data. Null if the request was successful."
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "Informational message regarding the response."
           },
           "data": {
             "$ref": "#/components/schemas/PaginatedResponseData"
           }
-        },
-        "type": "object"
+        }
       },
       "PaginatedResponseData": {
+        "type": "object",
         "required": [
           "hasNext",
           "hasPrev",
@@ -2240,160 +2246,163 @@
         "properties": {
           "totalDocs": {
             "type": "integer",
-            "description": "totalDocs"
+            "description": "Total number of documents/items available across all pages."
           },
           "docs": {
             "type": "array",
+            "description": "Array of items on the current page.",
             "items": {
-              "type": "object"
+              "type": "object",
+              "description": "Individual document/item in the paginated result."
             }
           },
           "hasNext": {
             "type": "boolean",
-            "description": "hasNext"
+            "description": "True if there is a next page available."
           },
           "hasPrev": {
             "type": "boolean",
-            "description": "hasPrev"
+            "description": "True if there is a previous page available."
           },
           "pageNumber": {
             "type": "integer",
-            "description": "pageNumber"
+            "description": "Current page number (1-indexed)."
           },
           "pageSize": {
             "type": "integer",
-            "description": "pageSize"
+            "description": "Number of items per page."
           },
           "totalPages": {
             "type": "integer",
-            "description": "totalPages"
+            "description": "Total number of pages available."
           },
           "prevPageNumber": {
             "type": "integer",
-            "description": "prevPageNumber"
+            "description": "Page number of the previous page. Null if current page is the first page."
           },
           "nextPageNumber": {
             "type": "integer",
-            "description": "nextPageNumber"
+            "description": "Page number of the next page. Null if current page is the last page."
           }
-        },
-        "type": "object"
+        }
       },
       "CreateFeeComponentAPIRequestModel": {
-        "required": ["name"],
+        "type": "object",
+        "required": ["name", "taxRate"],
         "properties": {
           "name": {
             "type": "string",
-            "description": "name"
+            "description": "The unique name of the fee component."
           },
           "taxRate": {
             "type": "array",
+            "description": "List of taxes applicable to this fee component. Each tax includes its name, value, and category.",
             "items": {
               "$ref": "#/components/schemas/CreateFeeComponentAPIRequestModeltaxRate"
             }
           },
           "hsnOrSacCode": {
             "type": "string",
-            "description": "hsnOrSacCode"
+            "description": "HSN (Harmonized System of Nomenclature) code or SAC (Service Accounting Code) for GST classification."
           },
           "sku": {
             "type": "string",
-            "description": "sku"
+            "description": "Stock Keeping Unit (SKU) – a unique identifier for the product or service. Useful for inventory or internal tracking."
           },
           "unit": {
             "type": "string",
-            "description": "unit"
+            "description": "The unit of measurement for this fee component (e.g., 'GB', 'Hour', 'User'). Used when calculating usage-based charges."
           },
           "description": {
             "type": "string",
-            "description": "description"
+            "description": "Optional detailed description of the fee component."
+          },
+          "billLimit": {
+            "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingReportLimit",
+            "description": "Optional limits for billing this component, e.g., min/max values or usage-based tiers."
           },
           "driverUpsertRequest": {
-            "$ref": "#/components/schemas/CreateFeeComponentAPIRequestModeldriverUpsertRequest"
+            "$ref": "#/components/schemas/CreateFeeComponentAPIRequestModeldriverUpsertRequest",
+            "description": "Optional usage driver relationships, defining how different usage drivers contribute to this fee component's calculations."
           }
-        },
-        "type": "object"
+        }
       },
       "CreateFeeComponentAPIRequestModeltaxRate": {
+        "type": "object",
         "required": ["name", "value"],
         "properties": {
           "name": {
             "type": "string",
-            "description": "name"
+            "description": "The name of the tax, e.g., 'GST', 'CESS', or 'Service Tax'."
           },
           "value": {
             "type": "number",
-            "description": "value"
+            "description": "The percentage value of the tax (e.g., 18 for 18%)."
           },
           "isActive": {
             "type": "boolean",
-            "description": "isActive",
+            "description": "Whether this tax is currently active. Defaults to true.",
             "default": true
           },
           "taxCategory": {
             "type": "string",
+            "description": "The category of the tax. Helps classify taxes for reporting and compliance.",
             "example": "GST",
             "enum": ["GST", "CESS", "SERVICE", "TDS", "OTHER"]
           }
-        },
-        "type": "object"
+        }
       },
+
       "CreateFeeComponentAPIRequestModeldriverUpsertRequest": {
+        "type": "object",
         "properties": {
           "upsertRequests": {
             "type": "array",
+            "description": "List of usage driver relationships. Each entry defines a usage driver and its weight in calculating the fee.",
             "items": {
               "$ref": "#/components/schemas/CreateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests"
             }
           }
-        },
-        "type": "object"
+        }
       },
+
       "CreateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests": {
+        "type": "object",
         "required": ["usageDriverId", "weight"],
         "properties": {
           "usageDriverId": {
             "type": "string",
-            "description": "usageDriverId"
+            "description": "The unique identifier of the usage driver, e.g., 'API_CALLS', 'STORAGE_GB'."
           },
           "weight": {
             "type": "number",
-            "description": "weight"
+            "description": "The factor by which the usage driver contributes to this fee component. For example, 1.5 means 150% of the usage is charged."
           }
-        },
-        "type": "object"
+        }
       },
       "FeeComponentResponseModel": {
+        "type": "object",
         "properties": {
           "error": {
-            "type": "string"
+            "type": "string",
+            "description": "Error message if the operation failed. Null if the operation was successful."
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "Informational message about the result of the operation."
           },
           "data": {
-            "$ref": "#/components/schemas/FeeComponentResponseModelData"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique identifier of the created fee component."
+              }
+            },
+            "required": ["id"]
           }
         },
-        "type": "object"
-      },
-      "FeeComponentResponseModelData": {
-        "properties": {
-          "feeComponent": {
-            "$ref": "#/components/schemas/FeeComponentResponseModelDatafeeComponent"
-          },
-          "usageDrivers": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FeeComponentResponseModelDatausageDrivers"
-            }
-          },
-          "productName": {
-            "type": "string",
-            "description": "productName"
-          }
-        },
-        "type": "object"
+        "required": ["error", "message", "data"]
       },
       "FeeComponentResponseModelDatafeeComponent": {
         "properties": {
@@ -2688,296 +2697,174 @@
         "type": "object"
       },
       "CreateRateCardRequestModel": {
+        "type": "object",
         "required": ["feeComponentId", "name"],
         "properties": {
           "name": {
             "type": "string",
-            "description": "name"
+            "description": "The name of the rate card."
           },
           "description": {
-            "$ref": "#/components/schemas/CreateRateCardRequestModeldescription"
+            "$ref": "#/components/schemas/CreateRateCardRequestModelDescription",
+            "description": "Pricing strategy details for the rate card, including billing scheme, tiers, and prorated settings."
           },
           "feeComponentId": {
             "type": "string",
-            "description": "feeComponentId"
+            "description": "Identifier of the fee component associated with this rate card."
           },
           "currency": {
             "type": "string",
-            "example": "afn",
-            "enum": [
-              "afn",
-              "eur",
-              "all",
-              "dzd",
-              "usd",
-              "aoa",
-              "xcd",
-              "ars",
-              "amd",
-              "awg",
-              "aud",
-              "azn",
-              "bsd",
-              "bhd",
-              "bdt",
-              "bbd",
-              "byn",
-              "bzd",
-              "xof",
-              "bmd",
-              "inr",
-              "btn",
-              "bob",
-              "bov",
-              "bam",
-              "bwp",
-              "nok",
-              "brl",
-              "bnd",
-              "bgn",
-              "bif",
-              "cve",
-              "khr",
-              "xaf",
-              "cad",
-              "kyd",
-              "clp",
-              "clf",
-              "cny",
-              "cop",
-              "cou",
-              "kmf",
-              "cdf",
-              "nzd",
-              "crc",
-              "hrk",
-              "cup",
-              "cuc",
-              "ang",
-              "czk",
-              "dkk",
-              "djf",
-              "dop",
-              "egp",
-              "svc",
-              "ern",
-              "szl",
-              "etb",
-              "fkp",
-              "fjd",
-              "xpf",
-              "gmd",
-              "gel",
-              "ghs",
-              "gip",
-              "gtq",
-              "gbp",
-              "gnf",
-              "gyd",
-              "htg",
-              "hnl",
-              "hkd",
-              "huf",
-              "isk",
-              "idr",
-              "xdr",
-              "irr",
-              "iqd",
-              "ils",
-              "jmd",
-              "jpy",
-              "jod",
-              "kzt",
-              "kes",
-              "kpw",
-              "krw",
-              "kwd",
-              "kgs",
-              "lak",
-              "lbp",
-              "lsl",
-              "zar",
-              "lrd",
-              "lyd",
-              "chf",
-              "mop",
-              "mkd",
-              "mga",
-              "mwk",
-              "myr",
-              "mvr",
-              "mru",
-              "mur",
-              "xua",
-              "mxn",
-              "mxv",
-              "mdl",
-              "mnt",
-              "mad",
-              "mzn",
-              "mmk",
-              "nad",
-              "npr",
-              "nio",
-              "ngn",
-              "omr",
-              "pkr",
-              "pab",
-              "pgk",
-              "pyg",
-              "pen",
-              "php",
-              "pln",
-              "qar",
-              "ron",
-              "rub",
-              "rwf",
-              "shp",
-              "wst",
-              "stn",
-              "sar",
-              "rsd",
-              "scr",
-              "sll",
-              "sle",
-              "sgd",
-              "xsu",
-              "sbd",
-              "sos",
-              "ssp",
-              "lkr",
-              "sdg",
-              "srd",
-              "sek",
-              "che",
-              "chw",
-              "syp",
-              "twd",
-              "tjs",
-              "tzs",
-              "thb",
-              "top",
-              "ttd",
-              "tnd",
-              "try",
-              "tmt",
-              "ugx",
-              "uah",
-              "aed",
-              "usn",
-              "uyu",
-              "uyi",
-              "uyw",
-              "uzs",
-              "vuv",
-              "ves",
-              "ved",
-              "vnd",
-              "yer",
-              "zmw",
-              "zwl",
-              "xba",
-              "xbb",
-              "xbc",
-              "xbd",
-              "xts",
-              "xxx",
-              "xau",
-              "xpd",
-              "xpt",
-              "xag"
-            ]
+            "description": "Currency used for this rate card. Must be a valid ISO 4217 currency code. See: https://www.iso.org/iso-4217-currency-codes.html",
+            "example": "INR"
+          },
+          "currencyId": {
+            "type": "string",
+            "description": "Optional currency identifier if multiple currencies are supported."
           },
           "tags": {
-            "type": "object"
+            "type": "object",
+            "description": "Custom key-value tags for categorizing or labeling the rate card. Multiple key-value pairs can be added dynamically.",
+            "additionalProperties": {
+              "type": "string"
+            }
           },
           "ratecardDescription": {
             "type": "string",
-            "description": "ratecardDescription"
+            "description": "Detailed description of the rate card, visible to users."
           },
           "contractId": {
             "type": "string",
-            "description": "contractId"
+            "description": "Optional associated contract ID for this rate card."
+          },
+          "isDefault": {
+            "type": "boolean",
+            "description": "Indicates whether this rate card is the default for the company.",
+            "default": false
+          },
+          "isTierSplitEnabled": {
+            "type": "boolean",
+            "description": "Indicates if tier-wise split pricing is enabled. Only valid for graduated billing schemes.",
+            "default": false
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Optional start date of the rate card."
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Optional end date of the rate card."
+          },
+          "fallBackRatecardId": {
+            "type": "string",
+            "description": "Required if the rate card has start or end dates; used as fallback for timed rate cards."
           }
-        },
-        "type": "object"
+        }
       },
       "CreateRateCardRequestModeldescription": {
+        "type": "object",
+        "description": "Defines the pricing strategy for this rate card, including billing scheme, tiers, and prorated behavior.",
         "properties": {
           "billingScheme": {
             "type": "string",
+            "description": "The billing method applied to this rate card.",
             "example": "PER_UNIT",
             "enum": ["PER_UNIT", "VOLUME", "GRADUATED", "FIXED_RATE", "MINMAX"]
           },
           "tiers": {
             "type": "array",
+            "description": "Optional tiered pricing structure. Only required for certain billing schemes like GRADUATED.",
             "items": {
               "$ref": "#/components/schemas/CreateRateCardRequestModeldescriptiontiers"
-            }
+            },
+            "example": [
+              {
+                "name": "Basic Tier",
+                "upTo": 100,
+                "unitPrice": 5.0,
+                "flatPrice": 0.0,
+                "isPercentage": false,
+                "repeatTier": false
+              },
+              {
+                "name": "Premium Tier",
+                "upTo": 500,
+                "unitPrice": 4.5,
+                "flatPrice": 50.0,
+                "isPercentage": false,
+                "repeatTier": true
+              }
+            ]
           },
           "isProrated": {
             "type": "boolean",
-            "description": "isProrated",
+            "description": "Indicates whether the pricing is prorated for partial periods.",
             "default": false
           }
         },
-        "type": "object"
+        "required": ["billingScheme"]
       },
       "CreateRateCardRequestModeldescriptiontiers": {
-        "required": ["name", "upTo"],
+        "type": "object",
+        "description": "Represents a single tier in a tiered pricing strategy.",
         "properties": {
           "name": {
             "type": "string",
-            "description": "name"
+            "description": "Name or label for this tier, e.g., 'Basic', 'Premium'."
           },
           "upTo": {
             "type": "number",
-            "description": "upTo"
+            "description": "The maximum quantity or usage for this tier."
           },
           "unitPrice": {
             "type": "number",
-            "description": "unitPrice",
+            "description": "Price per unit within this tier.",
             "default": 0
           },
           "flatPrice": {
             "type": "number",
-            "description": "flatPrice",
+            "description": "Fixed price added for this tier, regardless of units used.",
             "default": 0
           },
           "isPercentage": {
             "type": "boolean",
-            "description": "isPercentage",
+            "description": "Indicates whether the prices are in percentage rather than absolute amounts.",
             "default": false
           },
           "repeatTier": {
             "type": "boolean",
-            "description": "repeatTier",
+            "description": "If true, this tier is repeated indefinitely beyond 'upTo'.",
             "default": false
           }
         },
-        "type": "object"
+        "required": ["name", "upTo"]
       },
       "RateCardResponseModel": {
+        "type": "object",
         "properties": {
           "error": {
-            "type": "string"
+            "type": "string",
+            "description": "Error message if the operation failed. Null if the operation was successful."
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "Informational message about the result of the operation."
           },
           "data": {
-            "$ref": "#/components/schemas/RateCardResponseData"
+            "$ref": "#/components/schemas/RateCardResponseData",
+            "description": "Data object containing the result of the operation."
           }
-        },
-        "type": "object"
+        }
       },
       "RateCardResponseData": {
+        "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "Unique identifier of the created or updated rate card."
           }
-        },
-        "type": "object"
+        }
       },
       "UpdateRateCardRequestModel_Request": {
         "properties": {
@@ -3497,6 +3384,7 @@
         "type": "object"
       },
       "CreateContractAPIRequestModel": {
+        "type": "object",
         "required": [
           "contractNumber",
           "contractTitle",
@@ -3506,362 +3394,399 @@
         "properties": {
           "customerId": {
             "type": "string",
-            "description": "customerId"
+            "description": "The unique identifier of the customer associated with this contract",
+            "example": "cust_45678"
           },
           "contractNumber": {
             "type": "string",
-            "description": "contractNumber"
+            "description": "A unique reference number for this contract",
+            "example": "CONTRACT-2025-001"
           },
           "contractTitle": {
             "type": "string",
-            "description": "contractTitle"
+            "description": "The title or name of the contract",
+            "example": "Premium Subscription Plan"
           },
           "contractPeriod": {
-            "$ref": "#/components/schemas/CreateContractAPIRequestModelcontractPeriod"
+            "$ref": "#/components/schemas/CreateContractAPIRequestModelcontractPeriod",
+            "description": "The total duration of the contract, specifying the time unit and value"
           },
           "billingFrequency": {
-            "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingFrequency"
+            "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingFrequency",
+            "description": "How often billing should occur for this contract"
           },
           "startDate": {
             "type": "string",
             "format": "date",
-            "description": "startDate"
+            "description": "The date when the contract becomes effective",
+            "example": "2025-01-01"
           },
           "virtualStartDate": {
             "type": "string",
             "format": "date",
-            "description": "virtualStartDate"
+            "description": "A calculated start date for billing purposes, used if billing time is set to beginning of period",
+            "example": "2025-01-01"
           },
           "creditTermId": {
             "type": "string",
-            "description": "creditTermId"
+            "description": "Identifier for the credit term associated with this contract",
+            "example": "CT-30-DAYS"
           },
           "poNumber": {
             "type": "string",
-            "description": "poNumber"
+            "description": "Purchase order number, if applicable",
+            "example": "PO-98765"
           },
           "noteInvoice": {
             "type": "string",
-            "description": "noteInvoice"
+            "description": "Optional note to be included in the invoice",
+            "example": "Please pay within 30 days"
           },
           "terms": {
             "type": "string",
-            "description": "terms"
+            "description": "Terms and conditions associated with this contract",
+            "example": "Net 30 payment terms apply"
           },
           "noteContract": {
             "type": "string",
-            "description": "noteContract"
+            "description": "Optional note to be displayed on the contract",
+            "example": "This contract is for the premium subscription plan"
           },
           "billingDiscounts": {
             "type": "array",
+            "description": "List of discounts applicable during billing",
             "items": {
               "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingDiscounts"
             }
           },
           "isPreusage": {
             "type": "boolean",
-            "description": "isPreusage",
+            "description": "Indicates if billing should happen at the start of the period (pre-usage)",
             "default": false
           },
           "billingTime": {
             "type": "string",
+            "description": "Determines when billing is calculated: either at the beginning of the period or based on subscription start date",
             "example": "BEGINNING_OF_PERIOD",
             "enum": ["BEGINNING_OF_PERIOD", "SUBSCRIPTION_DATE"]
           },
           "billingReportLimit": {
-            "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingReportLimit"
+            "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingReportLimit",
+            "description": "Limits applied to the billing report for this contract"
           },
           "contractLimit": {
-            "$ref": "#/components/schemas/CreateContractAPIRequestModelcontractLimit"
+            "$ref": "#/components/schemas/CreateContractAPIRequestModelcontractLimit",
+            "description": "Optional limit on total contract value or usage"
           },
           "advanceConfig": {
-            "$ref": "#/components/schemas/CreateContractAPIRequestModeladvanceConfig"
+            "$ref": "#/components/schemas/CreateContractAPIRequestModeladvanceConfig",
+            "description": "Configuration for advance billing or usage adjustments"
           },
           "autoRenew": {
             "type": "boolean",
-            "description": "autoRenew",
+            "description": "If true, the contract will automatically renew at the end of its period",
             "default": false
           },
           "renewalPeriod": {
-            "$ref": "#/components/schemas/CreateContractAPIRequestModelrenewalPeriod"
+            "$ref": "#/components/schemas/CreateContractAPIRequestModelrenewalPeriod",
+            "description": "The duration for which the contract should be renewed automatically"
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModelcontractPeriod": {
+        "type": "object",
         "required": ["value"],
         "properties": {
           "unit": {
             "type": "string",
-            "example": "DAY",
+            "description": "The unit of time for the contract period",
+            "example": "MONTH",
             "enum": ["DAY", "WEEK", "MONTH", "YEAR"]
           },
           "value": {
             "type": "integer",
-            "description": "value"
+            "description": "The duration of the contract in the specified unit",
+            "example": 12
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModelbillingFrequency": {
+        "type": "object",
         "required": ["value"],
         "properties": {
           "unit": {
             "type": "string",
-            "example": "DAY",
+            "description": "The unit of time used for billing frequency",
+            "example": "MONTH",
             "enum": ["DAY", "WEEK", "MONTH", "YEAR"]
           },
           "value": {
             "type": "integer",
-            "description": "value"
+            "description": "The number of units between each billing cycle",
+            "example": 1
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModelbillingDiscounts": {
+        "type": "object",
         "required": [
           "amount",
-          "isPostTax",
-          "isStackable",
-          "isUsageBased",
           "percentage",
-          "priority"
+          "isPostTax",
+          "isUsageBased",
+          "priority",
+          "isStackable"
         ],
         "properties": {
           "amount": {
             "type": "number",
-            "description": "amount",
-            "default": 0
+            "description": "Fixed discount amount to be applied (in the contract currency). Either amount or percentage should be set.",
+            "default": 0,
+            "example": 100.0
           },
           "percentage": {
             "type": "number",
-            "description": "percentage",
-            "default": 0
+            "description": "Discount percentage to be applied. Either amount or percentage should be set.",
+            "default": 0,
+            "example": 10.0
           },
           "isPostTax": {
             "type": "boolean",
-            "description": "isPostTax",
+            "description": "If true, discount is applied after tax calculation; otherwise, before tax.",
             "default": false
           },
           "isUsageBased": {
             "type": "boolean",
-            "description": "isUsageBased",
+            "description": "Indicates whether this discount is applicable only to usage-based charges.",
             "default": false
           },
           "tiers": {
             "type": "array",
+            "description": "Optional tiered discount levels based on usage.",
             "items": {
               "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingDiscountstiers"
             }
           },
           "priority": {
             "type": "integer",
-            "description": "priority",
-            "default": 1
+            "description": "Determines the order in which discounts are applied; lower numbers are applied first.",
+            "default": 1,
+            "example": 1
           },
           "isStackable": {
             "type": "boolean",
-            "description": "isStackable",
+            "description": "If true, this discount can be combined with other discounts; otherwise, it is exclusive.",
             "default": false
           },
           "duration": {
-            "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingDiscountsduration"
+            "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingDiscountsduration",
+            "description": "Optional duration specifying the billing periods when this discount is active."
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModelbillingDiscountstiers": {
-        "required": ["amount", "isPostTax", "percentage", "upTo"],
+        "type": "object",
+        "required": ["amount", "percentage", "isPostTax", "upTo"],
         "properties": {
           "amount": {
             "type": "number",
-            "description": "amount",
-            "default": 0
+            "description": "Fixed discount amount for this tier. Either amount or percentage should be set.",
+            "default": 0,
+            "example": 50.0
           },
           "percentage": {
             "type": "number",
-            "description": "percentage",
-            "default": 0
+            "description": "Discount percentage for this tier. Either amount or percentage should be set.",
+            "default": 0,
+            "example": 10.0
           },
           "isPostTax": {
             "type": "boolean",
-            "description": "isPostTax",
+            "description": "Indicates if this tiered discount is applied after tax calculation. If false, it is applied before tax.",
             "default": false
           },
           "upTo": {
             "type": "number",
-            "description": "upTo",
-            "default": "Infinity"
+            "description": "Maximum usage or amount this tier applies to. Use a very large number for no limit.",
+            "default": 999999999,
+            "example": 1000
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModelbillingDiscountsduration": {
-        "required": ["endIndex", "startIndex"],
+        "type": "object",
+        "required": ["startIndex", "endIndex"],
         "properties": {
           "startIndex": {
             "type": "integer",
-            "description": "startIndex"
+            "description": "The starting billing period index when this discount becomes applicable. Indexing starts at 1.",
+            "example": 1
           },
           "endIndex": {
             "type": "integer",
-            "description": "endIndex"
+            "description": "The ending billing period index up to which this discount is applicable.",
+            "example": 3
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModelbillingReportLimit": {
+        "type": "object",
         "required": ["isUsageBased"],
         "properties": {
           "tiers": {
             "type": "array",
+            "description": "Optional list of tiered limits that apply based on usage thresholds.",
             "items": {
               "$ref": "#/components/schemas/CreateContractAPIRequestModelbillingReportLimittiers"
             }
           },
           "isUsageBased": {
             "type": "boolean",
-            "description": "isUsageBased",
+            "description": "Indicates if the report limit is based on usage. If true, the tiers and min/max values are interpreted per usage unit.",
             "default": false
           },
           "minValue": {
             "type": "number",
-            "description": "minValue"
+            "description": "Minimum allowed value for the billing report. Can be omitted if no minimum is required."
           },
           "maxValue": {
             "type": "number",
-            "description": "maxValue"
+            "description": "Maximum allowed value for the billing report. Can be omitted if no maximum is required."
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModelbillingReportLimittiers": {
+        "type": "object",
         "required": ["upTo"],
         "properties": {
           "minValue": {
             "type": "number",
-            "description": "minValue"
+            "description": "The minimum value for this tier. Billing will start counting from this value. Optional if no lower bound is needed."
           },
           "maxValue": {
             "type": "number",
-            "description": "maxValue"
+            "description": "The maximum value for this tier. Optional if no upper bound is required."
           },
           "upTo": {
             "type": "number",
-            "description": "upTo",
+            "description": "The upper limit of this tier. Usage or billing beyond this value will fall into the next tier. Can be set to a very large number to indicate no limit.",
             "default": "Infinity"
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModelcontractLimit": {
+        "type": "object",
         "required": ["isUsageBased"],
         "properties": {
           "tiers": {
             "type": "array",
+            "description": "A list of tiers defining usage limits for this contract. Each tier can have a min and max value. Optional if the contract has no tiered limits.",
             "items": {
               "$ref": "#/components/schemas/CreateContractAPIRequestModelcontractLimittiers"
             }
           },
           "isUsageBased": {
             "type": "boolean",
-            "description": "isUsageBased",
+            "description": "Indicates whether the contract limit is usage-based. If true, the system will enforce usage thresholds; otherwise, limits apply to other metrics.",
             "default": false
           },
           "minValue": {
             "type": "number",
-            "description": "minValue"
+            "description": "The minimum contract limit value. Billing or usage will start counting from this threshold."
           },
           "maxValue": {
             "type": "number",
-            "description": "maxValue"
+            "description": "The maximum contract limit value. Usage beyond this value will be restricted or handled as per contract rules."
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModelcontractLimittiers": {
+        "type": "object",
         "required": ["upTo"],
         "properties": {
           "minValue": {
             "type": "number",
-            "description": "minValue"
+            "description": "The minimum value for this contract tier. Usage or billing calculations start from this threshold."
           },
           "maxValue": {
             "type": "number",
-            "description": "maxValue"
+            "description": "The maximum value for this contract tier. Usage beyond this value will be restricted or handled according to contract rules."
           },
           "upTo": {
             "type": "number",
-            "description": "upTo",
+            "description": "Defines the upper bound for this tier. All usage up to this value will fall under this tier. Use Infinity for no upper limit.",
             "default": "Infinity"
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModeladvanceConfig": {
+        "type": "object",
         "properties": {
           "trueUpEnabled": {
             "type": "boolean",
-            "description": "trueUpEnabled",
+            "description": "Indicates whether true-up adjustments are enabled. True-up allows increasing charges based on actual usage at the end of a billing period.",
             "default": false
           },
           "trueDownEnabled": {
             "type": "boolean",
-            "description": "trueDownEnabled",
+            "description": "Indicates whether true-down adjustments are enabled. True-down allows reducing charges based on lower actual usage at the end of a billing period.",
             "default": false
           },
           "actualUsageOverride": {
             "type": "boolean",
-            "description": "actualUsageOverride",
+            "description": "If true, allows manually overriding the actual usage for this contract.",
             "default": false
           },
           "fileName": {
             "type": "string",
-            "description": "fileName"
+            "description": "The name of the file uploaded for advance usage configuration, if any."
           },
           "attachmentId": {
             "type": "string",
-            "description": "attachmentId"
+            "description": "The ID of the uploaded file stored in the system for reference or download."
           }
-        },
-        "type": "object"
+        }
       },
       "CreateContractAPIRequestModelrenewalPeriod": {
+        "type": "object",
         "required": ["value"],
         "properties": {
           "unit": {
             "type": "string",
-            "example": "DAY",
+            "description": "The time unit for the renewal period. Specifies whether the contract should auto-renew after a number of days, weeks, months, or years.",
+            "example": "MONTH",
             "enum": ["DAY", "WEEK", "MONTH", "YEAR"]
           },
           "value": {
             "type": "integer",
-            "description": "value"
+            "description": "The number of units after which the contract will auto-renew. For example, value=3 and unit=MONTH means the contract renews every 3 months."
           }
-        },
-        "type": "object"
+        }
       },
       "ContractResponseModel": {
+        "type": "object",
         "properties": {
           "error": {
-            "type": "string"
+            "type": "string",
+            "description": "Error message, if any. Null if the request was successful."
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "Human-readable message describing the result of the operation."
           },
           "data": {
             "$ref": "#/components/schemas/ContractResponseData"
           }
-        },
-        "type": "object"
+        }
       },
       "ContractResponseData": {
+        "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "Unique identifier of the added/created object."
           }
-        },
-        "type": "object"
+        }
       },
       "UpdateContractAPIRequestModel_Request": {
         "properties": {
@@ -4285,11 +4210,11 @@
         "properties": {
           "feeComponentId": {
             "type": "string",
-            "description": "feeComponentId"
+            "description": "The unique identifier of the fee component to associate with the contract."
           },
           "contractId": {
             "type": "string",
-            "description": "contractId"
+            "description": "The unique identifier of the contract to which the fee component will be linked."
           }
         },
         "type": "object"
@@ -4314,87 +4239,115 @@
       "CreateUsageAPIRequestModel": {
         "type": "object",
         "required": [
-          "buyerId",
-          "contractId",
-          "eventId",
           "eventTimeStamp",
           "metrics",
-          "usageReferenceId"
+          "usageReferenceId",
+          "buyerId",
+          "tags"
         ],
         "properties": {
           "buyerId": {
-            "type": "string"
+            "type": "string",
+            "description": "Unique identifier of the buyer associated with this usage event",
+            "example": "buyer_12345"
           },
           "contractId": {
-            "type": "string"
+            "type": "string",
+            "description": "Identifier of the contract under which the usage is recorded",
+            "example": "contract_67890"
           },
           "eventId": {
-            "type": "string"
+            "type": "string",
+            "description": "Optional unique ID for this usage event, useful for idempotency",
+            "example": "event_abc123"
           },
           "eventTimeStamp": {
             "type": "integer",
-            "description": "Timestamp in milliseconds"
+            "description": "Unix timestamp in milliseconds representing when the usage occurred",
+            "example": 1755079200000
           },
           "tags": {
             "type": "object",
-            "description": "Custom key-value tags",
+            "description": "Custom key-value tags associated with this usage",
             "additionalProperties": {
               "type": "string"
+            },
+            "example": {
+              "region": "US-East",
+              "plan": "Enterprise",
+              "feature": "premium_support"
             }
           },
           "metrics": {
             "type": "array",
-            "description": "A list of usage metrics",
+            "description": "List of usage metrics for this event",
             "items": {
               "type": "object",
               "properties": {
                 "usage_driver_id": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Identifier for the usage driver or metric type",
+                  "example": "usage_driver_001"
                 },
                 "quantity": {
-                  "type": "number",
-                  "format": "float"
+                  "type": "float",
+                  "format": "float",
+                  "description": "The measured quantity for this usage driver",
+                  "example": 42.5
                 },
                 "count": {
-                  "type": "integer"
+                  "type": "integer",
+                  "description": "Optional count associated with this metric",
+                  "example": 1
                 }
               }
             }
           },
           "usageReferenceId": {
-            "type": "string"
+            "type": "string",
+            "description": "A unique reference ID for tracking this usage event across systems",
+            "example": "usage_ref_98765"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Optional metadata for storing extra key-value information about the usage event.",
+            "additionalProperties": true,
+            "example": {
+              "company_id": "3932",
+              "recon_date": "2025-05-06 00:00:00",
+              "company_name": "Reliance Europa Limited",
+              "old_bag_status": "Returned"
+            }
           }
         }
       },
       "UsageResponseModel": {
+        "type": "object",
+        "description": "Response returned after adding a usage event. Contains status and optional data.",
         "properties": {
           "error": {
-            "type": "string"
+            "type": "string",
+            "nullable": true,
+            "description": "Error message if the operation failed; null if successful",
+            "example": null
           },
           "message": {
-            "type": "string"
-          },
-          "data": {
-            "$ref": "#/components/schemas/UsageResponseData"
+            "type": "string",
+            "description": "Human-readable message indicating the result of the operation",
+            "example": "Added usage successfully"
           }
-        },
-        "type": "object"
+        }
       },
       "UsageResponseData": {
+        "type": "object",
+        "description": "Details of the usage event that was just created. Can be empty if no extra data is returned.",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "Unique identifier of the usage event",
+            "example": "usage_12345"
           }
-        },
-        "type": "object"
-      },
-      "UpdateUsageRequestModel_Request": {
-        "properties": {
-          "updates": {
-            "$ref": "#/components/schemas/UpdateUsageRequestModel_FieldsUpdateModel"
-          }
-        },
-        "type": "object"
+        }
       },
       "UpdateUsageRequestModel_FieldsUpdateModel": {
         "properties": {
@@ -4715,5 +4668,4 @@
       }
     }
   }
-  
 }
