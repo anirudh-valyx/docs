@@ -1495,7 +1495,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UsageResponseModel"
+                  "$ref": "#/components/schemas/UsageAdditionResponseModel"
                 }
               }
             }
@@ -4427,6 +4427,41 @@
             "example": "Added usage successfully"
           }
         }
+      },
+      "UsageAdditionResponseModel": {
+        "properties": {
+          "error": { "type": "string" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/UsageAdditionResponseModelData" }
+        },
+        "type": "object"
+      },
+      "UsageAdditionResponseModelData": {
+        "properties": {
+          "usagesAdded": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UsageAdditionResponseModelDatausagesAdded"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": { "type": "string", "description": "errors" }
+          }
+        },
+        "type": "object"
+      },
+      "UsageAdditionResponseModelDatausagesAdded": {
+        "properties": {
+          "usageDriverId": { "type": "string", "description": "usageDriverId" },
+          "usageDriverName": {
+            "type": "string",
+            "description": "usageDriverName"
+          },
+          "contractId": { "type": "string", "description": "contractId" },
+          "value": { "type": "number", "description": "value" }
+        },
+        "type": "object"
       },
       "UsageResponseData": {
         "type": "object",
