@@ -2820,7 +2820,7 @@
           },
           "ratecardDescription": {
             "type": "string",
-            "description": "Detailed description of the rate card, visible to users. <Tabs><Tab title = 'A'></Tabs>"
+            "description": "Detailed description of the rate card, visible to users. See: https://docs.valyx.com/api-reference/endpoint/ratecard#rate-card-description"
           },
           "contractId": {
             "type": "string",
