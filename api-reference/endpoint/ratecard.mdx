@@ -10,18 +10,26 @@ Rate Card Description
 
 <Tabs>
   <Tab title="Flat Fee">
-    
+    - **Billing Scheme** **(Required)**- defines type of the rate card being used. Should be passed as `FIXED_RATE` for flat fee rate card.
+    - **Fixed Price(Required)** - Fixed price that is to be charged irrespective of usage
+
+    ```json
+    {
+    	"billingScheme": "FIXED_RATE",
+    	"fixedPrice": 100
+    }
+    ```
   </Tab>
   <Tab title="Per Unit Fee">
-        - **Billing Scheme** **(Required)**- defines type of the rate card being used. Should be passed as "PER_UNIT" for per unit rate card.
+    - **Billing Scheme** **(Required)**- defines type of the rate card being used. Should be passed as `PER_UNIT` for per unit fee rate card.
     - **Per Unit Price (Required)** - Fixed price that is to be charged per unit of usage.
     - **Is Percentage (Optional)** - Determines if the rate is a percentage of usage value. Default to False.
-    
+
     | Per Unit Price | Is Percentage | Usage Value | Amount Charged |
     | -------------- | ------------- | ----------- | -------------- |
     | 10             | False         | 50          | 500            |
     | 10             | False         | 50          | 5              |
-    
+
     ```json
     {
     	"billingScheme": "PER_UNIT",
@@ -29,13 +37,71 @@ Rate Card Description
     	"isPercentage": False 
     }
     ```
-    
   </Tab>
   <Tab title="Volume Based">
-    
+    - **Billing Scheme** **(Required)**- defines type of the rate card being used. Should be passed as `VOLUME` for volume based rate card.
+    - **Tiers (Required)** - Defines different tiers in the rate card -
+      - **Name (Required)** - Name of the tier
+      - **UpTo (Required)** - The upper usage limit of the tier (inclusive)
+      - **Unit Price (Required)** - Price per usage for this tier
+      - **Flat Price (Optional)** - Additional flat fee charged for this tier
+      - **Is Percentage (Optional)** - Determines if the rate is a percentage of usage value. Default to False.
+      - **Repeat Tier (Optional)** - If set to true, all the immediately following tiers will be ignored and this tier will be repeated at the same interval all the way to infinity. Defaults to False.
+
+    ```json
+    {
+    	"billingScheme": "VOLUME",
+    	"tiers": [
+    		{
+    			"name": "10_rs_for_quantity_below_100",
+    			"upTo": 100,
+    			"unitPrice": 10,
+    			"flatPrice": 50
+    		}, {
+    			"name": "8_rs_for_quantity_above_100_but_less_than_500",
+    			"upTo": 500,
+    			"unitPrice": 8
+    		}, {
+    			"name": "2_percent_for_quantity_above_500",
+    			"upTo": infinity,
+    			"unitPrice": 2,
+    			"isPercentage": True
+    		}
+    	]
+    }
+    ```
   </Tab>
   <Tab title="Graduated">
-    
+    - **Billing Scheme** **(Required)**- defines type of the rate card being used. Should be passed as `GRADUATED` for volume based rate card.
+    - **Tiers (Required)** - Defines different tiers in the rate card -
+      - **Name (Required)** - Name of the tier
+      - **UpTo (Required)** - The upper usage limit of the tier (inclusive)
+      - **Unit Price (Required)** - Price per usage for this tier
+      - **Flat Price (Optional)** - Additional flat fee charged for this tier
+      - **Is Percentage (Optional)** - Determines if the rate is a percentage of usage value. Default to False.
+      - **Repeat Tier (Optional)** - If set to true, all the immediately following tiers will be ignored and this tier will be repeated at the same interval all the way to infinity. Defaults to False.
+
+    ```json
+    {
+    	"billingScheme": "GRADUATED",
+    	"tiers": [
+    		{
+    			"name": "10_rs_for_quantity_below_100",
+    			"upTo": 100,
+    			"unitPrice": 10,
+    			"flatPrice": 50
+    		}, {
+    			"name": "8_rs_for_quantity_above_100_but_less_than_500",
+    			"upTo": 500,
+    			"unitPrice": 8
+    		}, {
+    			"name": "2_percent_for_quantity_above_500",
+    			"upTo": infinity,
+    			"unitPrice": 2,
+    			"isPercentage": True
+    		}
+    	]
+    }
+    ```
   </Tab>
 </Tabs>
-
