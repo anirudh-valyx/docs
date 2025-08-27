@@ -3,11 +3,39 @@ title: "Create Ratecard"
 openapi: "POST /billing/ratecard"
 ---
 
+<h2>
+Rate Card Description
+
+</h2>
+
 <Tabs>
-  <Tab title="Tab A">
+  <Tab title="Flat Fee">
     
   </Tab>
-  <Tab title="Tab B">
+  <Tab title="Per Unit Fee">
+    
+  </Tab>
+  <Tab title="Volume Based">
+    
+  </Tab>
+  <Tab title="Graduated">
     
   </Tab>
 </Tabs>
+
+- **Billing Scheme** **(Required)**- defines type of the rate card being used. Should be passed as "PER_UNIT" for per unit rate card.
+- **Per Unit Price (Required)** - Fixed price that is to be charged per unit of usage.
+- **Is Percentage (Optional)** - Determines if the rate is a percentage of usage value. Default to False.
+
+| Per Unit Price | Is Percentage | Usage Value | Amount Charged |
+| -------------- | ------------- | ----------- | -------------- |
+| 10             | False         | 50          | 500            |
+| 10             | False         | 50          | 5              |
+
+```json
+{
+	"billingScheme": "PER_UNIT",
+	"perUnitPrice": 10,
+	"isPercentage": False 
+}
+```
