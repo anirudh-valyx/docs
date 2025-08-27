@@ -2820,7 +2820,7 @@
           },
           "ratecardDescription": {
             "type": "string",
-            "description": "Detailed description of the rate card, visible to users."
+            "description": "Detailed description of the rate card, visible to users. <Tabs><Tab title = 'A'></Tabs>"
           },
           "contractId": {
             "type": "string",
