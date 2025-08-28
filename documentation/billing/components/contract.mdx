@@ -12,8 +12,55 @@ Details of the customer that the contact is for. Some of the details here are -
 - Tax details of the customer e.g. GST number, PAN etc.
 - Billing and shipping address
 
+### Seller Details
+
+- Your company details ex. GSTIN, VAT etc
+
 #### Contract Details
 
 - **Contract Number** - Internal identifier for the contract maintained at your end. You can also push that value in Valyx so that it is easier to track.
 - **Title** - Any free text title for the contract
 - **Contract Period** - The period for which the contract is valid for. Can be extended later or set to auto renew.
+- **Billing Cycle / Billing Frequency** - The frequency at which you are going to bill the customer
+- **Start Date** - Start date of the contract
+- **Auto Renew** - Enable if you want to automatically renew the contract, once the current contract period ends
+- **Note to Customer** - Any additional contract notes / details that you want to send to your customer
+
+**Fee Components**
+
+- Fee components (Services / Product) on which your customer is billed
+  - There can be multiple fee components in a single contract
+  - Start Date (Default : Contract Start Date) : When you want the Fee Component to become applicable. Note : This cannot be lower than the contract start date
+  - End Date (Default : Contract End Date) : When you want the Fee Component to become inapplicable. This cannot be higher than contract end date.
+
+**Billing Details**
+
+- **Invoice At** : Defines if bill is generated before / after the usage
+  - Pre Usage : Bill is generated at the start of the billing period
+  - Post Usage : Bill is generated at the end of billing period
+- **Generate Bill At** : Defines when the bill is generated
+  - First Day of the period : Bill is generated on the first day of the month (for Pre Usage) and end of the month (for Post Usage)
+  - Subscription Date : Bill is generated on the contract start date. Example,
+    - If the contract is Pre Usage, with monthly billing cycle and starts on 15th April, then the bill will be generated on 15th April, 15th May, 15th June\
+      If the contract is Post Usage with monthly billing cycle and starts on 15th April, then the bill will be generated on 14th May, 14th June, 14th July
+- **Discounts** : Discounts to be applied to the bill
+  - You can create multiple Discount Items
+  - A discount item details
+    - Discount can be either a fixed (amount or percentage) or calculated based on the usage
+    - If the discount is usage based
+      - You can choose the usages to be considered for calculating the discount
+      - You can create discount based on the Tier / Slab of the usage
+    - Range of the period to apply the discount
+      - You can choose the range of billing cycles when you want to apply the discounts. Example - 1st billing cycle to 4th billing cycle
+    - Can be calculated and applied either pre-taxes or post taxes
+    - Discount can be calculated and applied on either pre-tax or post-tax amount of the bill
+- **Fee Limit** : Upper and lower limit of the bill.
+  - Fee Limit can be applied on per billing cycle basis on on the overall contract
+    - Per billing cycle : Amount in each bill generated will be greater than equal to fee limit
+    - Per contract : Billing will occur as per the normal usage and if the total bill amount (of all the billing periods) is less than the fee limit, then an additional charge (which is Fee Limit - Total Billed amount) will be added to last bill
+  - Fee Limit can be either a fixed amount or usage based
+    - Fixed fee limit - You can input the minimum and maximum limit of the bill
+    - Usage based fee limit
+      - You can choose the usages to be considered for calculating the fee limit
+      - You can define the fee limit based on the Tier / Slab of the usage
+  - Fee Limit can also be pro-rated (applicable in first and last billing cycle)

@@ -1,0 +1,60 @@
+---
+title: "How to use APIs to create contracts"
+---
+
+Billing in Valyx has the following components
+
+- Contracts
+- Fee Components
+- Usage Drivers
+- Rate Cards
+- Usages
+- Billing Reports
+
+**Contracts**
+
+**Contract** is the central agreement for each customer where you setup the contract details like Contract Period, Billing Period, Fee Components, type of contract (Pre Usage or Post Usage), minimum commitment (on a contract level), discounts etc.
+
+### **Fee Components**
+
+Fee Components contains the details of services / product that you are going to charge the customer. It contains details like Usage Driver, Rate Cards, Fee limits specific for this fee component, Tax details, HSN/ SAC code.
+
+First, a fee component is created in a generic format wherein you specify the name, HSN/ SAC code, different taxes that can be applicable, fee limits, different attributes and associated rate cards.
+
+Once you have created a fee component (generic), you need to add it to a contract. Here, you can select the applicable taxes and customise the rate card specific to the contract (customer).
+
+### **Usage Drivers**
+
+A **Usage Driver** is the metric or activity that determines the amount a customer is charged for a particular fee component. This component makes the billing dynamic, allowing charges to be based on actual consumption.
+
+### **Rate Cards**
+
+The **Rate Card** contains the specific pricing rules for a given fee component. It specifies the cost per unit of the associated usage driver.
+
+The rate cards are always associated to a fee component.
+
+### **Usage**
+
+**Usage** is the actual, collected data for each **Usage Driver**. This is the quantitative record of the customer's consumption, which is used to calculate the final bill.
+
+**Flow for creating a new contract**
+
+1. Create a Usage Driver (Skip if the usage driver is already created)
+2. Create a Fee Component and adding the usage driver (Skip if the Fee component is already created)
+   1. Add attributes to a fee component
+   2. Add rate cards for each specific attribute
+3. Create a contract
+   1. Create a contract by adding the relevant details of the contract like Customer details, contract name, contract period, billing period, fee limits, discounts, type of contract etc
+   2. Add applicable fee components to the contract
+   3. Edit / Update the rate cards for this fee component for this contract (if needed)
+
+Note : If you don't mention the contract start date or start date is in the future, the contract will remain in the draft state i.e you can edit the contract however you want. Once the contract is activated, you will not be able to edit the customer details, contract details like contract period, billing cycle, usage cycle, type of contract (pre usage / post usage)
+
+Some sample contracts
+
+| Number | Type       | Billing Cycle             | Auto Renew | Fee Limit         | Discounts                     | Fee Components     | Other details                 |
+| ------ | ---------- | ------------------------- | ---------- | ----------------- | ----------------------------- | ------------------ | ----------------------------- |
+| 1      | Post Usage | Monthly                   | False      | False             | False                         | without attributes | Flat fee                      |
+| 2      | Post Usage | Monthly                   | True       | Per Billing Cycle | For 1st and last billing cyce | with attributes    | Usage based Tiered Rate cards |
+| 3      | Pre Usage  | Monthly                   | False      | False             | False                         | with attributes    | with estimates                |
+| 4      | Pre Usage  | Quarterly, Billed monthly | False      | True              | True                          | without attributes | without estimates             |
