@@ -19,13 +19,29 @@ Billing in Valyx has the following components
 
 Fee Components contains the details of services / product that you are going to charge the customer. It contains details like Usage Driver, Rate Cards, Fee limits specific for this fee component, Tax details, HSN/ SAC code.
 
-First, a fee component is created in a generic format wherein you specify the name, HSN/ SAC code, different taxes that can be applicable, fee limits, different attributes and associated rate cards.
+First, a fee component is created in a wherein you specify the name, HSN/ SAC code, different taxes that can be applicable, fee limits, different attributes and associated rate cards.
 
-Once you have created a fee component (generic), you need to add it to a contract. Here, you can select the applicable taxes and customise the rate card specific to the contract (customer).
+Once you have created a fee component, you need to add it to a contract. Here, you can select the taxes which are applicable for this contract and edit the rate card of the Fee component specific to the contract (customer).
 
 ### **Usage Drivers**
 
-A **Usage Driver** is the metric or activity that determines the amount a customer is charged for a particular fee component. This component makes the billing dynamic, allowing charges to be based on actual consumption.
+A **Usage Driver** is the metric or activity that determines the amount a customer is charged for a particular fee component.
+
+Example, you're a Saas company where you provide different type of APIs and you charge the customer based on API used by the customer. And the pricing varies based on API type.
+
+| API                   | Usage Driver | Price per API |
+| --------------------- | ------------ | ------------- |
+| PAN verification      | API          | 1             |
+| Identity verification | API          | 2             |
+
+Note : You cannot create 2 usage drivers with the same name.
+
+To solve this, you can create a usage driver and associate it to a product. Now, you can have multiple usage drivers with the same name but different products
+
+| Usage Driver | Product               | Price per API |
+| ------------ | --------------------- | ------------- |
+| API used     | PAN verification      | 1             |
+| API used     | Identity verification | 2             |
 
 ### **Rate Cards**
 
@@ -52,9 +68,395 @@ Note : If you don't mention the contract start date or start date is in the futu
 
 Some sample contracts
 
-| Number | Type       | Billing Cycle             | Auto Renew | Fee Limit         | Discounts                     | Fee Components     | Other details                 |
-| ------ | ---------- | ------------------------- | ---------- | ----------------- | ----------------------------- | ------------------ | ----------------------------- |
-| 1      | Post Usage | Monthly                   | False      | False             | False                         | without attributes | Flat fee                      |
-| 2      | Post Usage | Monthly                   | True       | Per Billing Cycle | For 1st and last billing cyce | with attributes    | Usage based Tiered Rate cards |
-| 3      | Pre Usage  | Monthly                   | False      | False             | False                         | with attributes    | with estimates                |
-| 4      | Pre Usage  | Quarterly, Billed monthly | False      | True              | True                          | without attributes | without estimates             |
+| Number | Type       | Billing Cycle | Usage Cycle | Auto Renew | Fee Limit         | Discounts                 | Estimated Usage |
+| :----: | :--------: | :-----------: | :---------: | :--------: | :---------------: | :-----------------------: | --------------- |
+| 1      | Post Usage | Monthly       | Monthly     | False      | False             | False                     | NA              |
+| 2      | Post Usage | Quarterly     | Monthly     | True       | Per Billing Cycle | 1st and last billing cyce | NA              |
+| 3      | Pre Usage  | Monthly       | Monthly     | False      | False             | False                     | False           |
+| 4      | Pre Usage  | Quarterly     | Monthly     | False      | True              | True                      | True            |
+
+Create Usage Driver without a Product
+
+```
+{
+  "name": "API used",
+  "description": "",
+  "unit": "API count"
+}
+```
+
+Create Usage Driver with a Product
+
+```
+{
+  "name": "API used",
+  "description": "",
+  "unit": "API count",
+  "productId": "product_1234"
+}
+```
+
+Create Fee Component (without fee component specific fee limits)
+
+```
+{
+  "name": "API Fee",
+  "taxRate": [
+    {
+      "name": "GST",
+      "value": 18,
+      "isActive": true,
+      "taxCategory": "GST"
+    },
+	{
+      "name": "VAT",
+      "value": 5,
+      "isActive": true,
+      "taxCategory": "OTHER"
+    }
+  ],
+  "hsnOrSacCode": "123456",
+  "unit": "API count",
+  "driverUpsertRequest": {
+    "upsertRequests": [
+      {
+        "usageDriverId": "ud_123",
+        "weight": 1
+      }
+    ]
+  }
+}
+```
+
+Create Fee Component with FC specific fee limits of min 5000 and is prorated.
+
+```
+{
+  "name": "API Fee - 2",
+  "taxRate": [
+    {
+      "name": "GST",
+      "value": 18,
+      "isActive": true,
+      "taxCategory": "GST"
+    },
+	{
+      "name": "VAT",
+      "value": 5,
+      "isActive": true,
+      "taxCategory": "OTHER"
+    }
+  ],
+  "hsnOrSacCode": "998866",
+  "billLimit": {
+    "isUsageBased": false,
+    "minValue": 5000,
+    "maxValue": 999999999999,
+    "isProrated": true
+  },
+  "unit": "API count",
+  "description": "This is the fee for API count",
+  "driverUpsertRequest": {
+    "upsertRequests": [
+      {
+        "usageDriverId": "ud_1234",
+        "weight": 1
+      }
+    ]
+  }
+}
+```
+
+Add attributes (key-value pair) to fee components # No Api yet
+
+```
+{
+  "feeComponentId": "feecomp_1234",
+  "name": "zone",
+  "value": "North"
+}
+```
+
+Add a graduated rate cards to the above created fee component (without tags)
+
+```
+{
+  "name": "name_of_graduated_rate_card",
+  "description": {
+    "billingScheme": "GRADUATED",
+    "tiers": [
+      {
+        "name": "price_2_from_usage_0_to_1000",
+        "upTo": 1000,
+        "unitPrice": 2,
+        "flatPrice": 0,
+        "isPercentage": false,
+        "repeatTier": false
+      },
+	  {
+        "name": "price_1.9_from_usage_1001_to_infinity",
+        "upTo": Infinity,
+        "unitPrice": 1.9,
+        "flatPrice": 0,
+        "isPercentage": false,
+        "repeatTier": false
+      }
+    ],
+    "isProrated": false
+  },
+  "feeComponentId": "feecomp_1234",
+  "currency": "INR",
+  "tags": {},
+}
+```
+
+Add a volume rate cards to the above created fee component for a specific tag
+
+```
+{
+  "name": "name_of_rate_card_volume",
+  "description": {
+    "billingScheme": "VOLUME",
+    "tiers": [
+      {
+        "name": "if_usage_0_to_1000_price_2",
+        "upTo": 1000,
+        "unitPrice": 2,
+        "flatPrice": 0,
+        "isPercentage": false,
+        "repeatTier": false
+      },
+	  {
+        "name": "if_usage_1001_to_infinity_price_1.9",
+        "upTo": Infinity,
+        "unitPrice": 1.9,
+        "flatPrice": 0,
+        "isPercentage": false,
+        "repeatTier": false
+      }
+    ],
+    "isProrated": false
+  },
+  "feeComponentId": "feecomp_1234",
+  "currency": "INR",
+  "tags": {
+	  "zone": "North"
+	},
+}
+```
+
+Sample contract creation payloads
+
+Note : Assuming you already have created the Fee Components and rate cards
+
+1. Post Usage Contract || Monthly Billing & Usage Cycle || No contract start date || Bill generated at the start of the period
+
+   ```
+   {
+     "customerId": "cust_123456",
+     "contractNumber": "123456789",
+     "contractTitle": "123456789",
+     "contractPeriod": {
+       "unit": "YEAR",
+       "value": 1
+     },
+     "billingFrequency": {
+       "unit": "MONTH",
+       "value": 1
+     },
+     "startDate": null,
+     "creditTermId": null,
+     "poNumber": null,
+     "noteInvoice": "",
+     "terms": "",
+     "placeOfSupply": {
+       "stateName": "KARNATAKA",
+       "stateCode": "29"
+     },
+     "billingAddress": {
+       "line1": "Blah",
+       "line2": "Blah Blah Street",
+       "state": "KARNATAKA",
+       "city": "Blah city",
+       "country": "INDIA",
+       "zipCode": "560038"
+     },
+     "shippingAddress": {
+       "line1": "Blah",
+       "line2": "Blah Blah Street",
+       "state": "KARNATAKA",
+       "city": "Blah city",
+       "country": "INDIA",
+       "zipCode": "560038"
+     },
+     "noteContract": "",
+     "gstin": "29APOPB5020J1Z9",
+     "companyGstin": "29QWEPR1234Z1ZQ",
+     "billingDiscounts": [],
+     "isPreusage": false,
+     "billingTime": "BEGINNING_OF_PERIOD",
+     "billingReportLimit": null,
+     "contractLimit": null,
+     "advanceConfig": null,
+     "usageBillingCycle": {
+       "unit": "MONTH",
+       "value": 1
+     },
+     "estimateCycle": null,
+     "autoRenew": false,
+     "renewalPeriod": null
+   }
+   ```
+2. Post Usage Contract || Monthly Billing & Usage Cycle || No contract start date || Bill generated at the start of the period || Fee Limit per billing cycle || Fixed Discount for 1st and last billing cycle
+
+```
+{
+  "customerId": "cust_123456",
+  "contractNumber": "987654321",
+  "contractTitle": "987654321",
+  "contractPeriod": {
+    "unit": "YEAR",
+    "value": 1
+  },
+  "billingFrequency": {
+    "unit": "MONTH",
+    "value": 1
+  },
+  "startDate": null,
+  "creditTermId": null,
+  "poNumber": null,
+  "noteInvoice": "",
+  "terms": "",
+  "placeOfSupply": {
+    "stateName": "KARNATAKA",
+    "stateCode": "29"
+  },
+  "billingAddress": {
+    "line1": "Blah",
+    "line2": "Blah Street",
+    "state": "Karnataka",
+    "city": "Blah",
+    "country": "India",
+    "zipCode": "560038"
+  },
+  "shippingAddress": {
+    "line1": "Blah",
+    "line2": "Blah Street",
+    "state": "Karnataka",
+    "city": "Blah",
+    "country": "India",
+    "zipCode": "560038"
+  },
+  "noteContract": "",
+  "gstin": "29APOPB5020J1Z9",
+  "companyGstin": "29QWEPR1234Z1ZQ",
+  "billingDiscounts": [
+    {
+      "amount": 10000,
+      "percentage": 0,
+      "isPostTax": false,
+      "isUsageBased": false,
+      "duration": {
+        "startIndex": 1,
+        "endIndex": 1
+      }
+    },
+	{
+      "amount": 11000,
+      "percentage": 0,
+      "isPostTax": false,
+      "isUsageBased": false,
+      "duration": {
+        "startIndex": 12,
+        "endIndex": 12
+      }
+    }
+  ],
+  "isPreusage": false,
+  "billingTime": "BEGINNING_OF_PERIOD",
+  "billingReportLimit": {
+    "isUsageBased": false,
+    "minValue": 25000,
+    "maxValue": null,
+    "isProrated": true
+  },
+  "contractLimit": null,
+  "usageBillingCycle": {
+    "unit": "MONTH",
+    "value": 1
+  },
+  "autoRenew": true,
+  "renewalPeriod": {
+    "unit": "YEAR",
+    "value": 1
+  }
+}
+```
+
+3. PreUsage Contract || Quarterly Billing || Usage tracked monthly || No Estimate
+
+```
+{
+  "customerId": "cust_123456",
+  "contractNumber": "1357_abc",
+  "contractTitle": "1357_abcdef",
+  "contractPeriod": {
+    "unit": "YEAR",
+    "value": 1
+  },
+  "billingFrequency": {
+    "unit": "MONTH",
+    "value": 3
+  },
+  "startDate": null,
+  "creditTermId": null,
+  "poNumber": null,
+  "noteInvoice": "",
+  "terms": "",
+  "placeOfSupply": {
+    "stateName": "KARNATAKA",
+    "stateCode": "29"
+  },
+  "billingAddress": {
+    "line1": "Blah",
+    "line2": "Blah Street",
+    "state": "Karnataka",
+    "city": "Blah",
+    "country": "India",
+    "zipCode": "560038"
+  },
+  "shippingAddress": {
+    "line1": "Blah",
+    "line2": "Blah Street",
+    "state": "Karnataka",
+    "city": "Blah",
+    "country": "India",
+    "zipCode": "560038"
+  },
+  "noteContract": "",
+  "gstin": "29APOPB5020J1Z9",
+  "companyGstin": "29QWEPR1234Z1ZQ",
+  "billingDiscounts": [],
+  "isPreusage": true,
+  "billingTime": "BEGINNING_OF_PERIOD",
+  "billingReportLimit": null,
+  "advanceConfig": {
+    "trueUpEnabled": true,
+    "trueDownEnabled": false,
+    "actualUsageOverride": false,
+    "isUsageEstimateProrated": true,
+  },
+  "usageBillingCycle": {
+    "unit": "MONTH",
+    "value": 1
+  },
+  "estimateCycle": {
+    "unit": "MONTH",
+    "value": 1
+  },
+  "autoRenew": false,
+  "renewalPeriod": null
+}
+```
+
+Note : By default, the estimate is assumed to be 0
