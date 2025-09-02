@@ -21,8 +21,8 @@
               "documentation/billing/components/usage-driver",
               "documentation/billing/components/rate-card",
               "documentation/billing/components/billing-flow",
-              "documentation/billing/components/billing-report"
-              
+              "documentation/billing/components/billing-report",
+              "documentation/billing/components/create-fee-component-tags"
             ]
           },
           {

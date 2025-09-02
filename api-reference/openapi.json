@@ -19,6 +19,76 @@
     }
   ],
   "paths": {
+    "/billing/feeComponentTag": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/FeeComponentTagResponseModel"
+            }
+          }
+        },
+        "operationId": "post_create_fee_component_tag",
+        "parameters": [
+          {
+            "name": "X-Valyx-Signature",
+            "in": "header",
+            "type": "string",
+            "required": true,
+            "description": "Auth key for fetching ledger entries"
+          },
+          {
+            "name": "payload",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AddTagValueRequestModel"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "type": "string",
+            "format": "mask",
+            "description": "An optional fields mask"
+          }
+        ],
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/billing/feeComponentTag/fetch/feeComponent/{fee_component_id}": {
+      "parameters": [
+        {
+          "name": "fee_component_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "operationId": "get_fetch_fee_component_tag",
+        "parameters": [
+          {
+            "name": "X-Valyx-Signature",
+            "in": "header",
+            "type": "string",
+            "required": true,
+            "description": "Auth key for fetching ledger entries"
+          }
+        ],
+        "tags": [
+          "billing"
+        ]
+      }
+    },
     "/billing/billingReport/email/preview/{billing_report_id}": {
       "parameters": [
         {
@@ -2216,6 +2286,50 @@
       }
     },
     "schemas": {
+    "AddTagValueRequestModel": {
+      "required": [
+        "feeComponentId",
+        "name",
+        "value"
+      ],
+      "properties": {
+        "feeComponentId": {
+          "type": "string",
+          "description": "feeComponentId"
+        },
+        "name": {
+          "type": "string",
+          "description": "name"
+        },
+        "value": {
+          "type": "string",
+          "description": "value"
+        }
+      },
+      "type": "object"
+    },
+    "FeeComponentTagResponseModel": {
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/components/schemas/FeeComponentTagResponseData"
+        }
+      },
+      "type": "object"
+    },
+    "FeeComponentTagResponseData": {
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
       "CreateUsageDriverQueryModel": {
         "required": ["name", "description", "unit"],
         "properties": {
