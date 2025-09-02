@@ -41,7 +41,8 @@
               "api-reference/endpoint/fee-comp",
               "api-reference/endpoint/contract-fee-comp",
               "api-reference/endpoint/usage-driver",
-              "api-reference/endpoint/usage-driver-filter"
+              "api-reference/endpoint/usage-driver-filter",
+              "api-reference/endpoint/fee-component-tags"
             ]
           }
         ]

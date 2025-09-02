@@ -58,6 +58,47 @@
         "tags": ["billing"]
       }
     },
+    "/billing/feeComponentTag": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeeComponentTagResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post_create_fee_component_tag",
+        "parameters": [
+          {
+            "name": "X-Valyx-Signature",
+            "in": "header",
+            "required": true,
+            "description": "Auth key for fetching ledger entries",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "description": "An optional fields mask",
+            "schema": {
+              "type": "string",
+              "format": "mask"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/AddTagValueRequestModel"
+        },
+        "tags": ["billing"]
+      }
+    },
     "/billing/billingReport/email/send": {
       "post": {
         "responses": {
@@ -4432,7 +4473,9 @@
         "properties": {
           "error": { "type": "string" },
           "message": { "type": "string" },
-          "data": { "$ref": "#/components/schemas/UsageAdditionResponseModelData" }
+          "data": {
+            "$ref": "#/components/schemas/UsageAdditionResponseModelData"
+          }
         },
         "type": "object"
       },
@@ -4754,6 +4797,28 @@
           },
           "emailRecipient": {
             "$ref": "#/components/schemas/BillingReportSendEmailRequestModelemailRecipient"
+          }
+        },
+        "type": "object"
+      },
+      "FeeComponentTagResponseModel": {
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FeeComponentTagResponseData"
+          }
+        },
+        "type": "object"
+      },
+      "FeeComponentTagResponseData": {
+        "properties": {
+          "id": {
+            "type": "string"
           }
         },
         "type": "object"
