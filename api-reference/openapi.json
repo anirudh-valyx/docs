@@ -542,7 +542,14 @@
       "get": {
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractRateCardRelationshipListResponseModel"
+                }
+              }
+            }
           }
         },
         "operationId": "get_fetch_contract_rate_card_relations",
@@ -569,6 +576,15 @@
             "description": "Auth key for fetching ledger entries",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "description": "An optional fields mask",
+            "schema": {
+              "type": "string",
+              "format": "mask"
             }
           }
         ],
@@ -638,10 +654,37 @@
       "get": {
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractFeeComponentResponseModelListResponseModel"
+                }
+              }
+            }
           }
         },
         "operationId": "get_fetch_contract_fee_components",
+        "parameters": [
+          {
+            "name": "X-Valyx-Signature",
+            "in": "header",
+            "required": true,
+            "description": "Auth key for fetching ledger entries",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "description": "An optional fields mask",
+            "schema": {
+              "type": "string",
+              "format": "mask"
+            }
+          }
+        ],
         "tags": ["billing"]
       }
     },
@@ -688,7 +731,14 @@
       "get": {
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractResponseModel"
+                }
+              }
+            }
           }
         },
         "operationId": "get_fetch_filtered_contracts",
@@ -697,6 +747,14 @@
             "name": "customerId",
             "in": "query",
             "description": "Customer ID of the customer",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "buyerId",
+            "in": "query",
+            "description": "Buyer ID of the customer",
             "schema": {
               "type": "string"
             }
@@ -761,7 +819,12 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": ["ACTIVE", "DRAFT", "CANCELLED", "EXPIRED"]
+              "enum": [
+                "ACTIVE",
+                "DRAFT",
+                "CANCELLED",
+                "EXPIRED"
+              ]
             }
           },
           {
@@ -781,12 +844,33 @@
             }
           },
           {
+            "name": "currencies",
+            "in": "query",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "X-Valyx-Signature",
             "in": "header",
             "required": true,
             "description": "Auth key for fetching ledger entries",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "description": "An optional fields mask",
+            "schema": {
+              "type": "string",
+              "format": "mask"
             }
           }
         ],
@@ -1185,6 +1269,54 @@
           }
         },
         "operationId": "get_fetch_fee_component",
+        "parameters": [
+          {
+            "name": "X-Valyx-Signature",
+            "in": "header",
+            "required": true,
+            "description": "Auth key for fetching ledger entries",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Fields",
+            "in": "header",
+            "description": "An optional fields mask",
+            "schema": {
+              "type": "string",
+              "format": "mask"
+            }
+          }
+        ],
+        "tags": ["billing"]
+      }
+    },
+    "/billing/feeComponentTag/fetch/feeComponent/{fee_component_id}": {
+      "parameters": [
+        {
+          "name": "fee_component_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeeComponentTagListResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get_fetch_fee_component_tag",
         "parameters": [
           {
             "name": "X-Valyx-Signature",
@@ -2483,7 +2615,6 @@
           }
         }
       },
-
       "CreateFeeComponentAPIRequestModeldriverUpsertRequest": {
         "type": "object",
         "properties": {
@@ -2496,7 +2627,6 @@
           }
         }
       },
-
       "CreateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests": {
         "type": "object",
         "required": ["usageDriverId", "weight"],
@@ -3396,6 +3526,9 @@
           "currency": {
             "type": "object"
           },
+          "currencyId": {
+            "type": "object"
+          },
           "createdBy": {
             "type": "object"
           },
@@ -3403,6 +3536,18 @@
             "type": "object"
           },
           "status": {
+            "type": "object"
+          },
+          "isTierSplitEnabled": {
+            "type": "object"
+          },
+          "startDate": {
+            "type": "object"
+          },
+          "endDate": {
+            "type": "object"
+          },
+          "fallBackRatecardId": {
             "type": "object"
           }
         },
@@ -3895,20 +4040,506 @@
         }
       },
       "ContractResponseModel": {
-        "type": "object",
         "properties": {
           "error": {
-            "type": "string",
-            "description": "Error message, if any. Null if the request was successful."
+            "type": "string"
           },
           "message": {
-            "type": "string",
-            "description": "Human-readable message describing the result of the operation."
+            "type": "string"
           },
           "data": {
-            "$ref": "#/components/schemas/ContractResponseData"
+            "$ref": "#/components/schemas/ContractPaginatedResponseModel"
           }
-        }
+        },
+        "type": "object"
+      },
+      "ContractPaginatedResponseModel": {
+        "properties": {
+          "totalDocs": {
+            "type": "integer"
+          },
+          "docs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContractData"
+            }
+          },
+          "hasNext": {
+            "type": "boolean"
+          },
+          "hasPrev": {
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "type": "integer"
+          },
+          "pageSize": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "prevPageNumber": {
+            "type": "integer"
+          },
+          "nextPageNumber": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ContractData": {
+        "properties": {
+          "id": {
+            "type": "object"
+          },
+          "customerId": {
+            "type": "object"
+          },
+          "contractNumber": {
+            "type": "object"
+          },
+          "contractTitle": {
+            "type": "object"
+          },
+          "contractPeriod": {
+            "type": "object"
+          },
+          "renewalPeriod": {
+            "type": "object"
+          },
+          "noteContract": {
+            "type": "object"
+          },
+          "billingFrequency": {
+            "type": "object"
+          },
+          "usageBillingCycle": {
+            "type": "object"
+          },
+          "estimateCycle": {
+            "type": "object"
+          },
+          "billingTime": {
+            "type": "object"
+          },
+          "startDate": {
+            "type": "object"
+          },
+          "virtualStartDate": {
+            "type": "object"
+          },
+          "endDate": {
+            "type": "object"
+          },
+          "nextBillingDate": {
+            "type": "object"
+          },
+          "billingDiscounts": {
+            "type": "object"
+          },
+          "isPreusage": {
+            "type": "object"
+          },
+          "billingReportLimit": {
+            "type": "object"
+          },
+          "contractLimit": {
+            "type": "object"
+          },
+          "creditTermId": {
+            "type": "object"
+          },
+          "poNumber": {
+            "type": "object"
+          },
+          "placeOfSupply": {
+            "type": "object"
+          },
+          "billingAddress": {
+            "type": "object"
+          },
+          "shippingAddress": {
+            "type": "object"
+          },
+          "totalInvoicedAmount": {
+            "type": "object"
+          },
+          "noteInvoice": {
+            "type": "object"
+          },
+          "terms": {
+            "type": "object"
+          },
+          "advanceConfig": {
+            "type": "object"
+          },
+          "invoiceSplitConfig": {
+            "type": "object"
+          },
+          "gstin": {
+            "type": "object"
+          },
+          "companyGstin": {
+            "type": "object"
+          },
+          "currency": {
+            "type": "object"
+          },
+          "currencyId": {
+            "type": "object"
+          },
+          "companyId": {
+            "type": "object"
+          },
+          "createdBy": {
+            "type": "object"
+          },
+          "updatedBy": {
+            "type": "object"
+          },
+          "status": {
+            "type": "object"
+          },
+          "autoRenew": {
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "ContractRateCardRelationshipListResponseModel": {
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContractRateCardRelationshipData"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "ContractRateCardRelationshipData": {
+        "properties": {
+          "id": {
+            "type": "object"
+          },
+          "contractId": {
+            "type": "object"
+          },
+          "feeComponentId": {
+            "type": "object"
+          },
+          "ratecardId": {
+            "type": "object"
+          },
+          "tags": {
+            "type": "object"
+          },
+          "createdBy": {
+            "type": "object"
+          },
+          "status": {
+            "type": "object"
+          },
+          "companyId": {
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "ContractFeeComponentResponseModelListResponseModel": {
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContractFeeComponentResponseModelData"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "ContractFeeComponentResponseModelData": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id"
+          },
+          "productId": {
+            "type": "string",
+            "description": "productId"
+          },
+          "productName": {
+            "type": "string",
+            "description": "productName"
+          },
+          "sku": {
+            "type": "string",
+            "description": "sku"
+          },
+          "includedInUsage": {
+            "type": "boolean",
+            "description": "includedInUsage"
+          },
+          "name": {
+            "type": "string",
+            "description": "name"
+          },
+          "description": {
+            "type": "string",
+            "description": "description"
+          },
+          "hsnOrSacCode": {
+            "type": "string",
+            "description": "hsnOrSacCode"
+          },
+          "usage": {
+            "type": "number",
+            "description": "usage"
+          },
+          "billedAmount": {
+            "type": "number",
+            "description": "billedAmount"
+          },
+          "estimatedUsage": {
+            "type": "number",
+            "description": "estimatedUsage"
+          },
+          "estimatedBilledAmount": {
+            "type": "number",
+            "description": "estimatedBilledAmount"
+          },
+          "adjustment": {
+            "type": "number",
+            "description": "adjustment"
+          },
+          "taxRate": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContractFeeComponentResponseModelDatataxRate"
+            }
+          },
+          "billLimit": {
+            "$ref": "#/components/schemas/ContractFeeComponentResponseModelDatabillLimit"
+          },
+          "activePeriod": {
+            "$ref": "#/components/schemas/ContractFeeComponentResponseModelDataactivePeriod"
+          },
+          "billingFrequency": {
+            "$ref": "#/components/schemas/ContractFeeComponentResponseModelDatabillingFrequency"
+          },
+          "unit": {
+            "type": "string",
+            "description": "unit"
+          },
+          "isFlatFee": {
+            "type": "boolean",
+            "description": "isFlatFee",
+            "default": false
+          },
+          "companyId": {
+            "type": "string",
+            "description": "companyId"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "createdBy"
+          },
+          "updatedBy": {
+            "type": "string",
+            "description": "updatedBy"
+          },
+          "ratecards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContractFeeComponentResponseModelDataratecards"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "ContractFeeComponentResponseModelDatataxRate": {
+        "required": ["name", "value"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "name"
+          },
+          "value": {
+            "type": "number",
+            "description": "value"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "isActive",
+            "default": true
+          },
+          "taxCategory": {
+            "type": "string",
+            "example": "GST",
+            "enum": [
+              "GST",
+              "CESS",
+              "SERVICE",
+              "TDS",
+              "OTHER"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "ContractFeeComponentResponseModelDatabillLimit": {
+        "required": ["isUsageBased"],
+        "properties": {
+          "tiers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContractFeeComponentResponseModelDatabillLimittiers"
+            }
+          },
+          "isUsageBased": {
+            "type": "boolean",
+            "description": "isUsageBased",
+            "default": false
+          },
+          "minValue": {
+            "type": "number",
+            "description": "minValue"
+          },
+          "maxValue": {
+            "type": "number",
+            "description": "maxValue"
+          },
+          "isProrated": {
+            "type": "boolean",
+            "description": "isProrated"
+          }
+        },
+        "type": "object"
+      },
+      "ContractFeeComponentResponseModelDatabillLimittiers": {
+        "required": ["upTo"],
+        "properties": {
+          "minValue": {
+            "type": "number",
+            "description": "minValue"
+          },
+          "maxValue": {
+            "type": "number",
+            "description": "maxValue"
+          },
+          "upTo": {
+            "type": "number",
+            "description": "upTo",
+            "default": "Infinity"
+          }
+        },
+        "type": "object"
+      },
+      "ContractFeeComponentResponseModelDataactivePeriod": {
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "startDate"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "endDate"
+          }
+        },
+        "type": "object"
+      },
+      "ContractFeeComponentResponseModelDatabillingFrequency": {
+        "required": ["value"],
+        "properties": {
+          "unit": {
+            "type": "string",
+            "example": "DAY",
+            "enum": [
+              "DAY",
+              "WEEK",
+              "MONTH",
+              "YEAR"
+            ]
+          },
+          "value": {
+            "type": "integer",
+            "description": "value"
+          }
+        },
+        "type": "object"
+      },
+      "ContractFeeComponentResponseModelDataratecards": {
+        "properties": {
+          "id": {
+            "type": "object"
+          },
+          "name": {
+            "type": "object"
+          },
+          "ratecardDescription": {
+            "type": "object"
+          },
+          "feeComponentId": {
+            "type": "object"
+          },
+          "description": {
+            "type": "object"
+          },
+          "ratecardDetail": {
+            "type": "object"
+          },
+          "tags": {
+            "type": "object"
+          },
+          "companyId": {
+            "type": "object"
+          },
+          "contractId": {
+            "type": "object"
+          },
+          "currency": {
+            "type": "object"
+          },
+          "currencyId": {
+            "type": "object"
+          },
+          "createdBy": {
+            "type": "object"
+          },
+          "isDefault": {
+            "type": "object"
+          },
+          "status": {
+            "type": "object"
+          },
+          "isTierSplitEnabled": {
+            "type": "object"
+          },
+          "startDate": {
+            "type": "object"
+          },
+          "endDate": {
+            "type": "object"
+          },
+          "fallBackRatecardId": {
+            "type": "object"
+          }
+        },
+        "type": "object"
       },
       "ContractResponseData": {
         "type": "object",
@@ -4819,6 +5450,49 @@
         "properties": {
           "id": {
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "FeeComponentTagListResponseModel": {
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeeComponentTagData"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "FeeComponentTagData": {
+        "properties": {
+          "id": {
+            "type": "object"
+          },
+          "name": {
+            "type": "object"
+          },
+          "values": {
+            "type": "object"
+          },
+          "feeComponentId": {
+            "type": "object"
+          },
+          "status": {
+            "type": "object"
+          },
+          "companyId": {
+            "type": "object"
+          },
+          "createdBy": {
+            "type": "object"
           }
         },
         "type": "object"
