@@ -1,0 +1,6594 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI Valyx API
+  description: To demonstrate features in the Valyx
+  license:
+    name: MIT
+  version: 1.0.0
+servers:
+- url: https://api.valyx.com
+security:
+- bearerAuth:
+  - demo-api
+paths:
+  /billing/billingReport/email/preview/{billing_report_id}:
+    parameters:
+    - name: billing_report_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingReportEmailPreviewResponse'
+      operationId: get_billing_report_email_preview
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/feeComponentTag:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeeComponentTagResponseModel'
+      operationId: post_create_fee_component_tag
+      parameters:
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        $ref: '#/components/requestBodies/AddTagValueRequestModel'
+      tags:
+      - billing
+  /billing/billingReport/email/send:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingReportResponseModel'
+      operationId: post_billing_report_email_send
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingReportSendEmailRequestModel'
+        required: true
+      tags:
+      - billing
+  /billing/billingReport/fetch/{billing_report_id}:
+    parameters:
+    - name: billing_report_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingReportResponseModel'
+      operationId: get_fetch_billing_report
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/billingReport/filter:
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_fetch_billing_report_filter
+      parameters:
+      - name: billId
+        in: query
+        description: Bill ID associated with the billing report
+        schema:
+          type: string
+      - name: contractNumber
+        in: query
+        description: Contract number associated with the billing report
+        schema:
+          type: string
+      - name: customerId
+        in: query
+        schema:
+          type: string
+      - name: billAmountStart
+        in: query
+        description: Min limit filter for the total bill amount
+        schema:
+          type: number
+      - name: billAmountEnd
+        in: query
+        description: Max limit filter for the total bill amount
+        schema:
+          type: number
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: pageNumber
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      tags:
+      - billing
+  /billing/billingReport/generate/{contract_id}:
+    parameters:
+    - name: contract_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingReport'
+      operationId: post_generate_billing_report
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingReportGenerationRequest'
+        required: true
+      tags:
+      - billing
+  /billing/billingReport/unbilled/{contract_id}:
+    parameters:
+    - name: contract_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingReport'
+      operationId: get_get_unbilled_amount
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/billingReport/verdictUpdate:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkVerdictUpdateResponseModel'
+      operationId: post_billing_report_verdict_update
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkVerdictUpdate'
+        required: true
+      tags:
+      - billing
+  /billing/contract:
+    parameters:
+    - name: X-Valyx-Signature
+      in: header
+      required: true
+      description: Auth key to authenticate the request
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponseModel'
+      operationId: post_create_contract
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContractAPIRequestModel'
+        required: true
+      tags:
+      - billing
+  /billing/contract/cancel/{contract_id}:
+    parameters:
+    - name: contract_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+      operationId: post_cancel_contract
+      tags:
+      - billing
+  /billing/contract/feeComponent:
+    parameters:
+    - name: X-Valyx-Signature
+      in: header
+      required: true
+      description: Auth key to authenticate the request
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponseModel'
+      operationId: post_add_contract_fee_component
+      requestBody:
+        $ref: '#/components/requestBodies/FeeComponentToContractRequestModel'
+      security:
+      - X-Valyx-Signature: []
+      tags:
+      - billing
+  /billing/contract/feeComponent/delete:
+    delete:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponseModel'
+      operationId: delete_delete_contract_fee_component
+      requestBody:
+        $ref: '#/components/requestBodies/FeeComponentToContractRequestModel'
+      tags:
+      - billing
+  /billing/contract/feeComponent/includeUsage:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponseModel'
+      operationId: post_add_contract_fee_component_include_usage
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeeComponentIncludeUsageRequestModel'
+        required: true
+      tags:
+      - billing
+  /billing/contract/feeComponent/ratecard:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractRateCardRelationshipListResponseModel'
+      operationId: get_fetch_contract_rate_card_relations
+      parameters:
+      - name: contractId
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: feeComponentId
+        in: query
+        schema:
+          type: string
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/contract/feeComponent/ratecard/{contract_id}:
+    parameters:
+    - name: contract_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponseModel'
+      operationId: post_contract_rate_card_relations
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractRateCardBulkUpsertionRequestModel'
+        required: true
+      tags:
+      - billing
+  /billing/contract/feeComponent/{contract_id}:
+    parameters:
+    - name: contract_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractFeeComponentResponseModelListResponseModel'
+      operationId: get_fetch_contract_fee_components
+      parameters:
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/contract/fetch/{contract_id}:
+    parameters:
+    - name: contract_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponseModel'
+      operationId: get_fetch_contract
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/contract/filter:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponseModel'
+      operationId: get_fetch_filtered_contracts
+      parameters:
+      - name: customerId
+        in: query
+        description: Customer ID of the customer
+        schema:
+          type: string
+      - name: buyerId
+        in: query
+        description: Buyer ID of the customer
+        schema:
+          type: string
+      - name: contractNumber
+        in: query
+        schema:
+          type: string
+      - name: contractDurationValue
+        in: query
+        description: Value of the contract duration (if contract duration is 3 years,
+          value will be 3)
+        schema:
+          type: integer
+      - name: contractDurationUnit
+        in: query
+        description: Unit of the contract duration (if contract duration is 3 years,
+          unit will be YEAR)
+        schema:
+          type: string
+      - name: billingFrequencyValue
+        in: query
+        description: Value of the billing frequency (if billing frequency is 2 months,
+          value will be 2)
+        schema:
+          type: integer
+      - name: billingFrequencyUnit
+        in: query
+        description: Unit of the billing frequency (if billing frequency is 2 months,
+          unit will be MONTH)
+        schema:
+          type: string
+      - name: nextBillingDateStart
+        in: query
+        description: Start date of the next billing date filter
+        schema:
+          type: string
+      - name: nextBillingDateEnd
+        in: query
+        description: End date of the next billing date filter
+        schema:
+          type: string
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - DRAFT
+          - CANCELLED
+          - EXPIRED
+      - name: pageNumber
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: currencies
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/contract/update/{contract_id}:
+    parameters:
+    - name: contract_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateContractAPIRequestModelResponseModel'
+      operationId: post_update_contract
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContractAPIRequestModel_Request'
+        required: true
+      tags:
+      - billing
+  /billing/feeComponent:
+    parameters:
+    - name: X-Valyx-Signature
+      in: header
+      required: true
+      description: Auth key to authenticate the request
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeeComponentResponseModel'
+      operationId: post_create_fee_component
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFeeComponentAPIRequestModel'
+        required: true
+      tags:
+      - billing
+  /billing/feeComponent/delete/{fee_component_id}:
+    parameters:
+    - name: fee_component_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeeComponentResponseModel'
+      operationId: post_delete_fee_component
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/feeComponent/driver:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeeComponent'
+      operationId: post_bulk_upsert_fee_component_driver_relation
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertBulkFeeComponentUsageDriverRelationshipQueryModel'
+        required: true
+      tags:
+      - billing
+  /billing/feeComponent/driver/fetch/{fee_component_id}:
+    parameters:
+    - name: fee_component_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeeComponentUsageDriverRelationship'
+      operationId: get_fetch_fee_component_driver_relations
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/feeComponent/filter:
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_filter_fee_component
+      parameters:
+      - name: updatedDateFrom
+        in: query
+        description: Starting date for Fee Component Update
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: updatedDateTo
+        in: query
+        description: Ending date for Fee Component Update
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: sku
+        in: query
+        description: Fee Component SKU
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: name
+        in: query
+        description: Name of the fee component
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: hsnCode
+        in: query
+        description: HSN or SAC Code
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: lastModifiedBy
+        in: query
+        description: Last modified by
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: page
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      tags:
+      - billing
+  /billing/feeComponent/update/{fee_component_id}:
+    parameters:
+    - name: fee_component_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeeComponentResponseModel'
+      operationId: post_update_fee_component
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeeComponentAPIRequestModel_Request'
+        required: true
+      tags:
+      - billing
+  /billing/feeComponent/{fee_component_id}:
+    parameters:
+    - name: fee_component_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeeComponentResponseModel'
+      operationId: get_fetch_fee_component
+      parameters:
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/feeComponentTag/fetch/feeComponent/{fee_component_id}:
+    parameters:
+    - name: fee_component_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeeComponentTagListResponseModel'
+      operationId: get_fetch_fee_component_tag
+      parameters:
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/ratecard:
+    parameters:
+    - name: X-Valyx-Signature
+      in: header
+      required: true
+      description: Auth key to authenticate the request
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateCardResponseModel'
+      operationId: post_create_rate_card
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRateCardRequestModel'
+        required: true
+      tags:
+      - billing
+  /billing/ratecard/delete/{ratecard_id}:
+    parameters:
+    - name: ratecard_id
+      in: path
+      required: true
+      schema:
+        type: string
+    delete:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarkRateCardDefaultRequestModel'
+      operationId: delete_delete_rate_card
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/ratecard/feeComponent/fetch/{fee_component_id}:
+    parameters:
+    - name: fee_component_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FetchRateCardsResponseModel'
+      operationId: get_fetch_all_rate_card
+      parameters:
+      - name: contractId
+        in: query
+        description: If passed will return all the ratecards available for a contract
+        schema:
+          type: string
+      - name: showEmptyCombinations
+        in: query
+        description: If false will return only the combinations of tags that have
+          at least one ratecard
+        schema:
+          type: string
+          default: 'false'
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/ratecard/markDefault:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateCardResponseModel'
+      operationId: post_mark_default_rate_card
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarkRateCardDefaultRequestModel'
+        required: true
+      tags:
+      - billing
+  /billing/ratecard/test:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestRateCardResponseModel'
+      operationId: post_test_rate_card
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestRateCardRequestModel'
+        required: true
+      tags:
+      - billing
+  /billing/ratecard/update/{ratecard_id}:
+    parameters:
+    - name: ratecard_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateCardResponseModel'
+      operationId: post_update_rate_card
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRateCardRequestModel_Request'
+        required: true
+      tags:
+      - billing
+  /billing/ratecard/{rate_card_id}:
+    parameters:
+    - name: rate_card_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateCard'
+      operationId: get_fetch_rate_card
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/usage:
+    parameters:
+    - name: X-Valyx-Signature
+      in: header
+      required: true
+      description: Auth key to authenticate the request
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageAdditionResponseModel'
+      operationId: post_add_usage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUsageAPIRequestModel'
+        required: true
+      tags:
+      - billing
+  /billing/usage/delete/{event_id}:
+    parameters:
+    - name: event_id
+      in: path
+      required: true
+      schema:
+        type: string
+    delete:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageResponseModel'
+      operationId: delete_delete_usage
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/usage/fetch/{event_id}:
+    parameters:
+    - name: event_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageResponseModel'
+      operationId: get_fetch_usage
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/usage/filter:
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_fetch_usage_filters
+      parameters:
+      - name: transactionDateFrom
+        in: query
+        required: true
+        description: From date of filter
+        schema:
+          type: string
+      - name: transactionDateTo
+        in: query
+        required: true
+        description: To date of filter
+        schema:
+          type: string
+      - name: customerId
+        in: query
+        description: Customer ID of the customer
+        schema:
+          type: string
+      - name: contractNumber
+        in: query
+        schema:
+          type: string
+      - name: contractId
+        in: query
+        schema:
+          type: string
+      - name: usageReferenceId
+        in: query
+        schema:
+          type: string
+      - name: feeComponentName
+        in: query
+        schema:
+          type: string
+      - name: feeComponentId
+        in: query
+        schema:
+          type: string
+      - name: groupId
+        in: query
+        schema:
+          type: string
+      - name: groupUsageId
+        in: query
+        schema:
+          type: string
+      - name: pageNumber
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      tags:
+      - billing
+  /billing/usage/grouped/feeComponent/filter:
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_fetch_grouped_usage_fc_wise_filters
+      parameters:
+      - name: transactionDateFrom
+        in: query
+        required: true
+        description: From date of filter
+        schema:
+          type: string
+      - name: transactionDateTo
+        in: query
+        required: true
+        description: To date of filter
+        schema:
+          type: string
+      - name: customerId
+        in: query
+        description: Customer ID of the customer
+        schema:
+          type: string
+      - name: contractNumber
+        in: query
+        schema:
+          type: string
+      - name: contractId
+        in: query
+        schema:
+          type: string
+      - name: usageReferenceId
+        in: query
+        schema:
+          type: string
+      - name: feeComponentName
+        in: query
+        schema:
+          type: string
+      - name: feeComponentId
+        in: query
+        schema:
+          type: string
+      - name: groupId
+        in: query
+        schema:
+          type: string
+      - name: groupUsageId
+        in: query
+        schema:
+          type: string
+      - name: pageNumber
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      tags:
+      - billing
+  /billing/usage/grouped/filter:
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_fetch_grouped_usage_filters
+      parameters:
+      - name: transactionDateFrom
+        in: query
+        required: true
+        description: From date of filter
+        schema:
+          type: string
+      - name: transactionDateTo
+        in: query
+        required: true
+        description: To date of filter
+        schema:
+          type: string
+      - name: customerId
+        in: query
+        description: Customer ID of the customer
+        schema:
+          type: string
+      - name: contractNumber
+        in: query
+        schema:
+          type: string
+      - name: contractId
+        in: query
+        schema:
+          type: string
+      - name: usageReferenceId
+        in: query
+        schema:
+          type: string
+      - name: feeComponentName
+        in: query
+        schema:
+          type: string
+      - name: feeComponentId
+        in: query
+        schema:
+          type: string
+      - name: groupId
+        in: query
+        schema:
+          type: string
+      - name: groupUsageId
+        in: query
+        schema:
+          type: string
+      - name: pageNumber
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        description: Auth key for fetching ledger entries
+        schema:
+          type: string
+      tags:
+      - billing
+  /billing/usage/update/{usage_id}:
+    parameters:
+    - name: usage_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageResponseModel'
+      operationId: post_update_usage
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUsageRequestModel_Request'
+        required: true
+      tags:
+      - billing
+  /billing/usageDriver:
+    parameters:
+    - name: X-Valyx-Signature
+      in: header
+      required: true
+      description: Auth key to authenticate the request
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageDriverResponseModel'
+      operationId: post_add_usage_driver
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUsageDriverQueryModel'
+        required: true
+      tags:
+      - billing
+  /billing/usageDriver/delete/{usage_driver_id}:
+    parameters:
+    - name: usage_driver_id
+      in: path
+      required: true
+      schema:
+        type: string
+    delete:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageDriverResponseModel'
+      operationId: delete_delete_usage_driver
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      tags:
+      - billing
+  /billing/usageDriver/filter:
+    parameters:
+    - name: X-Valyx-Signature
+      in: header
+      required: true
+      description: Auth key to authenticate the request
+      schema:
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+      operationId: get_filter_usage_driver
+      parameters:
+      - name: name
+        in: query
+        description: Name of the usage driver
+        schema:
+          type: string
+      - name: description
+        in: query
+        description: Description of the usage driver
+        schema:
+          type: string
+      - name: unit
+        in: query
+        description: Unit of the usage driver
+        schema:
+          type: string
+      - name: pageNumber
+        in: query
+        required: true
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+      tags:
+      - billing
+  /billing/usageDriver/update/{usage_driver_id}:
+    parameters:
+    - name: usage_driver_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageDriverResponseModel'
+      operationId: post_update_usage_driver
+      parameters:
+      - name: X-Fields
+        in: header
+        description: An optional fields mask
+        schema:
+          type: string
+          format: mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUsageDriverQueryModel_Request'
+        required: true
+      tags:
+      - billing
+  /external/bankAccountTransaction/search:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      summary: Search bank account transactions based on passed search parameters
+      operationId: get_bank_account_transaction_search
+      parameters:
+      - name: bankAccountIds
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: categories
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: periodStartDate
+        in: query
+        schema:
+          type: string
+        description: Value date for the bank account transaction (BAT). Please input
+          in YYYY-MM-DD format. Will fetch BATs with value date on or after this date.
+      - name: periodEndDate
+        in: query
+        schema:
+          type: string
+        description: Value date for the bank account transaction (BAT). Please input
+          in YYYY-MM-DD format. Will fetch BATs with value date on or before this
+          date.
+      - name: page
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: Page number for pagination.
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: Page size for pagination.
+      - name: narration
+        in: query
+        schema:
+          type: string
+      - name: createdAtStart
+        in: query
+        schema:
+          type: string
+        description: Date on which this bank account transaction was created in Valyx.
+          Please input in YYYY-MM-DD format. Will fetch BATs created in Valyx on or
+          after this date.
+      - name: createdAtEnd
+        in: query
+        schema:
+          type: string
+        description: Date on which this bank account transaction was created in Valyx.
+          Please input in YYYY-MM-DD format. Will fetch BATs created in Valyx on or
+          before this date.
+      - name: currencies
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Currencies
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Auth key
+      tags:
+      - external
+  /external/creditNotes:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      summary: Handles GET requests for the /creditNotes route
+      description: Retrieves credit note data based on filters.
+      operationId: get_credit_note_routes
+      parameters:
+      - name: startDate
+        in: query
+        schema:
+          type: string
+        description: Fetch credit notes created on or after this date
+      - name: endDate
+        in: query
+        schema:
+          type: string
+        description: Fetch credit notes created on or before this date
+      - name: minAmount
+        in: query
+        schema:
+          type: number
+        description: Fetch credit notes with total amount >= this amount
+      - name: maxAmount
+        in: query
+        schema:
+          type: number
+        description: Fetch credit notes with total amount <= this amount
+      - name: creditNoteNumber
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Exact credit note numbers to search for
+      - name: invoiceNumber
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Invoice number reference against which credit note was created
+      - name: customerId
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Fetch credit notes only for these customers
+      - name: ownerId
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Fetch credit notes only for these internal stakeholders
+      - name: type
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Fetch credit notes which are of these types
+      - name: status
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Fetch credit notes which are of these status
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: Page number for pagination.
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+        description: Page size for pagination.
+      - name: currencies
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Currencies
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Auth key for fetching ledger entries
+      tags:
+      - external
+  /external/creditNotes/upsert:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      operationId: post_credit_note_upsert_routes
+      parameters:
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Auth key for fetching ledger entries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCreditNotesExternalAPIQueryModel'
+      tags:
+      - external
+  /external/customer:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      summary: Create customer with its tags, internal stakeholders and contacts
+      operationId: post_customer_create_route
+      parameters:
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Auth key for creating customers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateExternalCustomer'
+      tags:
+      - external
+  /external/customer/search:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailExternalApiResponseResponseModel'
+      summary: Search customers based on passed search parameters
+      operationId: get_customer_search
+      parameters:
+      - name: amountType
+        in: query
+        schema:
+          type: string
+      - name: identifierType
+        in: query
+        schema:
+          type: string
+          enum:
+          - GSTIN
+          - PAN
+          - BUYER_ID
+          - CUSTOMER_NAME
+      - name: identifierValue
+        in: query
+        schema:
+          type: string
+      - name: minAmount
+        in: query
+        schema:
+          type: number
+      - name: maxAmount
+        in: query
+        schema:
+          type: number
+      - name: invoiceStatus
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+          enum:
+          - OVERDUE
+          - DUE
+          - NO_DUES
+          - VOID
+        description: list of invoice statuses to filter by
+      - name: paymentStatus
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+          enum:
+          - PAID
+          - UNPAID
+          - PARTIALLY_PAID
+        description: list of payment statuses to filter by
+      - name: customerStatus
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+          enum:
+          - PROSPECT
+          - LIVE
+          - CHURNED
+          - INACTIVE
+        description: list of customer statuses to filter by
+      - name: tag
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: list of tag key-value pair to filter by
+      - name: excludeTag
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: list of tag key-value pair to filter by (exclude)
+      - name: excludeTagKey
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: list of tag key to filter by (exclude)
+      - name: ownerId
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: owner ID to search by
+      - name: ownerRole
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: owner role to search by
+      - name: notOwnerRole
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: not owner role to search by
+      - name: contactRole
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: contact role to search by
+      - name: notContactRole
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: not contact role to search by
+      - name: page
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: Page number for pagination.
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: Page size for pagination.
+      - name: dateType
+        in: query
+        schema:
+          type: string
+          enum:
+          - INVOICE_DATE
+          - DUE_DATE
+          - PROMISE_TO_PAY_DATE
+      - name: startDate
+        in: query
+        schema:
+          type: string
+        description: Start date for invoices
+      - name: endDate
+        in: query
+        schema:
+          type: string
+        description: End date for invoices
+      - name: createdAtStart
+        in: query
+        schema:
+          type: string
+        description: Customer creation date start - will return customers created
+          on or after this date. Pass as YYYY-MM-DD string
+      - name: createdAtEnd
+        in: query
+        schema:
+          type: string
+        description: Customer creation date end - will return customers created on
+          or before this date. Pass as YYYY-MM-DD string
+      - name: currencies
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Currencies
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Auth key
+      - name: X-Fields
+        in: header
+        schema:
+          type: string
+          format: mask
+        description: An optional fields mask
+      tags:
+      - external
+  /external/customer/{buyer_id}:
+    parameters:
+    - name: buyer_id
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      summary: Update customer with its tags, internal stakeholders and contacts
+      operationId: post_customer_update_route
+      parameters:
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Auth key for creating customers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateExternalCustomer'
+      tags:
+      - external
+  /external/invoice/upsert:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      operationId: post_invoice_upsert_routes
+      parameters:
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Auth key for fetching ledger entries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInvoice'
+      tags:
+      - external
+  /external/invoices:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      summary: Handles GET requests for the /invoices route
+      description: 'Authenticates the request and retrieves invoice data for a specified
+        company, applying filters and pagination as specified in the request parameters.
+        Returns: Tuple containing: - A dictionary with the fetched invoices and pagination
+        details. - HTTP status code 200.'
+      operationId: get_invoice_routes
+      parameters:
+      - name: invoiceStatus
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+          enum:
+          - OVERDUE
+          - DUE
+          - NO_DUES
+          - VOID
+        description: list of invoice statuses to filter by
+      - name: paymentStatus
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+          enum:
+          - PAID
+          - UNPAID
+          - PARTIALLY_PAID
+        description: list of payment statuses to filter by
+      - name: invoiceAcceptanceStatus
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+          enum:
+          - PENDING
+          - ACCEPTED
+          - REJECTED
+        description: list of invoice acceptance statuses to filter by
+      - name: tag
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: list of tag key-value pair to filter by
+      - name: customerIds
+        in: query
+        schema:
+          type: string
+        description: List of customer IDs
+      - name: ownerIds
+        in: query
+        schema:
+          type: string
+        description: List of owner IDs
+      - name: buyerIds
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: List of buyer IDs
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - invoiceDate
+          - -invoiceDate
+        description: Invoices support sorting by invoice date. Passing 'invoiceDate'
+          sorts ascending. To reverse the order, prefix with a hyphen.
+      - name: amountType
+        in: query
+        schema:
+          type: string
+          enum:
+          - TOTAL
+          - OUTSTANDING
+          - PAID
+          - ADJUSTED
+        description: Amount type filter
+      - name: amountMin
+        in: query
+        schema:
+          type: number
+        description: Minimum amount of the invoice amount type
+      - name: amountMax
+        in: query
+        schema:
+          type: number
+        description: Maximum amount of the invoice amount type
+      - name: dateType
+        in: query
+        schema:
+          type: string
+          enum:
+          - INVOICE_DATE
+          - DUE_DATE
+          - PROMISE_TO_PAY_DATE
+        description: DateType type filter
+      - name: startDate
+        in: query
+        schema:
+          type: string
+        description: start date of the invoice for date type
+      - name: endDate
+        in: query
+        schema:
+          type: string
+        description: end date of the invoice for date type
+      - name: page
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: page number of result to be fetched
+      - name: pageSize
+        in: query
+        required: true
+        schema:
+          type: integer
+        description: number of entries per page
+      - name: onlyFetchNonZero
+        in: query
+        schema:
+          type: boolean
+        description: should return invoices that have non zero amount type
+      - name: invoiceNumber
+        in: query
+        schema:
+          type: string
+        description: invoice number
+      - name: internalInvoiceIds
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: invoice ids
+      - name: hasAttachment
+        in: query
+        schema:
+          type: string
+        description: should return invoices that have attachments (true/false)
+      - name: attachmentPurpose
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+          enum:
+          - INVOICE_FOR_BUYER
+          - INVOICE_SUPPORTING
+          - PURCHASE_ORDER
+          - SALES_ORDER
+          - DELIVERY_DOCUMENT
+          - PAYMENT_PROOF
+          - DISPUTE
+          - DISPUTE_RESOLUTION
+          - ENQUIRY
+          - ENQUIRY_RESOLUTION
+          - TAX_DOCUMENT
+          - COMMERCIAL_AGREEMENT
+          - COMMERCIAL_AGREEMENT_SUPPORTING
+          - LEGAL
+          - GENERAL
+          - CREDITNOTE_FOR_BUYER
+          - CREDITNOTE_SUPPORTING
+          - TICKET
+          - USAGE_ESTIMATE
+          - MAIL_ATTACHMENT
+        description: attachment purpose to search by (based on hasAttachment)
+      - name: currencies
+        in: query
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: Currencies
+      - name: X-Valyx-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Auth key for fetching ledger entries
+      tags:
+      - external
+tags:
+- name: billing
+  description: External Billing APIs
+components:
+  responses:
+    ParseError:
+      description: When a mask can't be parsed
+    MaskError:
+      description: When any error occurs on mask
+  requestBodies:
+    FeeComponentToContractRequestModel:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FeeComponentToContractRequestModel'
+      required: true
+  securitySchemes:
+    ValyxSignature:
+      type: apiKey
+      name: X-Valyx-Signature
+      in: header
+      description: Auth key for fetching ledger entries
+  schemas:
+    CreateUsageDriverQueryModel:
+      required:
+      - name
+      - description
+      - unit
+      properties:
+        name:
+          type: string
+          description: A unique name identifying the usage driver.
+        description:
+          type: string
+          description: Detailed explanation of what this usage driver measures or
+            tracks.
+        unit:
+          type: string
+          description: The unit of measurement for this usage driver (e.g., count,
+            GB, minutes).
+        productId:
+          type: string
+          description: 'Optional: ID of the product this usage driver is associated
+            with, if any.'
+      type: object
+    UsageDriverResponseModel:
+      properties:
+        error:
+          type: string
+          description: Error message, if any. Null if the request was successful.
+        message:
+          type: string
+          description: Human-readable message describing the result of the operation.
+        data:
+          $ref: '#/components/schemas/UsageDriverResponseData'
+      type: object
+    UsageDriverResponseData:
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the added/created object.
+      type: object
+    UpdateUsageDriverQueryModel_Request:
+      properties:
+        updates:
+          $ref: '#/components/schemas/UpdateUsageDriverQueryModel_FieldsUpdateModel'
+      type: object
+    UpdateUsageDriverQueryModel_FieldsUpdateModel:
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+            description: Fields to update
+        values:
+          $ref: '#/components/schemas/UpdateUsageDriverQueryModel'
+      type: object
+    UpdateUsageDriverQueryModel:
+      properties:
+        name:
+          type: string
+          description: name
+        description:
+          type: string
+          description: description
+        productId:
+          type: string
+          description: productId
+        unit:
+          type: string
+          description: unit
+      type: object
+    PaginatedResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message, if any occurred while fetching the paginated
+            data. Null if the request was successful.
+        message:
+          type: string
+          description: Informational message regarding the response.
+        data:
+          $ref: '#/components/schemas/PaginatedResponseData'
+    PaginatedResponseData:
+      type: object
+      required:
+      - hasNext
+      - hasPrev
+      - pageNumber
+      - pageSize
+      - totalDocs
+      - totalPages
+      properties:
+        totalDocs:
+          type: integer
+          description: Total number of documents/items available across all pages.
+        docs:
+          type: array
+          description: Array of items on the current page.
+          items:
+            type: object
+            description: Individual document/item in the paginated result.
+        hasNext:
+          type: boolean
+          description: True if there is a next page available.
+        hasPrev:
+          type: boolean
+          description: True if there is a previous page available.
+        pageNumber:
+          type: integer
+          description: Current page number (1-indexed).
+        pageSize:
+          type: integer
+          description: Number of items per page.
+        totalPages:
+          type: integer
+          description: Total number of pages available.
+        prevPageNumber:
+          type: integer
+          description: Page number of the previous page. Null if current page is the
+            first page.
+        nextPageNumber:
+          type: integer
+          description: Page number of the next page. Null if current page is the last
+            page.
+    CreateFeeComponentAPIRequestModel:
+      type: object
+      required:
+      - name
+      - taxRate
+      properties:
+        name:
+          type: string
+          description: The unique name of the fee component.
+        taxRate:
+          type: array
+          description: List of taxes applicable to this fee component. Each tax includes
+            its name, value, and category.
+          items:
+            $ref: '#/components/schemas/CreateFeeComponentAPIRequestModeltaxRate'
+        hsnOrSacCode:
+          type: string
+          description: HSN (Harmonized System of Nomenclature) code or SAC (Service
+            Accounting Code) for GST classification.
+        sku:
+          type: string
+          description: "Stock Keeping Unit (SKU) \u2013 a unique identifier for the\
+            \ product or service. Useful for inventory or internal tracking."
+        unit:
+          type: string
+          description: The unit of measurement for this fee component (e.g., 'GB',
+            'Hour', 'User'). Used when calculating usage-based charges.
+        description:
+          type: string
+          description: Optional detailed description of the fee component.
+        billLimit:
+          $ref: '#/components/schemas/CreateContractAPIRequestModelbillingReportLimit'
+          description: Optional limits for billing this component, e.g., min/max values
+            or usage-based tiers.
+        driverUpsertRequest:
+          $ref: '#/components/schemas/CreateFeeComponentAPIRequestModeldriverUpsertRequest'
+          description: Optional usage driver relationships, defining how different
+            usage drivers contribute to this fee component's calculations.
+    CreateFeeComponentAPIRequestModeltaxRate:
+      type: object
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          description: The name of the tax, e.g., 'GST', 'CESS', or 'Service Tax'.
+        value:
+          type: number
+          description: The percentage value of the tax (e.g., 18 for 18%).
+        isActive:
+          type: boolean
+          description: Whether this tax is currently active. Defaults to true.
+          default: true
+        taxCategory:
+          type: string
+          description: The category of the tax. Helps classify taxes for reporting
+            and compliance.
+          example: GST
+          enum:
+          - GST
+          - CESS
+          - SERVICE
+          - TDS
+          - OTHER
+    CreateFeeComponentAPIRequestModeldriverUpsertRequest:
+      type: object
+      properties:
+        upsertRequests:
+          type: array
+          description: List of usage driver relationships. Each entry defines a usage
+            driver and its weight in calculating the fee.
+          items:
+            $ref: '#/components/schemas/CreateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests'
+    CreateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests:
+      type: object
+      required:
+      - usageDriverId
+      - weight
+      properties:
+        usageDriverId:
+          type: string
+          description: The unique identifier of the usage driver, e.g., 'API_CALLS',
+            'STORAGE_GB'.
+        weight:
+          type: number
+          description: The factor by which the usage driver contributes to this fee
+            component. For example, 1.5 means 150% of the usage is charged.
+    FeeComponentResponseModel:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message if the operation failed. Null if the operation
+            was successful.
+        message:
+          type: string
+          description: Informational message about the result of the operation.
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Unique identifier of the created fee component.
+          required:
+          - id
+      required:
+      - error
+      - message
+      - data
+    FeeComponentResponseModelDatafeeComponent:
+      properties:
+        id:
+          type: object
+        sku:
+          type: object
+        productId:
+          type: object
+        name:
+          type: object
+        description:
+          type: object
+        hsnOrSacCode:
+          type: object
+        taxRate:
+          type: object
+        status:
+          type: object
+        unit:
+          type: object
+        companyId:
+          type: object
+        createdBy:
+          type: object
+        updatedBy:
+          type: object
+      type: object
+    FeeComponentResponseModelDatausageDrivers:
+      properties:
+        driverId:
+          type: string
+          description: driverId
+        driverName:
+          type: string
+          description: driverName
+        weight:
+          type: number
+          description: weight
+        unit:
+          type: string
+          description: unit
+        productId:
+          type: string
+          description: productId
+      type: object
+    UpdateFeeComponentAPIRequestModel_Request:
+      properties:
+        updates:
+          $ref: '#/components/schemas/UpdateFeeComponentAPIRequestModel_FieldsUpdateModel'
+      type: object
+    UpdateFeeComponentAPIRequestModel_FieldsUpdateModel:
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+            description: Fields to update
+        values:
+          $ref: '#/components/schemas/UpdateFeeComponentAPIRequestModel'
+      type: object
+    UpdateFeeComponentAPIRequestModel:
+      properties:
+        name:
+          type: string
+          description: name
+        unit:
+          type: string
+          description: unit
+        sku:
+          type: string
+          description: sku
+        hsnOrSacCode:
+          type: string
+          description: hsnOrSacCode
+        taxRate:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateFeeComponentAPIRequestModeltaxRate'
+        description:
+          type: string
+          description: description
+        driverUpsertRequest:
+          $ref: '#/components/schemas/UpdateFeeComponentAPIRequestModeldriverUpsertRequest'
+      type: object
+    UpdateFeeComponentAPIRequestModeltaxRate:
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          description: name
+        value:
+          type: number
+          description: value
+        isActive:
+          type: boolean
+          description: isActive
+          default: true
+        taxCategory:
+          type: string
+          example: GST
+          enum:
+          - GST
+          - CESS
+          - SERVICE
+          - TDS
+          - OTHER
+      type: object
+    UpdateFeeComponentAPIRequestModeldriverUpsertRequest:
+      properties:
+        upsertRequests:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests'
+      type: object
+    UpdateFeeComponentAPIRequestModeldriverUpsertRequestupsertRequests:
+      required:
+      - usageDriverId
+      - weight
+      properties:
+        usageDriverId:
+          type: string
+          description: usageDriverId
+        weight:
+          type: number
+          description: weight
+      type: object
+    UpsertBulkFeeComponentUsageDriverRelationshipQueryModel:
+      properties:
+        upsertRequests:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpsertBulkFeeComponentUsageDriverRelationshipQueryModelupsertRequests'
+      type: object
+    UpsertBulkFeeComponentUsageDriverRelationshipQueryModelupsertRequests:
+      required:
+      - usageDriverId
+      - weight
+      properties:
+        usageDriverId:
+          type: string
+          description: usageDriverId
+        weight:
+          type: number
+          description: weight
+      type: object
+    FeeComponent:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/FeeComponentData'
+      type: object
+    FeeComponentData:
+      properties:
+        id:
+          type: object
+        sku:
+          type: object
+        productId:
+          type: object
+        name:
+          type: object
+        description:
+          type: object
+        hsnOrSacCode:
+          type: object
+        taxRate:
+          type: object
+        status:
+          type: object
+        unit:
+          type: object
+        companyId:
+          type: object
+        createdBy:
+          type: object
+        updatedBy:
+          type: object
+      type: object
+    FeeComponentUsageDriverRelationship:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/FeeComponentUsageDriverRelationshipData'
+      type: object
+    FeeComponentUsageDriverRelationshipData:
+      properties:
+        id:
+          type: object
+        companyId:
+          type: object
+        feeComponentId:
+          type: object
+        usageDriverId:
+          type: object
+        weight:
+          type: object
+        createdBy:
+          type: object
+        status:
+          type: object
+      type: object
+    CreateRateCardRequestModel:
+      type: object
+      required:
+      - feeComponentId
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the rate card.
+        description:
+          $ref: '#/components/schemas/CreateRateCardRequestModelDescription'
+          description: Pricing strategy details for the rate card, including billing
+            scheme, tiers, and prorated settings.
+        feeComponentId:
+          type: string
+          description: Identifier of the fee component associated with this rate card.
+        currency:
+          type: string
+          description: 'Currency used for this rate card. Must be a valid ISO 4217
+            currency code. See: https://www.iso.org/iso-4217-currency-codes.html'
+          example: INR
+        currencyId:
+          type: string
+          description: Optional currency identifier if multiple currencies are supported.
+        tags:
+          type: object
+          description: Custom key-value tags for categorizing or labeling the rate
+            card. Multiple key-value pairs can be added dynamically.
+          additionalProperties:
+            type: string
+        ratecardDescription:
+          type: string
+          description: 'Detailed description of the rate card, visible to users. See:
+            https://docs.valyx.com/api-reference/endpoint/ratecard#rate-card-description'
+        contractId:
+          type: string
+          description: Optional associated contract ID for this rate card.
+        isDefault:
+          type: boolean
+          description: Indicates whether this rate card is the default for the company.
+          default: false
+        isTierSplitEnabled:
+          type: boolean
+          description: Indicates if tier-wise split pricing is enabled. Only valid
+            for graduated billing schemes.
+          default: false
+        startDate:
+          type: string
+          format: date
+          description: Optional start date of the rate card.
+        endDate:
+          type: string
+          format: date
+          description: Optional end date of the rate card.
+        fallBackRatecardId:
+          type: string
+          description: Required if the rate card has start or end dates; used as fallback
+            for timed rate cards.
+    CreateRateCardRequestModeldescription:
+      type: object
+      description: Defines the pricing strategy for this rate card, including billing
+        scheme, tiers, and prorated behavior.
+      properties:
+        billingScheme:
+          type: string
+          description: The billing method applied to this rate card.
+          example: PER_UNIT
+          enum:
+          - PER_UNIT
+          - VOLUME
+          - GRADUATED
+          - FIXED_RATE
+          - MINMAX
+        tiers:
+          type: array
+          description: Optional tiered pricing structure. Only required for certain
+            billing schemes like GRADUATED.
+          items:
+            $ref: '#/components/schemas/CreateRateCardRequestModeldescriptiontiers'
+          example:
+          - name: Basic Tier
+            upTo: 100
+            unitPrice: 5.0
+            flatPrice: 0.0
+            isPercentage: false
+            repeatTier: false
+          - name: Premium Tier
+            upTo: 500
+            unitPrice: 4.5
+            flatPrice: 50.0
+            isPercentage: false
+            repeatTier: true
+        isProrated:
+          type: boolean
+          description: Indicates whether the pricing is prorated for partial periods.
+          default: false
+      required:
+      - billingScheme
+    CreateRateCardRequestModeldescriptiontiers:
+      type: object
+      description: Represents a single tier in a tiered pricing strategy.
+      properties:
+        name:
+          type: string
+          description: Name or label for this tier, e.g., 'Basic', 'Premium'.
+        upTo:
+          type: number
+          description: The maximum quantity or usage for this tier.
+        unitPrice:
+          type: number
+          description: Price per unit within this tier.
+          default: 0
+        flatPrice:
+          type: number
+          description: Fixed price added for this tier, regardless of units used.
+          default: 0
+        isPercentage:
+          type: boolean
+          description: Indicates whether the prices are in percentage rather than
+            absolute amounts.
+          default: false
+        repeatTier:
+          type: boolean
+          description: If true, this tier is repeated indefinitely beyond 'upTo'.
+          default: false
+      required:
+      - name
+      - upTo
+    RateCardResponseModel:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message if the operation failed. Null if the operation
+            was successful.
+        message:
+          type: string
+          description: Informational message about the result of the operation.
+        data:
+          $ref: '#/components/schemas/RateCardResponseData'
+          description: Data object containing the result of the operation.
+    RateCardResponseData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the created or updated rate card.
+    UpdateRateCardRequestModel_Request:
+      properties:
+        updates:
+          $ref: '#/components/schemas/UpdateRateCardRequestModel_FieldsUpdateModel'
+      type: object
+    UpdateRateCardRequestModel_FieldsUpdateModel:
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+            description: Fields to update
+        values:
+          $ref: '#/components/schemas/UpdateRateCardRequestModel'
+      type: object
+    UpdateRateCardRequestModel:
+      properties:
+        name:
+          type: string
+          description: name
+        description:
+          $ref: '#/components/schemas/UpdateRateCardRequestModeldescription'
+        currency:
+          type: string
+          example: afn
+          enum:
+          - afn
+          - eur
+          - all
+          - dzd
+          - usd
+          - aoa
+          - xcd
+          - ars
+          - amd
+          - awg
+          - aud
+          - azn
+          - bsd
+          - bhd
+          - bdt
+          - bbd
+          - byn
+          - bzd
+          - xof
+          - bmd
+          - inr
+          - btn
+          - bob
+          - bov
+          - bam
+          - bwp
+          - nok
+          - brl
+          - bnd
+          - bgn
+          - bif
+          - cve
+          - khr
+          - xaf
+          - cad
+          - kyd
+          - clp
+          - clf
+          - cny
+          - cop
+          - cou
+          - kmf
+          - cdf
+          - nzd
+          - crc
+          - hrk
+          - cup
+          - cuc
+          - ang
+          - czk
+          - dkk
+          - djf
+          - dop
+          - egp
+          - svc
+          - ern
+          - szl
+          - etb
+          - fkp
+          - fjd
+          - xpf
+          - gmd
+          - gel
+          - ghs
+          - gip
+          - gtq
+          - gbp
+          - gnf
+          - gyd
+          - htg
+          - hnl
+          - hkd
+          - huf
+          - isk
+          - idr
+          - xdr
+          - irr
+          - iqd
+          - ils
+          - jmd
+          - jpy
+          - jod
+          - kzt
+          - kes
+          - kpw
+          - krw
+          - kwd
+          - kgs
+          - lak
+          - lbp
+          - lsl
+          - zar
+          - lrd
+          - lyd
+          - chf
+          - mop
+          - mkd
+          - mga
+          - mwk
+          - myr
+          - mvr
+          - mru
+          - mur
+          - xua
+          - mxn
+          - mxv
+          - mdl
+          - mnt
+          - mad
+          - mzn
+          - mmk
+          - nad
+          - npr
+          - nio
+          - ngn
+          - omr
+          - pkr
+          - pab
+          - pgk
+          - pyg
+          - pen
+          - php
+          - pln
+          - qar
+          - ron
+          - rub
+          - rwf
+          - shp
+          - wst
+          - stn
+          - sar
+          - rsd
+          - scr
+          - sll
+          - sle
+          - sgd
+          - xsu
+          - sbd
+          - sos
+          - ssp
+          - lkr
+          - sdg
+          - srd
+          - sek
+          - che
+          - chw
+          - syp
+          - twd
+          - tjs
+          - tzs
+          - thb
+          - top
+          - ttd
+          - tnd
+          - try
+          - tmt
+          - ugx
+          - uah
+          - aed
+          - usn
+          - uyu
+          - uyi
+          - uyw
+          - uzs
+          - vuv
+          - ves
+          - ved
+          - vnd
+          - yer
+          - zmw
+          - zwl
+          - xba
+          - xbb
+          - xbc
+          - xbd
+          - xts
+          - xxx
+          - xau
+          - xpd
+          - xpt
+          - xag
+        ratecardDescription:
+          type: string
+          description: ratecardDescription
+      type: object
+    UpdateRateCardRequestModeldescription:
+      properties:
+        billingScheme:
+          type: string
+          example: PER_UNIT
+          enum:
+          - PER_UNIT
+          - VOLUME
+          - GRADUATED
+          - FIXED_RATE
+          - MINMAX
+        tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateRateCardRequestModeldescriptiontiers'
+        isProrated:
+          type: boolean
+          description: isProrated
+          default: false
+      type: object
+    UpdateRateCardRequestModeldescriptiontiers:
+      required:
+      - name
+      - upTo
+      properties:
+        name:
+          type: string
+          description: name
+        upTo:
+          type: number
+          description: upTo
+        unitPrice:
+          type: number
+          description: unitPrice
+          default: 0
+        flatPrice:
+          type: number
+          description: flatPrice
+          default: 0
+        isPercentage:
+          type: boolean
+          description: isPercentage
+          default: false
+        repeatTier:
+          type: boolean
+          description: repeatTier
+          default: false
+      type: object
+    RateCard:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/RateCardData'
+      type: object
+    RateCardData:
+      properties:
+        id:
+          type: object
+        name:
+          type: object
+        ratecardDescription:
+          type: object
+        feeComponentId:
+          type: object
+        description:
+          type: object
+        ratecardDetail:
+          type: object
+        tags:
+          type: object
+        companyId:
+          type: object
+        contractId:
+          type: object
+        currency:
+          type: object
+        createdBy:
+          type: object
+        isDefault:
+          type: object
+        status:
+          type: object
+      type: object
+    FetchRateCardsResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/FetchRateCardsResponseModelData'
+      type: object
+    FetchRateCardsResponseModelData:
+      properties:
+        tags:
+          type: object
+        ratecards:
+          type: array
+          items:
+            $ref: '#/components/schemas/FetchRateCardsResponseModelDataratecards'
+      type: object
+    FetchRateCardsResponseModelDataratecards:
+      properties:
+        id:
+          type: object
+        name:
+          type: object
+        ratecardDescription:
+          type: object
+        feeComponentId:
+          type: object
+        description:
+          type: object
+        ratecardDetail:
+          type: object
+        tags:
+          type: object
+        companyId:
+          type: object
+        contractId:
+          type: object
+        currency:
+          type: object
+        currencyId:
+          type: object
+        createdBy:
+          type: object
+        isDefault:
+          type: object
+        status:
+          type: object
+        isTierSplitEnabled:
+          type: object
+        startDate:
+          type: object
+        endDate:
+          type: object
+        fallBackRatecardId:
+          type: object
+      type: object
+    MarkRateCardDefaultRequestModel:
+      required:
+      - feeComponentId
+      - ratecardId
+      properties:
+        feeComponentId:
+          type: string
+          description: feeComponentId
+        ratecardId:
+          type: string
+          description: ratecardId
+      type: object
+    TestRateCardRequestModel:
+      required:
+      - feeComponentId
+      - totalUsage
+      properties:
+        tags:
+          type: object
+        feeComponentId:
+          type: string
+          description: feeComponentId
+        totalUsage:
+          type: number
+          description: totalUsage
+        contractId:
+          type: string
+          description: contractId
+      type: object
+    TestRateCardResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/TestRateCardResponseModelData'
+      type: object
+    TestRateCardResponseModelData:
+      required:
+      - totalPrice
+      properties:
+        ratecard:
+          $ref: '#/components/schemas/TestRateCardResponseModelDataratecard'
+        totalPrice:
+          type: number
+          description: totalPrice
+      type: object
+    TestRateCardResponseModelDataratecard:
+      properties:
+        id:
+          type: object
+        name:
+          type: object
+        ratecardDescription:
+          type: object
+        feeComponentId:
+          type: object
+        description:
+          type: object
+        ratecardDetail:
+          type: object
+        tags:
+          type: object
+        companyId:
+          type: object
+        contractId:
+          type: object
+        currency:
+          type: object
+        createdBy:
+          type: object
+        isDefault:
+          type: object
+        status:
+          type: object
+      type: object
+    CreateContractAPIRequestModel:
+      type: object
+      required:
+      - contractNumber
+      - contractTitle
+      - customerId
+      - isPreusage
+      - contractPeriod
+      - billingFrequency
+      properties:
+        customerId:
+          type: string
+          description: The unique identifier of the customer associated with this
+            contract
+          example: cust_45678
+        contractNumber:
+          type: string
+          description: A unique reference number for this contract
+          example: CONTRACT-2025-001
+        contractTitle:
+          type: string
+          description: The title or name of the contract
+          example: Premium Subscription Plan
+        contractPeriod:
+          $ref: '#/components/schemas/CreateContractAPIRequestModelcontractPeriod'
+          description: The total duration of the contract, specifying the time unit
+            and value
+        billingFrequency:
+          $ref: '#/components/schemas/CreateContractAPIRequestModelbillingFrequency'
+          description: How often billing should occur for this contract
+        startDate:
+          type: string
+          format: date
+          description: The date when the contract becomes effective
+          example: '2025-01-01'
+        virtualStartDate:
+          type: string
+          format: date
+          description: A calculated start date for billing purposes, used if billing
+            time is set to beginning of period
+          example: '2025-01-01'
+        creditTermId:
+          type: string
+          description: Identifier for the credit term associated with this contract
+          example: CT-30-DAYS
+        poNumber:
+          type: string
+          description: Purchase order number, if applicable
+          example: PO-98765
+        noteInvoice:
+          type: string
+          description: Optional note to be included in the invoice
+          example: Please pay within 30 days
+        terms:
+          type: string
+          description: Terms and conditions associated with this contract
+          example: Net 30 payment terms apply
+        noteContract:
+          type: string
+          description: Optional note to be displayed on the contract
+          example: This contract is for the premium subscription plan
+        billingDiscounts:
+          type: array
+          description: List of discounts applicable during billing
+          items:
+            $ref: '#/components/schemas/CreateContractAPIRequestModelbillingDiscounts'
+        isPreusage:
+          type: boolean
+          description: Indicates if billing should happen at the start of the period
+            (pre-usage)
+          default: false
+        billingTime:
+          type: string
+          description: 'Determines when billing is calculated: either at the beginning
+            of the period or based on subscription start date'
+          example: BEGINNING_OF_PERIOD
+          enum:
+          - BEGINNING_OF_PERIOD
+          - SUBSCRIPTION_DATE
+        billingReportLimit:
+          $ref: '#/components/schemas/CreateContractAPIRequestModelbillingReportLimit'
+          description: Limits applied to the billing report for this contract
+        contractLimit:
+          $ref: '#/components/schemas/CreateContractAPIRequestModelcontractLimit'
+          description: Optional limit on total contract value or usage
+        advanceConfig:
+          $ref: '#/components/schemas/CreateContractAPIRequestModeladvanceConfig'
+          description: Configuration for advance billing or usage adjustments
+        autoRenew:
+          type: boolean
+          description: If true, the contract will automatically renew at the end of
+            its period
+          default: false
+        renewalPeriod:
+          $ref: '#/components/schemas/CreateContractAPIRequestModelrenewalPeriod'
+          description: The duration for which the contract should be renewed automatically
+    CreateContractAPIRequestModelcontractPeriod:
+      type: object
+      required:
+      - value
+      - unit
+      properties:
+        unit:
+          type: string
+          description: The unit of time for the contract period
+          example: MONTH
+          enum:
+          - DAY
+          - WEEK
+          - MONTH
+          - YEAR
+        value:
+          type: integer
+          description: The duration of the contract in the specified unit
+          example: 12
+    CreateContractAPIRequestModelbillingFrequency:
+      type: object
+      required:
+      - value
+      - unit
+      properties:
+        unit:
+          type: string
+          description: The unit of time used for billing frequency
+          example: MONTH
+          enum:
+          - DAY
+          - WEEK
+          - MONTH
+          - YEAR
+        value:
+          type: integer
+          description: The number of units between each billing cycle
+          example: 1
+    CreateContractAPIRequestModelbillingDiscounts:
+      type: object
+      required:
+      - amount
+      - percentage
+      - isPostTax
+      - isUsageBased
+      - priority
+      - isStackable
+      properties:
+        amount:
+          type: number
+          description: Fixed discount amount to be applied (in the contract currency).
+            Either amount or percentage should be set.
+          default: 0
+          example: 100.0
+        percentage:
+          type: number
+          description: Discount percentage to be applied. Either amount or percentage
+            should be set.
+          default: 0
+          example: 10.0
+        isPostTax:
+          type: boolean
+          description: If true, discount is applied after tax calculation; otherwise,
+            before tax.
+          default: false
+        isUsageBased:
+          type: boolean
+          description: Indicates whether this discount is applicable only to usage-based
+            charges.
+          default: false
+        tiers:
+          type: array
+          description: Optional tiered discount levels based on usage.
+          items:
+            $ref: '#/components/schemas/CreateContractAPIRequestModelbillingDiscountstiers'
+        priority:
+          type: integer
+          description: Determines the order in which discounts are applied; lower
+            numbers are applied first.
+          default: 1
+          example: 1
+        isStackable:
+          type: boolean
+          description: If true, this discount can be combined with other discounts;
+            otherwise, it is exclusive.
+          default: false
+        duration:
+          $ref: '#/components/schemas/CreateContractAPIRequestModelbillingDiscountsduration'
+          description: Optional duration specifying the billing periods when this
+            discount is active.
+    CreateContractAPIRequestModelbillingDiscountstiers:
+      type: object
+      required:
+      - amount
+      - percentage
+      - isPostTax
+      - upTo
+      properties:
+        amount:
+          type: number
+          description: Fixed discount amount for this tier. Either amount or percentage
+            should be set.
+          default: 0
+          example: 50.0
+        percentage:
+          type: number
+          description: Discount percentage for this tier. Either amount or percentage
+            should be set.
+          default: 0
+          example: 10.0
+        isPostTax:
+          type: boolean
+          description: Indicates if this tiered discount is applied after tax calculation.
+            If false, it is applied before tax.
+          default: false
+        upTo:
+          type: number
+          description: Maximum usage or amount this tier applies to. Use a very large
+            number for no limit.
+          default: 999999999
+          example: 1000
+    CreateContractAPIRequestModelbillingDiscountsduration:
+      type: object
+      required:
+      - startIndex
+      - endIndex
+      properties:
+        startIndex:
+          type: integer
+          description: The starting billing period index when this discount becomes
+            applicable. Indexing starts at 1.
+          example: 1
+        endIndex:
+          type: integer
+          description: The ending billing period index up to which this discount is
+            applicable.
+          example: 3
+    CreateContractAPIRequestModelbillingReportLimit:
+      type: object
+      required:
+      - isUsageBased
+      properties:
+        tiers:
+          type: array
+          description: Optional list of tiered limits that apply based on usage thresholds.
+          items:
+            $ref: '#/components/schemas/CreateContractAPIRequestModelbillingReportLimittiers'
+        isUsageBased:
+          type: boolean
+          description: Indicates if the report limit is based on usage. If true, the
+            tiers and min/max values are interpreted per usage unit.
+          default: false
+        minValue:
+          type: number
+          description: Minimum allowed value for the billing report. Can be omitted
+            if no minimum is required.
+        maxValue:
+          type: number
+          description: Maximum allowed value for the billing report. Can be omitted
+            if no maximum is required.
+    CreateContractAPIRequestModelbillingReportLimittiers:
+      type: object
+      required:
+      - upTo
+      properties:
+        minValue:
+          type: number
+          description: The minimum value for this tier. Billing will start counting
+            from this value. Optional if no lower bound is needed.
+        maxValue:
+          type: number
+          description: The maximum value for this tier. Optional if no upper bound
+            is required.
+        upTo:
+          type: number
+          description: The upper limit of this tier. Usage or billing beyond this
+            value will fall into the next tier. Can be set to a very large number
+            to indicate no limit.
+          default: Infinity
+    CreateContractAPIRequestModelcontractLimit:
+      type: object
+      required:
+      - isUsageBased
+      properties:
+        tiers:
+          type: array
+          description: A list of tiers defining usage limits for this contract. Each
+            tier can have a min and max value. Optional if the contract has no tiered
+            limits.
+          items:
+            $ref: '#/components/schemas/CreateContractAPIRequestModelcontractLimittiers'
+        isUsageBased:
+          type: boolean
+          description: Indicates whether the contract limit is usage-based. If true,
+            the system will enforce usage thresholds; otherwise, limits apply to other
+            metrics.
+          default: false
+        minValue:
+          type: number
+          description: The minimum contract limit value. Billing or usage will start
+            counting from this threshold.
+        maxValue:
+          type: number
+          description: The maximum contract limit value. Usage beyond this value will
+            be restricted or handled as per contract rules.
+    CreateContractAPIRequestModelcontractLimittiers:
+      type: object
+      required:
+      - upTo
+      properties:
+        minValue:
+          type: number
+          description: The minimum value for this contract tier. Usage or billing
+            calculations start from this threshold.
+        maxValue:
+          type: number
+          description: The maximum value for this contract tier. Usage beyond this
+            value will be restricted or handled according to contract rules.
+        upTo:
+          type: number
+          description: Defines the upper bound for this tier. All usage up to this
+            value will fall under this tier. Use Infinity for no upper limit.
+          default: Infinity
+    CreateContractAPIRequestModeladvanceConfig:
+      type: object
+      properties:
+        trueUpEnabled:
+          type: boolean
+          description: Indicates whether true-up adjustments are enabled. True-up
+            allows increasing charges based on actual usage at the end of a billing
+            period.
+          default: false
+        trueDownEnabled:
+          type: boolean
+          description: Indicates whether true-down adjustments are enabled. True-down
+            allows reducing charges based on lower actual usage at the end of a billing
+            period.
+          default: false
+        actualUsageOverride:
+          type: boolean
+          description: If true, allows manually overriding the actual usage for this
+            contract.
+          default: false
+        fileName:
+          type: string
+          description: The name of the file uploaded for advance usage configuration,
+            if any.
+        attachmentId:
+          type: string
+          description: The ID of the uploaded file stored in the system for reference
+            or download.
+    CreateContractAPIRequestModelrenewalPeriod:
+      type: object
+      required:
+      - value
+      properties:
+        unit:
+          type: string
+          description: The time unit for the renewal period. Specifies whether the
+            contract should auto-renew after a number of days, weeks, months, or years.
+          example: MONTH
+          enum:
+          - DAY
+          - WEEK
+          - MONTH
+          - YEAR
+        value:
+          type: integer
+          description: The number of units after which the contract will auto-renew.
+            For example, value=3 and unit=MONTH means the contract renews every 3
+            months.
+    ContractResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/ContractPaginatedResponseModel'
+      type: object
+    ContractPaginatedResponseModel:
+      properties:
+        totalDocs:
+          type: integer
+        docs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractData'
+        hasNext:
+          type: boolean
+        hasPrev:
+          type: boolean
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        totalPages:
+          type: integer
+        prevPageNumber:
+          type: integer
+        nextPageNumber:
+          type: integer
+      type: object
+    ContractData:
+      properties:
+        id:
+          type: object
+        customerId:
+          type: object
+        contractNumber:
+          type: object
+        contractTitle:
+          type: object
+        contractPeriod:
+          type: object
+        renewalPeriod:
+          type: object
+        noteContract:
+          type: object
+        billingFrequency:
+          type: object
+        usageBillingCycle:
+          type: object
+        estimateCycle:
+          type: object
+        billingTime:
+          type: object
+        startDate:
+          type: object
+        virtualStartDate:
+          type: object
+        endDate:
+          type: object
+        nextBillingDate:
+          type: object
+        billingDiscounts:
+          type: object
+        isPreusage:
+          type: object
+        billingReportLimit:
+          type: object
+        contractLimit:
+          type: object
+        creditTermId:
+          type: object
+        poNumber:
+          type: object
+        placeOfSupply:
+          type: object
+        billingAddress:
+          type: object
+        shippingAddress:
+          type: object
+        totalInvoicedAmount:
+          type: object
+        noteInvoice:
+          type: object
+        terms:
+          type: object
+        advanceConfig:
+          type: object
+        invoiceSplitConfig:
+          type: object
+        gstin:
+          type: object
+        companyGstin:
+          type: object
+        currency:
+          type: object
+        currencyId:
+          type: object
+        companyId:
+          type: object
+        createdBy:
+          type: object
+        updatedBy:
+          type: object
+        status:
+          type: object
+        autoRenew:
+          type: object
+      type: object
+    ContractRateCardRelationshipListResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractRateCardRelationshipData'
+      type: object
+    ContractRateCardRelationshipData:
+      properties:
+        id:
+          type: object
+        contractId:
+          type: object
+        feeComponentId:
+          type: object
+        ratecardId:
+          type: object
+        tags:
+          type: object
+        createdBy:
+          type: object
+        status:
+          type: object
+        companyId:
+          type: object
+      type: object
+    ContractFeeComponentResponseModelListResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractFeeComponentResponseModelData'
+      type: object
+    ContractFeeComponentResponseModelData:
+      properties:
+        id:
+          type: string
+          description: id
+        productId:
+          type: string
+          description: productId
+        productName:
+          type: string
+          description: productName
+        sku:
+          type: string
+          description: sku
+        includedInUsage:
+          type: boolean
+          description: includedInUsage
+        name:
+          type: string
+          description: name
+        description:
+          type: string
+          description: description
+        hsnOrSacCode:
+          type: string
+          description: hsnOrSacCode
+        usage:
+          type: number
+          description: usage
+        billedAmount:
+          type: number
+          description: billedAmount
+        estimatedUsage:
+          type: number
+          description: estimatedUsage
+        estimatedBilledAmount:
+          type: number
+          description: estimatedBilledAmount
+        adjustment:
+          type: number
+          description: adjustment
+        taxRate:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractFeeComponentResponseModelDatataxRate'
+        billLimit:
+          $ref: '#/components/schemas/ContractFeeComponentResponseModelDatabillLimit'
+        activePeriod:
+          $ref: '#/components/schemas/ContractFeeComponentResponseModelDataactivePeriod'
+        billingFrequency:
+          $ref: '#/components/schemas/ContractFeeComponentResponseModelDatabillingFrequency'
+        unit:
+          type: string
+          description: unit
+        isFlatFee:
+          type: boolean
+          description: isFlatFee
+          default: false
+        companyId:
+          type: string
+          description: companyId
+        createdBy:
+          type: string
+          description: createdBy
+        updatedBy:
+          type: string
+          description: updatedBy
+        ratecards:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractFeeComponentResponseModelDataratecards'
+      type: object
+    ContractFeeComponentResponseModelDatataxRate:
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          description: name
+        value:
+          type: number
+          description: value
+        isActive:
+          type: boolean
+          description: isActive
+          default: true
+        taxCategory:
+          type: string
+          example: GST
+          enum:
+          - GST
+          - CESS
+          - SERVICE
+          - TDS
+          - OTHER
+      type: object
+    ContractFeeComponentResponseModelDatabillLimit:
+      required:
+      - isUsageBased
+      properties:
+        tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractFeeComponentResponseModelDatabillLimittiers'
+        isUsageBased:
+          type: boolean
+          description: isUsageBased
+          default: false
+        minValue:
+          type: number
+          description: minValue
+        maxValue:
+          type: number
+          description: maxValue
+        isProrated:
+          type: boolean
+          description: isProrated
+      type: object
+    ContractFeeComponentResponseModelDatabillLimittiers:
+      required:
+      - upTo
+      properties:
+        minValue:
+          type: number
+          description: minValue
+        maxValue:
+          type: number
+          description: maxValue
+        upTo:
+          type: number
+          description: upTo
+          default: Infinity
+      type: object
+    ContractFeeComponentResponseModelDataactivePeriod:
+      properties:
+        startDate:
+          type: string
+          format: date
+          description: startDate
+        endDate:
+          type: string
+          format: date
+          description: endDate
+      type: object
+    ContractFeeComponentResponseModelDatabillingFrequency:
+      required:
+      - value
+      properties:
+        unit:
+          type: string
+          example: DAY
+          enum:
+          - DAY
+          - WEEK
+          - MONTH
+          - YEAR
+        value:
+          type: integer
+          description: value
+      type: object
+    ContractFeeComponentResponseModelDataratecards:
+      properties:
+        id:
+          type: object
+        name:
+          type: object
+        ratecardDescription:
+          type: object
+        feeComponentId:
+          type: object
+        description:
+          type: object
+        ratecardDetail:
+          type: object
+        tags:
+          type: object
+        companyId:
+          type: object
+        contractId:
+          type: object
+        currency:
+          type: object
+        currencyId:
+          type: object
+        createdBy:
+          type: object
+        isDefault:
+          type: object
+        status:
+          type: object
+        isTierSplitEnabled:
+          type: object
+        startDate:
+          type: object
+        endDate:
+          type: object
+        fallBackRatecardId:
+          type: object
+      type: object
+    ContractResponseData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the added/created object.
+    UpdateContractAPIRequestModel_Request:
+      properties:
+        updates:
+          $ref: '#/components/schemas/UpdateContractAPIRequestModel_FieldsUpdateModel'
+      type: object
+    UpdateContractAPIRequestModel_FieldsUpdateModel:
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+            description: Fields to update
+        values:
+          $ref: '#/components/schemas/UpdateContractAPIRequestModel'
+      type: object
+    UpdateContractAPIRequestModel:
+      properties:
+        customerId:
+          type: string
+          description: customerId
+        contractNumber:
+          type: string
+          description: contractNumber
+        contractTitle:
+          type: string
+          description: contractTitle
+        contractPeriod:
+          $ref: '#/components/schemas/UpdateContractAPIRequestModelcontractPeriod'
+        renewalPeriod:
+          $ref: '#/components/schemas/UpdateContractAPIRequestModelrenewalPeriod'
+        billingFrequency:
+          $ref: '#/components/schemas/UpdateContractAPIRequestModelbillingFrequency'
+        startDate:
+          type: string
+          format: date
+          description: startDate
+        virtualStartDate:
+          type: string
+          format: date
+          description: virtualStartDate
+        endDate:
+          type: string
+          format: date
+          description: endDate
+        nextBillingDate:
+          type: string
+          format: date
+          description: nextBillingDate
+        creditTermId:
+          type: string
+          description: creditTermId
+        poNumber:
+          type: string
+          description: poNumber
+        noteInvoice:
+          type: string
+          description: noteInvoice
+        terms:
+          type: string
+          description: terms
+        noteContract:
+          type: string
+          description: noteContract
+        billingDiscounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateContractAPIRequestModelbillingDiscounts'
+        isPreusage:
+          type: boolean
+          description: isPreusage
+        billingTime:
+          type: string
+          example: BEGINNING_OF_PERIOD
+          enum:
+          - BEGINNING_OF_PERIOD
+          - SUBSCRIPTION_DATE
+        billingReportLimit:
+          $ref: '#/components/schemas/UpdateContractAPIRequestModelbillingReportLimit'
+        contractLimit:
+          $ref: '#/components/schemas/UpdateContractAPIRequestModelcontractLimit'
+        autoRenew:
+          type: boolean
+          description: autoRenew
+        advanceConfig:
+          $ref: '#/components/schemas/UpdateContractAPIRequestModeladvanceConfig'
+      type: object
+    UpdateContractAPIRequestModelcontractPeriod:
+      required:
+      - value
+      properties:
+        unit:
+          type: string
+          example: DAY
+          enum:
+          - DAY
+          - WEEK
+          - MONTH
+          - YEAR
+        value:
+          type: integer
+          description: value
+      type: object
+    UpdateContractAPIRequestModelrenewalPeriod:
+      required:
+      - value
+      properties:
+        unit:
+          type: string
+          example: DAY
+          enum:
+          - DAY
+          - WEEK
+          - MONTH
+          - YEAR
+        value:
+          type: integer
+          description: value
+      type: object
+    UpdateContractAPIRequestModelbillingFrequency:
+      required:
+      - value
+      properties:
+        unit:
+          type: string
+          example: DAY
+          enum:
+          - DAY
+          - WEEK
+          - MONTH
+          - YEAR
+        value:
+          type: integer
+          description: value
+      type: object
+    UpdateContractAPIRequestModelbillingDiscounts:
+      required:
+      - amount
+      - isPostTax
+      - isStackable
+      - isUsageBased
+      - percentage
+      - priority
+      properties:
+        amount:
+          type: number
+          description: amount
+          default: 0
+        percentage:
+          type: number
+          description: percentage
+          default: 0
+        isPostTax:
+          type: boolean
+          description: isPostTax
+          default: false
+        isUsageBased:
+          type: boolean
+          description: isUsageBased
+          default: false
+        tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateContractAPIRequestModelbillingDiscountstiers'
+        priority:
+          type: integer
+          description: priority
+          default: 1
+        isStackable:
+          type: boolean
+          description: isStackable
+          default: false
+        duration:
+          $ref: '#/components/schemas/UpdateContractAPIRequestModelbillingDiscountsduration'
+      type: object
+    UpdateContractAPIRequestModelbillingDiscountstiers:
+      required:
+      - amount
+      - isPostTax
+      - percentage
+      - upTo
+      properties:
+        amount:
+          type: number
+          description: amount
+          default: 0
+        percentage:
+          type: number
+          description: percentage
+          default: 0
+        isPostTax:
+          type: boolean
+          description: isPostTax
+          default: false
+        upTo:
+          type: number
+          description: upTo
+          default: Infinity
+      type: object
+    UpdateContractAPIRequestModelbillingDiscountsduration:
+      required:
+      - endIndex
+      - startIndex
+      properties:
+        startIndex:
+          type: integer
+          description: startIndex
+        endIndex:
+          type: integer
+          description: endIndex
+      type: object
+    UpdateContractAPIRequestModelbillingReportLimit:
+      required:
+      - isUsageBased
+      properties:
+        tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateContractAPIRequestModelbillingReportLimittiers'
+        isUsageBased:
+          type: boolean
+          description: isUsageBased
+          default: false
+        minValue:
+          type: number
+          description: minValue
+        maxValue:
+          type: number
+          description: maxValue
+      type: object
+    UpdateContractAPIRequestModelbillingReportLimittiers:
+      required:
+      - upTo
+      properties:
+        minValue:
+          type: number
+          description: minValue
+        maxValue:
+          type: number
+          description: maxValue
+        upTo:
+          type: number
+          description: upTo
+          default: Infinity
+      type: object
+    UpdateContractAPIRequestModelcontractLimit:
+      required:
+      - isUsageBased
+      properties:
+        tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateContractAPIRequestModelcontractLimittiers'
+        isUsageBased:
+          type: boolean
+          description: isUsageBased
+          default: false
+        minValue:
+          type: number
+          description: minValue
+        maxValue:
+          type: number
+          description: maxValue
+      type: object
+    UpdateContractAPIRequestModelcontractLimittiers:
+      required:
+      - upTo
+      properties:
+        minValue:
+          type: number
+          description: minValue
+        maxValue:
+          type: number
+          description: maxValue
+        upTo:
+          type: number
+          description: upTo
+          default: Infinity
+      type: object
+    UpdateContractAPIRequestModeladvanceConfig:
+      properties:
+        trueUpEnabled:
+          type: boolean
+          description: trueUpEnabled
+          default: false
+        trueDownEnabled:
+          type: boolean
+          description: trueDownEnabled
+          default: false
+        actualUsageOverride:
+          type: boolean
+          description: actualUsageOverride
+          default: false
+        fileName:
+          type: string
+          description: fileName
+        attachmentId:
+          type: string
+          description: attachmentId
+      type: object
+    UpdateContractAPIRequestModelResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/UpdateContractAPIRequestModelResponseData'
+      type: object
+    UpdateContractAPIRequestModelResponseData:
+      properties:
+        id:
+          type: string
+      type: object
+    ContractRateCardBulkUpsertionRequestModel:
+      properties:
+        ratecardRelations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractRateCardBulkUpsertionRequestModelratecardRelations'
+      type: object
+    ContractRateCardBulkUpsertionRequestModelratecardRelations:
+      required:
+      - feeComponentId
+      properties:
+        feeComponentId:
+          type: string
+          description: feeComponentId
+        ratecardId:
+          type: string
+          description: ratecardId
+      type: object
+    FeeComponentToContractRequestModel:
+      required:
+      - contractId
+      - feeComponentId
+      properties:
+        feeComponentId:
+          type: string
+          description: The unique identifier of the fee component to associate with
+            the contract.
+        contractId:
+          type: string
+          description: The unique identifier of the contract to which the fee component
+            will be linked.
+      type: object
+    FeeComponentIncludeUsageRequestModel:
+      required:
+      - contractId
+      properties:
+        feeComponentIds:
+          type: array
+          items:
+            type: string
+            description: feeComponentIds
+        contractId:
+          type: string
+          description: contractId
+      type: object
+    CreateUsageAPIRequestModel:
+      type: object
+      required:
+      - eventTimeStamp
+      - metrics
+      - usageReferenceId
+      - buyerId
+      - tags
+      properties:
+        buyerId:
+          type: string
+          description: Unique identifier of the buyer associated with this usage event
+          example: buyer_12345
+        contractId:
+          type: string
+          description: Identifier of the contract under which the usage is recorded
+          example: contract_67890
+        eventId:
+          type: string
+          description: Optional unique ID for this usage event, useful for idempotency
+          example: event_abc123
+        eventTimeStamp:
+          type: integer
+          description: Unix timestamp in milliseconds representing when the usage
+            occurred
+          example: 1755079200000
+        tags:
+          type: object
+          description: Custom key-value tags associated with this usage
+          additionalProperties:
+            type: string
+          example:
+            region: US-East
+            plan: Enterprise
+            feature: premium_support
+        metrics:
+          type: array
+          description: List of usage metrics for this event
+          items:
+            type: object
+            properties:
+              usage_driver_id:
+                type: string
+                description: Identifier for the usage driver or metric type
+                example: usage_driver_001
+              quantity:
+                type: number
+                format: float
+                description: The measured quantity for this usage driver
+                example: 42.5
+              count:
+                type: integer
+                description: Optional count associated with this metric
+                example: 1
+        usageReferenceId:
+          type: string
+          description: A unique reference ID for tracking this usage event across
+            systems
+          example: usage_ref_98765
+        metadata:
+          type: object
+          description: Optional metadata for storing extra key-value information about
+            the usage event.
+          additionalProperties: true
+          example:
+            company_id: '3932'
+            recon_date: '2025-05-06 00:00:00'
+            company_name: Reliance Europa Limited
+            old_bag_status: Returned
+    UsageResponseModel:
+      type: object
+      description: Response returned after adding a usage event. Contains status and
+        optional data.
+      properties:
+        error:
+          type:
+          - string
+          - 'null'
+          description: Error message if the operation failed; null if successful
+          example: null
+        message:
+          type: string
+          description: Human-readable message indicating the result of the operation
+          example: Added usage successfully
+    UsageAdditionResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/UsageAdditionResponseModelData'
+      type: object
+    UsageAdditionResponseModelData:
+      properties:
+        usagesAdded:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsageAdditionResponseModelDatausagesAdded'
+        errors:
+          type: array
+          items:
+            type: string
+            description: errors
+      type: object
+    UsageAdditionResponseModelDatausagesAdded:
+      properties:
+        usageDriverId:
+          type: string
+          description: usageDriverId
+        usageDriverName:
+          type: string
+          description: usageDriverName
+        contractId:
+          type: string
+          description: contractId
+        value:
+          type: number
+          description: value
+      type: object
+    UsageResponseData:
+      type: object
+      description: Details of the usage event that was just created. Can be empty
+        if no extra data is returned.
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the usage event
+          example: usage_12345
+    UpdateUsageRequestModel_FieldsUpdateModel:
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+            description: Fields to update
+        values:
+          $ref: '#/components/schemas/UpdateUsageRequestModel'
+      type: object
+    UpdateUsageRequestModel:
+      properties:
+        quantity:
+          type: number
+          description: quantity
+        transactionDate:
+          type: string
+          format: date
+          description: transactionDate
+        tags:
+          type: object
+        metaData:
+          type: object
+      type: object
+    BillingReportResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/BillingReportResponseData'
+      type: object
+    BillingReportResponseData:
+      properties:
+        id:
+          type: string
+      type: object
+    BillingReportGenerationRequest:
+      required:
+      - billingDate
+      properties:
+        contractIds:
+          type: array
+          items:
+            type: string
+            description: contractIds
+        billingDate:
+          type: string
+          format: date
+          description: billingDate
+      type: object
+    BillingReport:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/BillingReportData'
+      type: object
+    BillingReportData:
+      properties:
+        id:
+          type: object
+        billId:
+          type: object
+        usageEstimateIterationId:
+          type: object
+        total:
+          type: object
+        isPreusage:
+          type: object
+        advanceConfig:
+          type: object
+        subTotal:
+          type: object
+        tax:
+          type: object
+        contractId:
+          type: object
+        contractNumber:
+          type: object
+        contractTitle:
+          type: object
+        lineItems:
+          type: object
+        billingDiscounts:
+          type: object
+        totalDiscount:
+          type: object
+        billingPeriod:
+          type: object
+        approvedBy:
+          type: object
+        rejectedBy:
+          type: object
+        status:
+          type: object
+        comment:
+          type: object
+        invoiceId:
+          type: object
+        invoiceNumber:
+          type: object
+        customerId:
+          type: object
+        buyerId:
+          type: object
+        customerName:
+          type: object
+        companyName:
+          type: object
+        companyId:
+          type: object
+        logoUrl:
+          type: object
+        createdBy:
+          type: object
+      type: object
+    BulkVerdictUpdate:
+      properties:
+        verdict:
+          type: string
+          example: DRAFT
+          enum:
+          - DRAFT
+          - APPROVED
+          - REJECTED
+        billingReportIds:
+          type: array
+          items:
+            type: string
+            description: billingReportIds
+        billIds:
+          type: array
+          items:
+            type: string
+            description: billIds
+        comment:
+          type: string
+          description: comment
+      type: object
+    BulkVerdictUpdateResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/BulkVerdictUpdateResponseModelData'
+      type: object
+    BulkVerdictUpdateResponseModelData:
+      required:
+      - failedCount
+      - successCount
+      properties:
+        failedCount:
+          type: integer
+          description: failedCount
+          default: 0
+        successCount:
+          type: integer
+          description: successCount
+          default: 0
+      type: object
+    BillingReportEmailPreviewResponse:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/BillingReportEmailPreviewResponseData'
+      type: object
+    BillingReportEmailPreviewResponseData:
+      required:
+      - htmlContent
+      properties:
+        htmlContent:
+          type: string
+          description: htmlContent
+      type: object
+    BillingReportSendEmailRequestModel:
+      required:
+      - fromEmail
+      - subject
+      properties:
+        billingReportIds:
+          type: array
+          items:
+            type: string
+            description: billingReportIds
+        subject:
+          type: string
+          description: subject
+        fromEmail:
+          type: string
+          description: fromEmail
+        emailRecipient:
+          $ref: '#/components/schemas/BillingReportSendEmailRequestModelemailRecipient'
+      type: object
+    FeeComponentTagResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/FeeComponentTagResponseData'
+      type: object
+    FeeComponentTagResponseData:
+      properties:
+        id:
+          type: string
+      type: object
+    FeeComponentTagListResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeeComponentTagData'
+      type: object
+    FeeComponentTagData:
+      properties:
+        id:
+          type: object
+        name:
+          type: object
+        values:
+          type: object
+        feeComponentId:
+          type: object
+        status:
+          type: object
+        companyId:
+          type: object
+        createdBy:
+          type: object
+      type: object
+    BillingReportSendEmailRequestModelemailRecipient:
+      properties:
+        to:
+          type: array
+          items:
+            type: string
+            description: to
+        cc:
+          type: array
+          items:
+            type: string
+            description: cc
+        bcc:
+          type: array
+          items:
+            type: string
+            description: bcc
+        replyTo:
+          type: array
+          items:
+            type: string
+            description: replyTo
+      type: object
+    CreateInvoice:
+      properties:
+        invoice:
+          $ref: '#/components/schemas/CreateInvoiceModel'
+      type: object
+    CreateInvoiceModel:
+      required:
+      - invoiceAdjustedAmount
+      - invoiceCurrency
+      - invoiceId
+      - invoiceNumber
+      - invoicePaidAmount
+      - invoiceSubtotal
+      - invoiceTotal
+      properties:
+        invoiceId:
+          type: string
+          description: invoiceId
+        invoiceNumber:
+          type: string
+          description: invoiceNumber
+        invoiceDate:
+          type: object
+        invoiceDueDate:
+          type: object
+        promiseToPayDate:
+          type: object
+        invoiceSubtotal:
+          type: number
+          description: invoiceSubtotal
+        invoiceTax:
+          $ref: '#/components/schemas/CreateInvoiceModelinvoiceTax'
+        invoiceAdjustedAmount:
+          type: number
+          description: invoiceAdjustedAmount
+          default: 0
+        invoicePaidAmount:
+          type: number
+          description: invoicePaidAmount
+          default: 0
+        discount:
+          $ref: '#/components/schemas/CreateInvoiceModeldiscount'
+        discounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInvoiceModeldiscounts'
+        discountSplitByWeight:
+          type: boolean
+          description: discountSplitByWeight
+          default: true
+        invoiceTotal:
+          type: number
+          description: invoiceTotal
+          default: 0
+        invoiceAcceptanceStatus:
+          type: string
+          example: PENDING
+          enum:
+          - PENDING
+          - ACCEPTED
+          - REJECTED
+        customerId:
+          type: string
+          description: customerId
+        customerDetails:
+          $ref: '#/components/schemas/CreateInvoiceModelcustomerDetails'
+        customerName:
+          type: string
+          description: customerName
+        invoiceType:
+          type: string
+          description: invoiceType
+        supplyStateCode:
+          type: string
+          description: supplyStateCode
+        placeOfSupply:
+          type: string
+          description: placeOfSupply
+        invoiceCurrency:
+          type: string
+          description: invoiceCurrency
+          default: INR
+        invoiceCurrencyId:
+          type: string
+          description: invoiceCurrencyId
+        lineItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInvoiceModellineItems'
+        referenceType:
+          type: string
+          description: referenceType
+        referenceId:
+          type: string
+          description: referenceId
+        referenceText:
+          type: string
+          description: referenceText
+        eInvoiceQrCode:
+          type: string
+          description: eInvoiceQrCode
+        irnNumber:
+          type: string
+          description: irnNumber
+        companyId:
+          type: string
+          description: companyId
+        tags:
+          type: object
+        metaData:
+          type: object
+        sort:
+          type: string
+          description: sort
+        invoiceRoundingConfig:
+          $ref: '#/components/schemas/CreateInvoiceModelinvoiceRoundingConfig'
+        prepaidAmount:
+          type: number
+          description: prepaidAmount
+        createInvoiceAdjustments:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInvoiceModelcreateInvoiceAdjustments'
+        erpId:
+          type: string
+          description: erpId
+      type: object
+    CreateInvoiceModelinvoiceTax:
+      required:
+      - total
+      properties:
+        total:
+          type: number
+          description: total
+          default: 0
+        gstTax:
+          $ref: '#/components/schemas/CreateInvoiceModelinvoiceTaxgstTax'
+        cessTax:
+          $ref: '#/components/schemas/CreateInvoiceModelinvoiceTaxcessTax'
+        serviceTax:
+          $ref: '#/components/schemas/CreateInvoiceModelinvoiceTaxserviceTax'
+        tdsTax:
+          $ref: '#/components/schemas/CreateInvoiceModelinvoiceTaxtdsTax'
+        otherTaxes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInvoiceModelinvoiceTaxotherTaxes'
+        cgst:
+          type: number
+          description: cgst
+        sgst:
+          type: number
+          description: sgst
+        igst:
+          type: number
+          description: igst
+        tds:
+          type: number
+          description: tds
+          default: 0
+      type: object
+    CreateInvoiceModelinvoiceTaxgstTax:
+      required:
+      - cgst
+      - cgstRate
+      - igst
+      - igstRate
+      - sgst
+      - sgstRate
+      - totalGst
+      - totalGstRate
+      properties:
+        totalGst:
+          type: number
+          description: totalGst
+          default: 0
+        totalGstRate:
+          type: number
+          description: totalGstRate
+          default: 0
+        cgst:
+          type: number
+          description: cgst
+          default: 0
+        cgstRate:
+          type: number
+          description: cgstRate
+          default: 0
+        sgst:
+          type: number
+          description: sgst
+          default: 0
+        sgstRate:
+          type: number
+          description: sgstRate
+          default: 0
+        igst:
+          type: number
+          description: igst
+          default: 0
+        igstRate:
+          type: number
+          description: igstRate
+          default: 0
+      type: object
+    CreateInvoiceModelinvoiceTaxcessTax:
+      required:
+      - cess
+      - cessRate
+      properties:
+        cess:
+          type: number
+          description: cess
+          default: 0
+        cessRate:
+          type: number
+          description: cessRate
+          default: 0
+      type: object
+    CreateInvoiceModelinvoiceTaxserviceTax:
+      required:
+      - serviceTax
+      - serviceTaxRate
+      properties:
+        serviceTax:
+          type: number
+          description: serviceTax
+          default: 0
+        serviceTaxRate:
+          type: number
+          description: serviceTaxRate
+          default: 0
+      type: object
+    CreateInvoiceModelinvoiceTaxtdsTax:
+      required:
+      - tds
+      - tdsRate
+      properties:
+        tds:
+          type: number
+          description: tds
+          default: 0
+        tdsRate:
+          type: number
+          description: tdsRate
+          default: 0
+      type: object
+    CreateInvoiceModelinvoiceTaxotherTaxes:
+      required:
+      - genericTax
+      - genericTaxRate
+      - name
+      properties:
+        name:
+          type: string
+          description: name
+        genericTax:
+          type: number
+          description: genericTax
+          default: 0
+        genericTaxRate:
+          type: number
+          description: genericTaxRate
+          default: 0
+      type: object
+    CreateInvoiceModeldiscount:
+      required:
+      - amount
+      - isPostTax
+      - percentage
+      properties:
+        amount:
+          type: number
+          description: amount
+          default: 0
+        percentage:
+          type: number
+          description: percentage
+          default: 0
+        isPostTax:
+          type: boolean
+          description: isPostTax
+          default: false
+      type: object
+    CreateInvoiceModeldiscounts:
+      required:
+      - amount
+      - isPostTax
+      - percentage
+      properties:
+        amount:
+          type: number
+          description: amount
+          default: 0
+        percentage:
+          type: number
+          description: percentage
+          default: 0
+        isPostTax:
+          type: boolean
+          description: isPostTax
+          default: false
+      type: object
+    CreateInvoiceModelcustomerDetails:
+      required:
+      - buyerId
+      - isManuallyCreated
+      properties:
+        buyerId:
+          type: string
+          description: buyerId
+        taxIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInvoiceModelcustomerDetailstaxIdentifiers'
+        isManuallyCreated:
+          type: boolean
+          description: isManuallyCreated
+          default: true
+        companyId:
+          type: string
+          description: companyId
+        name:
+          type: string
+          description: name
+        alias:
+          type: string
+          description: alias
+        registeredAddress:
+          $ref: '#/components/schemas/CreateInvoiceModelcustomerDetailsregisteredAddress'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInvoiceModelcustomerDetailsaddresses'
+        contactsData:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInvoiceModelcustomerDetailscontactsData'
+        ownersData:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInvoiceModelcustomerDetailsownersData'
+        stateCode:
+          type: string
+          description: stateCode
+        countryCode:
+          type: string
+          description: countryCode
+          default: IN
+        country:
+          type: string
+          description: country
+        primaryPhone:
+          type: string
+          description: primaryPhone
+        primaryEmail:
+          type: string
+          description: primaryEmail
+        customerContactPerson:
+          type: string
+          description: customerContactPerson
+        currency:
+          type: string
+          description: currency
+          default: INR
+        currencyId:
+          type: string
+          description: currencyId
+        tags:
+          type: object
+        metaData:
+          type: object
+        customerStatus:
+          type: string
+          example: PROSPECT
+          enum:
+          - PROSPECT
+          - LIVE
+          - CHURNED
+          - INACTIVE
+        upcomingCustomerStatus:
+          type: string
+          example: PROSPECT
+          enum:
+          - PROSPECT
+          - LIVE
+          - CHURNED
+          - INACTIVE
+        upcomingCustomerStatusChangeDate:
+          type: string
+          format: date
+          description: upcomingCustomerStatusChangeDate
+        upcomingCustomerStatusChangeReason:
+          type: string
+          description: upcomingCustomerStatusChangeReason
+        upcomingCustomerStatusChangeByUserid:
+          type: string
+          description: upcomingCustomerStatusChangeByUserid
+        erpId:
+          type: string
+          description: erpId
+      type: object
+    CreateInvoiceModelcustomerDetailstaxIdentifiers:
+      required:
+      - value
+      properties:
+        value:
+          type: string
+          description: value
+        type:
+          type: string
+          example: GSTIN
+          enum:
+          - GSTIN
+          - PAN
+          - VAT
+          - OTHER
+      type: object
+    CreateInvoiceModelcustomerDetailsregisteredAddress:
+      properties:
+        line1:
+          type: string
+          description: line1
+        line2:
+          type: string
+          description: line2
+        state:
+          type: string
+          description: state
+        city:
+          type: string
+          description: city
+        country:
+          type: string
+          description: country
+        zipCode:
+          type: string
+          description: zipCode
+      type: object
+    CreateInvoiceModelcustomerDetailsaddresses:
+      properties:
+        line1:
+          type: string
+          description: line1
+        line2:
+          type: string
+          description: line2
+        state:
+          type: string
+          description: state
+        city:
+          type: string
+          description: city
+        country:
+          type: string
+          description: country
+        zipCode:
+          type: string
+          description: zipCode
+      type: object
+    CreateInvoiceModelcustomerDetailscontactsData:
+      required:
+      - id
+      - name
+      - primaryEmail
+      - primaryPhone
+      - role
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: name
+        primaryPhone:
+          type: string
+          description: primaryPhone
+        primaryEmail:
+          type: string
+          description: primaryEmail
+        role:
+          type: string
+          description: role
+      type: object
+    CreateInvoiceModelcustomerDetailsownersData:
+      required:
+      - id
+      - name
+      - primaryEmail
+      - primaryPhone
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: name
+        primaryPhone:
+          type: string
+          description: primaryPhone
+        primaryEmail:
+          type: string
+          description: primaryEmail
+        role:
+          type: string
+          description: role
+        isRegistered:
+          type: boolean
+          description: isRegistered
+          default: false
+      type: object
+    CreateInvoiceModellineItems:
+      required:
+      - subTotal
+      - total
+      properties:
+        lineItemDetails:
+          $ref: '#/components/schemas/CreateInvoiceModellineItemslineItemDetails'
+        subTotal:
+          type: number
+          description: subTotal
+          default: 0
+        total:
+          type: number
+          description: total
+          default: 0
+        tax:
+          $ref: '#/components/schemas/CreateInvoiceModellineItemstax'
+        discount:
+          $ref: '#/components/schemas/CreateInvoiceModellineItemsdiscount'
+        quantity:
+          type: number
+          description: quantity
+          default: 1
+      type: object
+    CreateInvoiceModellineItemslineItemDetails:
+      required:
+      - name
+      - pricePerItem
+      - taxRate
+      properties:
+        name:
+          type: string
+          description: name
+        taxRate:
+          type: number
+          description: taxRate
+        pricePerItem:
+          type: number
+          description: pricePerItem
+          default: 0
+        hsnOrSacCode:
+          type: string
+          description: hsnOrSacCode
+        description:
+          type: string
+          description: description
+        companyId:
+          type: string
+          description: companyId
+        erpId:
+          type: string
+          description: erpId
+        lineItemId:
+          type: string
+          description: lineItemId
+      type: object
+    CreateInvoiceModellineItemstax:
+      required:
+      - total
+      properties:
+        total:
+          type: number
+          description: total
+          default: 0
+        gstTax:
+          $ref: '#/components/schemas/CreateInvoiceModellineItemstaxgstTax'
+        cessTax:
+          $ref: '#/components/schemas/CreateInvoiceModellineItemstaxcessTax'
+        serviceTax:
+          $ref: '#/components/schemas/CreateInvoiceModellineItemstaxserviceTax'
+        tdsTax:
+          $ref: '#/components/schemas/CreateInvoiceModellineItemstaxtdsTax'
+        otherTaxes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInvoiceModellineItemstaxotherTaxes'
+        cgst:
+          type: number
+          description: cgst
+        sgst:
+          type: number
+          description: sgst
+        igst:
+          type: number
+          description: igst
+        tds:
+          type: number
+          description: tds
+          default: 0
+      type: object
+    CreateInvoiceModellineItemstaxgstTax:
+      required:
+      - cgst
+      - cgstRate
+      - igst
+      - igstRate
+      - sgst
+      - sgstRate
+      - totalGst
+      - totalGstRate
+      properties:
+        totalGst:
+          type: number
+          description: totalGst
+          default: 0
+        totalGstRate:
+          type: number
+          description: totalGstRate
+          default: 0
+        cgst:
+          type: number
+          description: cgst
+          default: 0
+        cgstRate:
+          type: number
+          description: cgstRate
+          default: 0
+        sgst:
+          type: number
+          description: sgst
+          default: 0
+        sgstRate:
+          type: number
+          description: sgstRate
+          default: 0
+        igst:
+          type: number
+          description: igst
+          default: 0
+        igstRate:
+          type: number
+          description: igstRate
+          default: 0
+      type: object
+    CreateInvoiceModellineItemstaxcessTax:
+      required:
+      - cess
+      - cessRate
+      properties:
+        cess:
+          type: number
+          description: cess
+          default: 0
+        cessRate:
+          type: number
+          description: cessRate
+          default: 0
+      type: object
+    CreateInvoiceModellineItemstaxserviceTax:
+      required:
+      - serviceTax
+      - serviceTaxRate
+      properties:
+        serviceTax:
+          type: number
+          description: serviceTax
+          default: 0
+        serviceTaxRate:
+          type: number
+          description: serviceTaxRate
+          default: 0
+      type: object
+    CreateInvoiceModellineItemstaxtdsTax:
+      required:
+      - tds
+      - tdsRate
+      properties:
+        tds:
+          type: number
+          description: tds
+          default: 0
+        tdsRate:
+          type: number
+          description: tdsRate
+          default: 0
+      type: object
+    CreateInvoiceModellineItemstaxotherTaxes:
+      required:
+      - genericTax
+      - genericTaxRate
+      - name
+      properties:
+        name:
+          type: string
+          description: name
+        genericTax:
+          type: number
+          description: genericTax
+          default: 0
+        genericTaxRate:
+          type: number
+          description: genericTaxRate
+          default: 0
+      type: object
+    CreateInvoiceModellineItemsdiscount:
+      required:
+      - amount
+      - isPostTax
+      - percentage
+      properties:
+        amount:
+          type: number
+          description: amount
+          default: 0
+        percentage:
+          type: number
+          description: percentage
+          default: 0
+        isPostTax:
+          type: boolean
+          description: isPostTax
+          default: false
+      type: object
+    CreateInvoiceModelinvoiceRoundingConfig:
+      required:
+      - isPostTax
+      - roundingDirection
+      - type
+      properties:
+        type:
+          type: string
+          example: NEAREST
+          enum:
+          - NEAREST
+          - UP
+          - DOWN
+        roundingDirection:
+          type: string
+          example: UP
+          enum:
+          - UP
+          - DOWN
+        decimalPlace:
+          type: integer
+          description: decimalPlace
+          default: 2
+        isPostTax:
+          type: boolean
+          description: isPostTax
+          default: true
+      type: object
+    CreateInvoiceModelcreateInvoiceAdjustments:
+      required:
+      - isPostTax
+      properties:
+        isPostTax:
+          type: boolean
+          description: isPostTax
+          default: true
+        amount:
+          type: number
+          description: amount
+        name:
+          type: string
+          description: name
+        reference:
+          type: string
+          description: reference
+      type: object
+    CreateCreditNotesExternalAPIQueryModel:
+      properties:
+        creditNote:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModel'
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModel:
+      properties:
+        creditNoteId:
+          type: string
+          description: creditNoteId
+        creditNoteNumber:
+          type: string
+          description: creditNoteNumber
+        creditNoteDate:
+          type: string
+          format: date
+          description: creditNoteDate
+        customerDetails:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModelcustomerDetails'
+        creditNoteTotal:
+          type: number
+          description: creditNoteTotal
+        creditNoteSubtotal:
+          type: number
+          description: creditNoteSubtotal
+        creditNoteTax:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModelcreditNoteTax'
+        currency:
+          type: string
+          description: currency
+          default: INR
+        lineItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModellineItems'
+        tags:
+          type: object
+        description:
+          type: string
+          description: description
+        invoiceId:
+          type: string
+          description: invoiceId
+        invoiceNumber:
+          type: string
+          description: invoiceNumber
+        companyId:
+          type: string
+          description: companyId
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModelcustomerDetails:
+      required:
+      - buyerId
+      properties:
+        buyerId:
+          type: string
+          description: buyerId
+        name:
+          type: string
+          description: name
+        registeredAddress:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModelcustomerDetailsregisteredAddress'
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModelcustomerDetailsregisteredAddress:
+      properties:
+        line1:
+          type: string
+          description: line1
+        line2:
+          type: string
+          description: line2
+        state:
+          type: string
+          description: state
+        city:
+          type: string
+          description: city
+        country:
+          type: string
+          description: country
+        zipCode:
+          type: string
+          description: zipCode
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModelcreditNoteTax:
+      required:
+      - total
+      properties:
+        total:
+          type: number
+          description: total
+          default: 0
+        gstTax:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModelcreditNoteTaxgstTax'
+        cessTax:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModelcreditNoteTaxcessTax'
+        serviceTax:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModelcreditNoteTaxserviceTax'
+        tdsTax:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModelcreditNoteTaxtdsTax'
+        otherTaxes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModelcreditNoteTaxotherTaxes'
+        cgst:
+          type: number
+          description: cgst
+        sgst:
+          type: number
+          description: sgst
+        igst:
+          type: number
+          description: igst
+        tds:
+          type: number
+          description: tds
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModelcreditNoteTaxgstTax:
+      required:
+      - cgst
+      - cgstRate
+      - igst
+      - igstRate
+      - sgst
+      - sgstRate
+      - totalGst
+      - totalGstRate
+      properties:
+        totalGst:
+          type: number
+          description: totalGst
+          default: 0
+        totalGstRate:
+          type: number
+          description: totalGstRate
+          default: 0
+        cgst:
+          type: number
+          description: cgst
+          default: 0
+        cgstRate:
+          type: number
+          description: cgstRate
+          default: 0
+        sgst:
+          type: number
+          description: sgst
+          default: 0
+        sgstRate:
+          type: number
+          description: sgstRate
+          default: 0
+        igst:
+          type: number
+          description: igst
+          default: 0
+        igstRate:
+          type: number
+          description: igstRate
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModelcreditNoteTaxcessTax:
+      required:
+      - cess
+      - cessRate
+      properties:
+        cess:
+          type: number
+          description: cess
+          default: 0
+        cessRate:
+          type: number
+          description: cessRate
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModelcreditNoteTaxserviceTax:
+      required:
+      - serviceTax
+      - serviceTaxRate
+      properties:
+        serviceTax:
+          type: number
+          description: serviceTax
+          default: 0
+        serviceTaxRate:
+          type: number
+          description: serviceTaxRate
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModelcreditNoteTaxtdsTax:
+      required:
+      - tds
+      - tdsRate
+      properties:
+        tds:
+          type: number
+          description: tds
+          default: 0
+        tdsRate:
+          type: number
+          description: tdsRate
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModelcreditNoteTaxotherTaxes:
+      required:
+      - genericTax
+      - genericTaxRate
+      - name
+      properties:
+        name:
+          type: string
+          description: name
+        genericTax:
+          type: number
+          description: genericTax
+          default: 0
+        genericTaxRate:
+          type: number
+          description: genericTaxRate
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModellineItems:
+      required:
+      - subTotal
+      - total
+      properties:
+        lineItemDetails:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModellineItemslineItemDetails'
+        subTotal:
+          type: number
+          description: subTotal
+          default: 0
+        total:
+          type: number
+          description: total
+          default: 0
+        tax:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModellineItemstax'
+        quantity:
+          type: number
+          description: quantity
+          default: 1
+        amount:
+          type: number
+          description: amount
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModellineItemslineItemDetails:
+      required:
+      - name
+      - pricePerItem
+      - taxRate
+      properties:
+        name:
+          type: string
+          description: name
+        taxRate:
+          type: number
+          description: taxRate
+        pricePerItem:
+          type: number
+          description: pricePerItem
+          default: 0
+        hsnOrSacCode:
+          type: string
+          description: hsnOrSacCode
+        description:
+          type: string
+          description: description
+        companyId:
+          type: string
+          description: companyId
+        erpId:
+          type: string
+          description: erpId
+        lineItemId:
+          type: string
+          description: lineItemId
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModellineItemstax:
+      required:
+      - total
+      properties:
+        total:
+          type: number
+          description: total
+          default: 0
+        gstTax:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModellineItemstaxgstTax'
+        cessTax:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModellineItemstaxcessTax'
+        serviceTax:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModellineItemstaxserviceTax'
+        tdsTax:
+          $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModellineItemstaxtdsTax'
+        otherTaxes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateCreditNotesExternalAPICreditNoteModellineItemstaxotherTaxes'
+        cgst:
+          type: number
+          description: cgst
+        sgst:
+          type: number
+          description: sgst
+        igst:
+          type: number
+          description: igst
+        tds:
+          type: number
+          description: tds
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModellineItemstaxgstTax:
+      required:
+      - cgst
+      - cgstRate
+      - igst
+      - igstRate
+      - sgst
+      - sgstRate
+      - totalGst
+      - totalGstRate
+      properties:
+        totalGst:
+          type: number
+          description: totalGst
+          default: 0
+        totalGstRate:
+          type: number
+          description: totalGstRate
+          default: 0
+        cgst:
+          type: number
+          description: cgst
+          default: 0
+        cgstRate:
+          type: number
+          description: cgstRate
+          default: 0
+        sgst:
+          type: number
+          description: sgst
+          default: 0
+        sgstRate:
+          type: number
+          description: sgstRate
+          default: 0
+        igst:
+          type: number
+          description: igst
+          default: 0
+        igstRate:
+          type: number
+          description: igstRate
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModellineItemstaxcessTax:
+      required:
+      - cess
+      - cessRate
+      properties:
+        cess:
+          type: number
+          description: cess
+          default: 0
+        cessRate:
+          type: number
+          description: cessRate
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModellineItemstaxserviceTax:
+      required:
+      - serviceTax
+      - serviceTaxRate
+      properties:
+        serviceTax:
+          type: number
+          description: serviceTax
+          default: 0
+        serviceTaxRate:
+          type: number
+          description: serviceTaxRate
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModellineItemstaxtdsTax:
+      required:
+      - tds
+      - tdsRate
+      properties:
+        tds:
+          type: number
+          description: tds
+          default: 0
+        tdsRate:
+          type: number
+          description: tdsRate
+          default: 0
+      type: object
+    CreateCreditNotesExternalAPICreditNoteModellineItemstaxotherTaxes:
+      required:
+      - genericTax
+      - genericTaxRate
+      - name
+      properties:
+        name:
+          type: string
+          description: name
+        genericTax:
+          type: number
+          description: genericTax
+          default: 0
+        genericTaxRate:
+          type: number
+          description: genericTaxRate
+          default: 0
+      type: object
+    CreateExternalCustomer:
+      properties:
+        customer:
+          $ref: '#/components/schemas/CreateExternalCustomerModel'
+      type: object
+    CreateExternalCustomerModel:
+      required:
+      - isManuallyCreated
+      properties:
+        companyId:
+          type: string
+          description: companyId
+        name:
+          type: string
+          description: name
+        alias:
+          type: string
+          description: alias
+        registeredAddress:
+          $ref: '#/components/schemas/CreateExternalCustomerModelregisteredAddress'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateExternalCustomerModeladdresses'
+        contactsData:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateExternalCustomerModelcontactsData'
+        ownersData:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateExternalCustomerModelownersData'
+        stateCode:
+          type: string
+          description: stateCode
+        countryCode:
+          type: string
+          description: countryCode
+          default: IN
+        country:
+          type: string
+          description: country
+        primaryPhone:
+          type: string
+          description: primaryPhone
+        primaryEmail:
+          type: string
+          description: primaryEmail
+        taxIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateExternalCustomerModeltaxIdentifiers'
+        customerContactPerson:
+          type: string
+          description: customerContactPerson
+        currency:
+          type: string
+          description: currency
+          default: INR
+        currencyId:
+          type: string
+          description: currencyId
+        tags:
+          type: object
+        metaData:
+          type: object
+        isManuallyCreated:
+          type: boolean
+          description: isManuallyCreated
+          default: true
+        customerStatus:
+          type: string
+          example: PROSPECT
+          enum:
+          - PROSPECT
+          - LIVE
+          - CHURNED
+          - INACTIVE
+        upcomingCustomerStatus:
+          type: string
+          example: PROSPECT
+          enum:
+          - PROSPECT
+          - LIVE
+          - CHURNED
+          - INACTIVE
+        upcomingCustomerStatusChangeDate:
+          type: string
+          format: date
+          description: upcomingCustomerStatusChangeDate
+        upcomingCustomerStatusChangeReason:
+          type: string
+          description: upcomingCustomerStatusChangeReason
+        upcomingCustomerStatusChangeByUserid:
+          type: string
+          description: upcomingCustomerStatusChangeByUserid
+        erpId:
+          type: string
+          description: erpId
+      type: object
+    CreateExternalCustomerModelregisteredAddress:
+      properties:
+        line1:
+          type: string
+          description: line1
+        line2:
+          type: string
+          description: line2
+        state:
+          type: string
+          description: state
+        city:
+          type: string
+          description: city
+        country:
+          type: string
+          description: country
+        zipCode:
+          type: string
+          description: zipCode
+      type: object
+    CreateExternalCustomerModeladdresses:
+      properties:
+        line1:
+          type: string
+          description: line1
+        line2:
+          type: string
+          description: line2
+        state:
+          type: string
+          description: state
+        city:
+          type: string
+          description: city
+        country:
+          type: string
+          description: country
+        zipCode:
+          type: string
+          description: zipCode
+      type: object
+    CreateExternalCustomerModelcontactsData:
+      required:
+      - id
+      - name
+      - primaryEmail
+      - primaryPhone
+      - role
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: name
+        primaryPhone:
+          type: string
+          description: primaryPhone
+        primaryEmail:
+          type: string
+          description: primaryEmail
+        role:
+          type: string
+          description: role
+      type: object
+    CreateExternalCustomerModelownersData:
+      required:
+      - id
+      - name
+      - primaryEmail
+      - primaryPhone
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: name
+        primaryPhone:
+          type: string
+          description: primaryPhone
+        primaryEmail:
+          type: string
+          description: primaryEmail
+        role:
+          type: string
+          description: role
+        isRegistered:
+          type: boolean
+          description: isRegistered
+          default: false
+      type: object
+    CreateExternalCustomerModeltaxIdentifiers:
+      required:
+      - value
+      properties:
+        value:
+          type: string
+          description: value
+        type:
+          type: string
+          example: GSTIN
+          enum:
+          - GSTIN
+          - PAN
+          - VAT
+          - OTHER
+      type: object
+    CustomerDetailExternalApiResponseResponseModel:
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/CustomerDetailExternalApiResponseModel'
+      type: object
+    CustomerDetailExternalApiResponseModel:
+      properties:
+        totalDocs:
+          type: integer
+        docs:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerDetailExternalApiResponseModelDocs'
+        hasNext:
+          type: boolean
+        hasPrev:
+          type: boolean
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        totalPages:
+          type: integer
+        prevPageNumber:
+          type: integer
+        nextPageNumber:
+          type: integer
+      type: object
+    CustomerDetailExternalApiResponseModelDocs:
+      properties:
+        id:
+          type: string
+        buyerId:
+          type: string
+        companyId:
+          type: string
+        name:
+          type: string
+        alias:
+          type: string
+        registeredAddress:
+          $ref: '#/components/schemas/CustomerDetailExternalApiResponseModelDocsregisteredAddress'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerDetailExternalApiResponseModelDocsaddresses'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerDetailExternalApiResponseModelDocscontacts'
+        internalStakeholders:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerDetailExternalApiResponseModelDocsinternalStakeholders'
+        taxIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerDetailExternalApiResponseModelDocstaxIdentifiers'
+        customerContactPerson:
+          type: string
+        currency:
+          type: string
+        currencyId:
+          type: string
+        tags:
+          type: object
+        metaData:
+          type: object
+        customerStatus:
+          type: string
+        upcomingCustomerStatus:
+          type: string
+        upcomingCustomerStatusChangeDate:
+          type: string
+        upcomingCustomerStatusChangeReason:
+          type: string
+        upcomingCustomerStatusChangeByUserid:
+          type: string
+        isManuallyCreated:
+          type: boolean
+        erpId:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        totalInvoiceAmount:
+          type: number
+        totalPaidAmount:
+          type: number
+        totalOutstandingAmount:
+          type: number
+        totalAdjustedAmount:
+          type: number
+        invoiceCount:
+          type: number
+        creditNoteCount:
+          type: number
+        overdueAmount:
+          type: number
+        overdueCount:
+          type: number
+      type: object
+    CustomerDetailExternalApiResponseModelDocsregisteredAddress:
+      properties:
+        line1:
+          type: string
+        line2:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        zipCode:
+          type: string
+      type: object
+    CustomerDetailExternalApiResponseModelDocsaddresses:
+      properties:
+        line1:
+          type: string
+        line2:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        zipCode:
+          type: string
+      type: object
+    CustomerDetailExternalApiResponseModelDocscontacts:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        primaryPhone:
+          type: string
+        primaryEmail:
+          type: string
+        role:
+          type: string
+      type: object
+    CustomerDetailExternalApiResponseModelDocsinternalStakeholders:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        primaryPhone:
+          type: string
+        primaryEmail:
+          type: string
+        role:
+          type: string
+        isRegistered:
+          type: boolean
+      type: object
+    CustomerDetailExternalApiResponseModelDocstaxIdentifiers:
+      properties:
+        value:
+          type: string
+        type:
+          type: string
+      type: object
+    UpdateExternalCustomer:
+      properties:
+        customer:
+          $ref: '#/components/schemas/UpdateExternalCustomerModel'
+      type: object
+    UpdateExternalCustomerModel:
+      properties:
+        name:
+          type: string
+          description: name
+        alias:
+          type: string
+          description: alias
+        registeredAddress:
+          $ref: '#/components/schemas/UpdateExternalCustomerModelregisteredAddress'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateExternalCustomerModeladdresses'
+        contactsData:
+          $ref: '#/components/schemas/UpdateExternalCustomerQueryModelcontactsData'
+        internalStakeholdersData:
+          $ref: '#/components/schemas/UpdateExternalCustomerQueryModelinternalStakeholdersData'
+        stateCode:
+          type: string
+          description: stateCode
+        countryCode:
+          type: string
+          description: countryCode
+          default: IN
+        country:
+          type: string
+          description: country
+        primaryPhone:
+          type: string
+          description: primaryPhone
+        primaryEmail:
+          type: string
+          description: primaryEmail
+        customerContactPerson:
+          type: string
+          description: customerContactPerson
+        currency:
+          type: string
+          description: currency
+          default: INR
+        currencyId:
+          type: string
+          description: currencyId
+        tags:
+          type: object
+        metaData:
+          type: object
+        customerStatus:
+          type: string
+          example: PROSPECT
+          enum:
+          - PROSPECT
+          - LIVE
+          - CHURNED
+          - INACTIVE
+        upcomingCustomerStatus:
+          type: string
+          example: PROSPECT
+          enum:
+          - PROSPECT
+          - LIVE
+          - CHURNED
+          - INACTIVE
+        upcomingCustomerStatusChangeDate:
+          type: string
+          format: date
+          description: upcomingCustomerStatusChangeDate
+        upcomingCustomerStatusChangeReason:
+          type: string
+          description: upcomingCustomerStatusChangeReason
+        upcomingCustomerStatusChangeByUserid:
+          type: string
+          description: upcomingCustomerStatusChangeByUserid
+      type: object
+    UpdateExternalCustomerModelregisteredAddress:
+      properties:
+        line1:
+          type: string
+          description: line1
+        line2:
+          type: string
+          description: line2
+        state:
+          type: string
+          description: state
+        city:
+          type: string
+          description: city
+        country:
+          type: string
+          description: country
+        zipCode:
+          type: string
+          description: zipCode
+      type: object
+    UpdateExternalCustomerModeladdresses:
+      properties:
+        line1:
+          type: string
+          description: line1
+        line2:
+          type: string
+          description: line2
+        state:
+          type: string
+          description: state
+        city:
+          type: string
+          description: city
+        country:
+          type: string
+          description: country
+        zipCode:
+          type: string
+          description: zipCode
+      type: object
+    UpdateExternalCustomerQueryModelcontactsData:
+      properties:
+        add:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateExternalCustomerQueryModelcontactsDataAdd'
+        update:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateExternalCustomerQueryModelcontactsDataUpdate'
+        delete:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateExternalCustomerQueryModelcontactsDataDelete'
+      type: object
+    UpdateExternalCustomerQueryModelinternalStakeholdersData:
+      properties:
+        add:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateExternalCustomerQueryModelinternalStakeholdersDataAdd'
+        update:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateExternalCustomerQueryModelinternalStakeholdersDataUpdate'
+        delete:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateExternalCustomerQueryModelinternalStakeholdersDataDelete'
+      type: object
+    UpdateExternalCustomerQueryModelcontactsDataAdd:
+      required:
+      - name
+      - primaryEmail
+      - primaryPhone
+      - role
+      properties:
+        name:
+          type: string
+          description: name
+        primaryPhone:
+          type: string
+          description: primaryPhone
+        primaryEmail:
+          type: string
+          description: primaryEmail
+        role:
+          type: string
+          description: role
+      type: object
+    UpdateExternalCustomerQueryModelcontactsDataUpdate:
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: name
+        role:
+          type: string
+          description: role
+        primaryPhone:
+          type: string
+          description: primaryPhone
+        primaryEmail:
+          type: string
+          description: primaryEmail
+      type: object
+    UpdateExternalCustomerQueryModelcontactsDataDelete:
+      properties:
+        name:
+          type: string
+          description: name
+        role:
+          type: string
+          description: role
+      type: object
+    UpdateExternalCustomerQueryModelinternalStakeholdersDataAdd:
+      required:
+      - name
+      - primaryEmail
+      - role
+      properties:
+        name:
+          type: string
+          description: name
+        primaryEmail:
+          type: string
+          description: primaryEmail
+        role:
+          type: string
+          description: role
+        primaryPhone:
+          type: string
+          description: primaryPhone
+      type: object
+    UpdateExternalCustomerQueryModelinternalStakeholdersDataUpdate:
+      required:
+      - name
+      - primaryEmail
+      - role
+      properties:
+        name:
+          type: string
+          description: name
+        primaryEmail:
+          type: string
+          description: primaryEmail
+        role:
+          type: string
+          description: role
+        primaryPhone:
+          type: string
+          description: primaryPhone
+      type: object
+    UpdateExternalCustomerQueryModelinternalStakeholdersDataDelete:
+      properties:
+        name:
+          type: string
+          description: name
+        role:
+          type: string
+          description: role
+      type: object
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
