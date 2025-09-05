@@ -14,41 +14,102 @@
         "tab": "Documentation",
         "groups": [
           {
-            "group": "Billing Components",
+            "group": "Authentication",
             "pages": [
-              "documentation/billing/components/contract",
-              "documentation/billing/components/fee-component",
-              "documentation/billing/components/usage-driver",
-              "documentation/billing/components/rate-card",
-              "documentation/billing/components/billing-flow",
-              "documentation/billing/components/billing-report"
-              
+              {
+                "group": "API Authentication",
+                "pages": [
+                  "documentation/authentication"
+                ]
+              }
             ]
           },
           {
-            "group": "Authentication",
-            "pages":["documentation/authentication"]
-          },
-          {
-            "group": "Usage API",
-            "pages": ["documentation/billing/apis/usage"]
-          },
-          {
-            "group": "Billing API",
+            "group": "Billing",
             "pages": [
-              "api-reference/endpoint/create-contract",
-              "api-reference/endpoint/filter-contracts",
-              "api-reference/endpoint/fee-comp",
-              "api-reference/endpoint/filter-fee-components",
-              "api-reference/endpoint/fee-component-tags",
-              "api-reference/endpoint/fetch-tags-of-fee-component",
-              "api-reference/endpoint/ratecard",
-              "api-reference/endpoint/fetch-rate-cards-of-fee-component",
-              "api-reference/endpoint/fetch-ratecard-feecomponent-relation",
-              "api-reference/endpoint/usage-driver",
-              "api-reference/endpoint/usage-driver-filter",
-              "api-reference/endpoint/contract-fee-comp",
-              "api-reference/endpoint/fetch-fee-components-of-contract"
+              {
+                "group": "APIs",
+                "pages": [
+                  "api-reference/endpoint/create-contract",
+                  "api-reference/endpoint/filter-contracts",
+                  "api-reference/endpoint/fee-comp",
+                  "api-reference/endpoint/filter-fee-components",
+                  "api-reference/endpoint/fee-component-tags",
+                  "api-reference/endpoint/fetch-tags-of-fee-component",
+                  "api-reference/endpoint/ratecard",
+                  "api-reference/endpoint/fetch-rate-cards-of-fee-component",
+                  "api-reference/endpoint/fetch-ratecard-feecomponent-relation",
+                  "api-reference/endpoint/usage-driver",
+                  "api-reference/endpoint/usage-driver-filter",
+                  "api-reference/endpoint/contract-fee-comp",
+                  "api-reference/endpoint/fetch-fee-components-of-contract"
+                ]
+              },
+              {
+                "group": "Components",
+                "pages": [
+                  "documentation/billing/components/contract",
+                  "documentation/billing/components/fee-component",
+                  "documentation/billing/components/usage-driver",
+                  "documentation/billing/components/rate-card",
+                  "documentation/billing/components/billing-flow",
+                  "documentation/billing/components/billing-report"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Usage",
+            "pages": [
+              {
+                "group": "APIs",
+                "pages": [
+                  "documentation/billing/apis/usage"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Customer",
+            "pages": [
+              {
+                "group": "APIs",
+                "pages": [
+                  "api-reference/external/create-customer",
+                  "api-reference/external/update-customer",
+                  "api-reference/external/filter-customer"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Invoice",
+            "pages": [
+              {
+                "group": "APIs",
+                "pages": [
+                  "api-reference/external/create-update-invoices",
+                  "api-reference/external/filter-invoices"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Credit Notes",
+            "pages": [
+              {
+                "group": "APIs",
+                "pages": [
+                  "api-reference/external/create-credit-notes",
+                  "api-reference/external/filter-credit-notes"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Examples",
+            "pages": [
+              "documentation/billing/components/how-to-use-api-to-create-contracts"
             ]
           }
         ]
