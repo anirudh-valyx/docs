@@ -2252,9 +2252,189 @@ paths:
         description: Auth key for fetching ledger entries
       tags:
       - external
+  /creditNote/attachment/upload:
+    post:
+      summary: Upload a credit note attachment
+      tags:
+        - creditNote
+      operationId: post_credit_note_attachment_upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                creditNoteNumber:
+                  type: string
+                attachmentUrl:
+                  type: string
+                purpose:
+                  type: string
+      parameters:
+        - name: X-Valyx-Signature
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Auth key for attachment upload
+        - name: X-Fields
+          in: header
+          schema:
+            type: string
+            format: mask
+          description: An optional fields mask
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadCreditNoteAttachmentResponseModel'
+  /invoice/attachment/upload:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadInvoiceAttachmentResponseModel'
+      operationId: post_invoice_attachment_upload
+      parameters:
+        - name: X-Valyx-Attachment-Upload-Signature
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Auth key for attachment upload
+        - name: X-Fields
+          in: header
+          schema:
+            type: string
+            format: mask
+          description: An optional fields mask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                invoiceNumber:
+                  type: string
+                attachmentUrl:
+                  type: string
+                purpose:
+                  type: string
+      tags:
+        - invoice
+  /invoice/attachments:
+    get:
+      summary: Get invoice attachments
+      tags:
+        - invoice
+      operationId: get_invoice_attachment_route
+      parameters:
+        - name: X-Valyx-Attachment-Upload-Signature
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Auth key for attachment upload
+        - name: X-Valyx-Signature
+          in: header
+          schema:
+            type: string
+          description: Auth key for attachment upload
+        - name: uploadedBefore
+          in: query
+          schema:
+            type: string
+          description: uploaded before should be this date
+        - name: uploadedAfter
+          in: query
+          schema:
+            type: string
+          description: uploaded before should be this date
+        - name: purpose
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - INVOICE_FOR_BUYER
+                - INVOICE_SUPPORTING
+                - PURCHASE_ORDER
+                - SALES_ORDER
+                - DELIVERY_DOCUMENT
+                - PAYMENT_PROOF
+                - DISPUTE
+                - DISPUTE_RESOLUTION
+                - ENQUIRY
+                - ENQUIRY_RESOLUTION
+                - TAX_DOCUMENT
+                - COMMERCIAL_AGREEMENT
+                - COMMERCIAL_AGREEMENT_SUPPORTING
+                - LEGAL
+                - GENERAL
+                - CREDITNOTE_FOR_BUYER
+                - CREDITNOTE_SUPPORTING
+                - TICKET
+                - USAGE_ESTIMATE
+                - MAIL_ATTACHMENT
+          style: form
+          explode: false
+          description: purpose of the attachment should be one of these values
+        - name: invoiceDateStart
+          in: query
+          schema:
+            type: string
+        - name: invoiceDateEnd
+          in: query
+          schema:
+            type: string
+        - name: invoiceNumber
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: pageNumber
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: X-Fields
+          in: header
+          schema:
+            type: string
+            format: mask
+          description: An optional fields mask
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceAttachmentResponseModel'
 tags:
 - name: billing
   description: External Billing APIs
+- name: external
+  description: External APIs for customers
+- name: invoice
+  description: Invoice APIs
+- name: creditNote
+  description: Credit Note APIs
 components:
   responses:
     ParseError:
@@ -6582,6 +6762,62 @@ components:
           type: string
           description: primaryPhone
       type: object
+    UploadInvoiceAttachmentResponseModel:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/UploadInvoiceAttachmentResponseDataModel'
+    UploadInvoiceAttachmentResponseDataModel:
+      type: object
+      properties:
+        invoiceId:
+          type: string
+        invoiceNumber:
+          type: string
+        customerName:
+          type: string
+        buyerId:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttachmentForInvoice'
+    AttachmentForInvoice:
+      type: object
+      properties:
+        filename:
+          type: string
+        purpose:
+          type: string
+        createdAt:
+          type: string
+    InvoiceAttachmentResponseModel:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/UploadInvoiceAttachmentResponseDataModel'
+    UploadCreditNoteAttachmentResponseModel:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/UploadCreditNoteAttachmentResponseDataModel'
+    UploadCreditNoteAttachmentResponseDataModel:
+      type: object
+      properties:
+        id:
+          type: string
     UpdateExternalCustomerQueryModelinternalStakeholdersDataDelete:
       properties:
         name:
@@ -6591,4 +6827,10 @@ components:
           type: string
           description: role
       type: object
+
 jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+
+
+
+
+

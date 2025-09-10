@@ -88,7 +88,9 @@
                 "group": "APIs",
                 "pages": [
                   "api-reference/external/create-update-invoices",
-                  "api-reference/external/filter-invoices"
+                  "api-reference/external/filter-invoices",
+                  "api-reference/external/create-invoice-attachment",
+                  "api-reference/external/filter-invoice-attachments"
                 ]
               }
             ]
@@ -100,7 +102,8 @@
                 "group": "APIs",
                 "pages": [
                   "api-reference/external/create-credit-notes",
-                  "api-reference/external/filter-credit-notes"
+                  "api-reference/external/filter-credit-notes",
+                  "api-reference/external/create-credit-notes-attachment"
                 ]
               }
             ]
