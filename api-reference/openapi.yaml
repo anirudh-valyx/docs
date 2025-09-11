@@ -2271,6 +2271,27 @@ paths:
                   type: string
                 purpose:
                   type: string
+                  enum:
+                    - INVOICE_FOR_BUYER
+                    - INVOICE_SUPPORTING
+                    - PURCHASE_ORDER
+                    - SALES_ORDER
+                    - DELIVERY_DOCUMENT
+                    - PAYMENT_PROOF
+                    - DISPUTE
+                    - DISPUTE_RESOLUTION
+                    - ENQUIRY
+                    - ENQUIRY_RESOLUTION
+                    - TAX_DOCUMENT
+                    - COMMERCIAL_AGREEMENT
+                    - COMMERCIAL_AGREEMENT_SUPPORTING
+                    - LEGAL
+                    - GENERAL
+                    - CREDITNOTE_FOR_BUYER
+                    - CREDITNOTE_SUPPORTING
+                    - TICKET
+                    - USAGE_ESTIMATE
+                    - MAIL_ATTACHMENT
       parameters:
         - name: X-Valyx-Signature
           in: header
@@ -2327,6 +2348,27 @@ paths:
                   type: string
                 purpose:
                   type: string
+                  enum:
+                    - INVOICE_FOR_BUYER
+                    - INVOICE_SUPPORTING
+                    - PURCHASE_ORDER
+                    - SALES_ORDER
+                    - DELIVERY_DOCUMENT
+                    - PAYMENT_PROOF
+                    - DISPUTE
+                    - DISPUTE_RESOLUTION
+                    - ENQUIRY
+                    - ENQUIRY_RESOLUTION
+                    - TAX_DOCUMENT
+                    - COMMERCIAL_AGREEMENT
+                    - COMMERCIAL_AGREEMENT_SUPPORTING
+                    - LEGAL
+                    - GENERAL
+                    - CREDITNOTE_FOR_BUYER
+                    - CREDITNOTE_SUPPORTING
+                    - TICKET
+                    - USAGE_ESTIMATE
+                    - MAIL_ATTACHMENT
       tags:
         - invoice
   /invoice/attachments:
@@ -2386,7 +2428,9 @@ paths:
                 - MAIL_ATTACHMENT
           style: form
           explode: false
-          description: purpose of the attachment should be one of these values
+          description: |
+            Purpose of the attachment. Allowed values:
+              - INVOICE_FOR_BUYER, INVOICE_SUPPORTING, PURCHASE_ORDER etc.
         - name: invoiceDateStart
           in: query
           schema:
