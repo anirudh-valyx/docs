@@ -4564,23 +4564,27 @@ components:
           type: string
       type: object
     ContractRateCardBulkUpsertionRequestModel:
-      properties:
-        ratecardRelations:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContractRateCardBulkUpsertionRequestModelratecardRelations'
       type: object
-    ContractRateCardBulkUpsertionRequestModelratecardRelations:
       required:
-      - feeComponentId
+        - feeComponentId
+        - ratecardRelations
       properties:
         feeComponentId:
           type: string
-          description: feeComponentId
+          description: Fee component this bulk upsertion applies to
+        ratecardRelations:
+          type: array
+          description: List of ratecards to associate with the fee component
+          items:
+            $ref: '#/components/schemas/ContractRateCardRelation'
+    ContractRateCardRelation:
+      type: object
+      required:
+        - ratecardId
+      properties:
         ratecardId:
           type: string
-          description: ratecardId
-      type: object
+          description: ID of the ratecard to associate
     FeeComponentToContractRequestModel:
       required:
       - contractId
