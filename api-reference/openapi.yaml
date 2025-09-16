@@ -385,6 +385,12 @@ paths:
       required: true
       schema:
         type: string
+    - name: X-Valyx-Signature
+      in: header
+      required: true
+      description: Auth key to authenticate the request
+      schema:
+        type: string
     post:
       responses:
         '200':
