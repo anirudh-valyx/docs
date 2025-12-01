@@ -43,7 +43,8 @@
                   "api-reference/endpoint/usage-driver-filter",
                   "api-reference/endpoint/contract-fee-comp",
                   "api-reference/endpoint/fetch-fee-components-of-contract",
-                  "api-reference/endpoint/select-ratecard-fee-component-contract"
+                  "api-reference/endpoint/select-ratecard-fee-component-contract",
+                  "api-reference/endpoint/billing-report-filter"
                 ]
               },
               {
