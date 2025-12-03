@@ -34,6 +34,7 @@
                   "api-reference/endpoint/filter-contracts",
                   "api-reference/endpoint/fee-comp",
                   "api-reference/endpoint/filter-fee-components",
+                  "api-reference/endpoint/get-fee-component",
                   "api-reference/endpoint/fee-component-tags",
                   "api-reference/endpoint/fetch-tags-of-fee-component",
                   "api-reference/endpoint/ratecard",
