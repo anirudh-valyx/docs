@@ -5093,6 +5093,10 @@ components:
         invoiceCurrencyId:
           type: string
           description: invoiceCurrencyId
+        exchangeRate:
+          type: number
+          description: Exchange rate from invoice currency (FCY) to base currency (BCY). Formula - BCY amount = FCY amount × exchangeRate. Required when invoiceCurrency is not the company's base currency. If omitted, defaults to 1.0.
+          example: 19.45
         lineItems:
           type: array
           items:
@@ -5809,6 +5813,10 @@ components:
           type: string
           description: currency
           default: INR
+        exchangeRate:
+          type: number
+          description: Exchange rate from credit note currency (FCY) to base currency (BCY). Formula - BCY amount = FCY amount × exchangeRate. Required when currency is not the company's base currency. If omitted, defaults to 1.0.
+          example: 19.45
         lineItems:
           type: array
           items:
