@@ -1960,6 +1960,22 @@ paths:
           type: string
         description: Customer creation date end - will return customers created on
           or before this date. Pass as YYYY-MM-DD string
+      - name: updatedAtStart
+        in: query
+        schema:
+          type: string
+        description: |
+          Return customers whose `updatedAt` is on or after this date. Pass as `YYYY-MM-DD`.
+      - name: updatedAtEnd
+        in: query
+        schema:
+          type: string
+        description: |
+          Return customers whose `updatedAt` is on or before this date. Pass as `YYYY-MM-DD`.
+
+          **Gotcha:** the end-date comparison is a raw `<=` against the `updated_at` DateTime
+          column (same semantics as `createdAtEnd`). A customer that was updated late on the end
+          day may fall outside the window — pass the next day if you need the full end day covered.
       - name: currencies
         in: query
         style: form
@@ -2050,13 +2066,15 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
+                $ref: '#/components/schemas/InvoiceExternalApiResponseResponseModel'
       summary: Handles GET requests for the /invoices route
-      description: 'Authenticates the request and retrieves invoice data for a specified
-        company, applying filters and pagination as specified in the request parameters.
-        Returns: Tuple containing: - A dictionary with the fetched invoices and pagination
-        details. - HTTP status code 200.'
+      description: |
+        Authenticates the request and retrieves invoice data for the company associated with the
+        signature, applying filters and pagination from the query string.
+
+        **Behavior change:** the default response now includes `DRAFT`, `FINALIZED`, and `VOIDED`
+        invoices. Previously only `FINALIZED` invoices were returned. Pass
+        `lifecycleStatuses=FINALIZED` to restore the old behavior.
       operationId: get_invoice_routes
       parameters:
       - name: invoiceStatus
@@ -2164,17 +2182,64 @@ paths:
           - INVOICE_DATE
           - DUE_DATE
           - PROMISE_TO_PAY_DATE
-        description: DateType type filter
+          - CREATED_AT
+          - UPDATED_AT
+        description: |
+          Field that `startDate` / `endDate` apply to.
+          `CREATED_AT` filters by when the invoice was created in Valyx, `UPDATED_AT` by when it was last modified.
+          For `CREATED_AT` / `UPDATED_AT` the end-date comparison is performed on `DATE(column)`, so the full
+          end day is included; the other date types compare against the date column directly.
       - name: startDate
         in: query
         schema:
           type: string
-        description: start date of the invoice for date type
+        description: Start date for the selected `dateType`. Pass as `YYYY-MM-DD`.
       - name: endDate
         in: query
         schema:
           type: string
-        description: end date of the invoice for date type
+        description: End date for the selected `dateType`. Pass as `YYYY-MM-DD`.
+      - name: originSource
+        in: query
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - ZOHO
+            - IRECKONER
+            - BOLTIC
+            - VALYX
+            - OTHER
+        description: |
+          Filter invoices by where they originated. Repeat the param to pass multiple values
+          (e.g. `?originSource=VALYX&originSource=ZOHO`). Matches the `invoiceOriginSource` value
+          stored on the invoice-extra row.
+      - name: lifecycleStatuses
+        in: query
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - DRAFT
+            - FINALIZED
+            - VOIDED
+            - DELETED
+        description: |
+          Filter invoices by lifecycle status. Repeat the param to pass multiple values
+          (e.g. `?lifecycleStatuses=FINALIZED&lifecycleStatuses=DRAFT`).
+
+          **Default behavior change:** by default the response now includes `DRAFT`, `FINALIZED`, and
+          `VOIDED` invoices (previously `DRAFT` and `VOIDED` were excluded). Callers that need only
+          finalized invoices must pass `lifecycleStatuses=FINALIZED` explicitly.
+
+          `DELETED` is accepted by the parser but yields no results — deleted invoices are always
+          excluded from this endpoint.
       - name: page
         in: query
         required: true
@@ -5138,6 +5203,21 @@ components:
         erpId:
           type: string
           description: erpId
+        invoiceOriginSource:
+          type: string
+          enum:
+          - ZOHO
+          - IRECKONER
+          - BOLTIC
+          - VALYX
+          - OTHER
+          default: OTHER
+          description: |
+            Where this invoice originated. Stored on the invoice-extra row and returned on
+            `GET /external/invoices` as `invoiceOriginSource`. Optional — defaults to `OTHER`
+            when omitted. Set to `VALYX` when uploading invoices that were raised inside the Valyx
+            platform (e.g. manual uploads of Valyx-generated invoices).
+          example: VALYX
       type: object
     CreateInvoiceModelinvoiceTax:
       required:
@@ -6889,6 +6969,224 @@ components:
           type: string
           description: role
       type: object
+    InvoiceExternalApiResponseResponseModel:
+      type: object
+      properties:
+        error:
+          type: string
+          nullable: true
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/InvoiceExternalApiPaginatedResponse'
+    InvoiceExternalApiPaginatedResponse:
+      type: object
+      properties:
+        totalDocs:
+          type: integer
+        docs:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceExternalApiResponseDoc'
+        hasNext:
+          type: boolean
+        hasPrev:
+          type: boolean
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        totalPages:
+          type: integer
+        prevPageNumber:
+          type: integer
+          nullable: true
+        nextPageNumber:
+          type: integer
+          nullable: true
+    InvoiceExternalApiResponseDoc:
+      type: object
+      description: One invoice document returned by `GET /external/invoices`.
+      properties:
+        id:
+          type: string
+          description: Internal Valyx invoice ID (UUID).
+        invoiceId:
+          type: string
+          description: Caller-supplied invoice identifier (the value passed in `invoiceId` on upsert).
+        invoiceNumber:
+          type: string
+        invoiceStatus:
+          type: string
+          enum:
+          - OVERDUE
+          - DUE
+          - NO_DUES
+          - VOID
+        paymentStatus:
+          type: string
+          enum:
+          - PAID
+          - UNPAID
+          - PARTIALLY_PAID
+        invoiceDate:
+          type: string
+          format: date
+        invoiceDueDate:
+          type: string
+          format: date
+        promiseToPayDate:
+          type: string
+          format: date
+        invoiceSubtotal:
+          type: number
+        invoiceTotal:
+          type: number
+        invoicePaidAmount:
+          type: number
+        invoiceAdjustedAmount:
+          type: number
+        invoiceOutstandingAmount:
+          type: number
+        writtenOffAmount:
+          type: number
+        roundOffAmount:
+          type: number
+        creditNoteAdjustedAmount:
+          type: number
+        invoiceTax:
+          type: object
+          description: Tax breakdown for the invoice.
+        discount:
+          type: object
+          description: Discount details for the invoice.
+        buyerId:
+          type: string
+          description: Caller-supplied buyer identifier.
+        customerName:
+          type: string
+        lineItems:
+          type: array
+          description: Line items on the invoice.
+          items:
+            type: object
+        referenceType:
+          type: string
+        referenceId:
+          type: string
+        referenceText:
+          type: string
+        createdAt:
+          type: string
+          description: |
+            When the invoice was created in Valyx. Formatted as `YYYY-MM-DD HH:MM:SS` (UTC).
+            Example: `2026-03-23 14:05:11`.
+          example: '2026-03-23 14:05:11'
+        updatedAt:
+          type: string
+          description: |
+            When the invoice was last modified in Valyx. Formatted as `YYYY-MM-DD HH:MM:SS` (UTC).
+          example: '2026-03-24 09:17:02'
+        lifecycleStatus:
+          type: string
+          nullable: true
+          enum:
+          - DRAFT
+          - FINALIZED
+          - VOIDED
+          description: |
+            Lifecycle state of the invoice. `DELETED` invoices are never returned by this endpoint
+            even when filtered for explicitly.
+        invoiceOriginSource:
+          type: string
+          nullable: true
+          enum:
+          - ZOHO
+          - IRECKONER
+          - BOLTIC
+          - VALYX
+          - OTHER
+          description: |
+            Where the invoice originated. `null` is returned for legacy invoices that have no
+            invoice-extra row.
+        createdBy:
+          type: object
+          nullable: true
+          description: |
+            Creator attribution for the invoice. `null` for legacy invoices that pre-date the
+            `created_by` column.
+          properties:
+            userId:
+              type: string
+              description: ID of the user who created the invoice in Valyx.
+            userName:
+              type: string
+              nullable: true
+              description: |
+                Display name built from `firstName + lastName`. Can be `null` when the creator's
+                user record could not be resolved (e.g. system-created invoices); treat `null` as
+                "name unavailable" rather than an error.
+        invoiceAmountAdjustments:
+          type: array
+          nullable: true
+          items:
+            type: object
+        irnNumber:
+          type: string
+          nullable: true
+        placeOfSupply:
+          type: string
+          nullable: true
+        invoiceCurrency:
+          type: string
+          nullable: true
+        erpId:
+          type: string
+          nullable: true
+        invoiceTds:
+          type: object
+          nullable: true
+        invoiceBillingAddress:
+          type: object
+          nullable: true
+          description: Billing address captured on the invoice-extra row.
+        invoiceShippingAddress:
+          type: object
+          nullable: true
+          description: Shipping address captured on the invoice-extra row.
+        invoiceGeneralTerms:
+          type: string
+          nullable: true
+        invoicePaymentTerms:
+          type: string
+          nullable: true
+        invoiceSellerDetails:
+          type: object
+          nullable: true
+          description: |
+            Seller details (GSTIN, address, bank account). `bankAccountDetails.bankAccountId` is
+            stripped before being returned to external callers.
+        billingPeriod:
+          type: object
+          nullable: true
+          properties:
+            startDate:
+              type: string
+              format: date
+            endDate:
+              type: string
+              format: date
+        einvoiceAcknowledgementNumber:
+          type: integer
+          nullable: true
+        einvoiceAcknowledgedAt:
+          type: string
+          nullable: true
+          description: ISO datetime when the e-invoice was acknowledged.
+        buyerGstin:
+          type: string
+          nullable: true
+          description: GSTIN of the buyer, sourced from the customer record at read time.
 
 jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
 
